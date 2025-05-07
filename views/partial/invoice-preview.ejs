@@ -1,0 +1,311 @@
+<%
+blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
+%>
+<% if(blockType === 'css') { %>
+<style>
+    #invoicePreviewContainer {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        border-radius: 4px;
+        background-color: #fff;
+        padding: 0;
+    }
+
+    #invoicePreview {
+        padding: 20px;
+    }
+    #invoicePreviewToolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+    }
+
+    #invoiceHeaderPreview {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #logoPreview {
+        max-width: 200px;
+        max-height: 100px;
+    }
+
+    #invoiceNumberPreview {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    #billerInfoPreview {
+        border-bottom: 1px solid #aaa;
+    }
+    #invoiceItemsPreview {
+        border-bottom: 1px dashed #aaa;
+    }
+    #invoiceItemsPreview table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    #invoiceItemsPreview thead {
+        text-align: left;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
+    }
+    #invoiceItemsPreview th {
+        padding: 10px 0;
+    }
+    #additionalImagesPreview {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 20px;
+    }
+    #logoPreview, #notesPreviewContainer, #signaturePreview, #additionalImagesPreviewContainer {
+        display: none;
+    }
+    .img-preview {
+        max-width: 100%;
+        height: auto;
+        max-height: 300px;
+        max-width: 300px;
+    }
+    #invoicePreview p {
+        padding-top: 10px;
+    }
+</style>
+
+<% } else if(blockType === 'html') { %>
+<div id="invoicePreviewToolbar">
+    <button id="printButton" class="navbar-button" onclick="window.print()">Print page</button>
+    <button id="generatePDFButton" class="navbar-button navbar-button-primary">Generate PDF</button>
+</div>
+<div id="invoicePreview">
+    <div id="invoiceHeaderPreview" class="mb-8">
+        <div id="logoPreview">
+
+        </div>
+        <div id="invoiceInfoPreview">
+            <div id="invoiceNumberPreview"></div>
+            <div id="invoiceDateLabelPreview">
+                <p><b>Invoice Date:</b> <span id="invoiceDatePreview"></span></p>
+            </div>
+            <div id="invoiceDueDateLabelPreview">
+                <p><b>Due Date:</b> <span id="invoiceDueDatePreview"></span></p>
+            </div>
+            <div id="invoiceStatusPreview">
+                <p><b>Balance Due:</b> <span id="invoiceBalanceAmountPreview"></span></p>
+            </div>
+        </div>
+    </div>
+    <div id="invoiceDetailsPreview">
+        <div id="billerInfoPreview" class="pb-6 mb-6">
+            <h4 id="billerName"></h4>
+            <p id="billerBusinessNumber"></p>
+            <p id="billerAddress"></p>
+            <p id="billerZipCode"></p>
+            <p id="billerPhoneNumber"></p>
+            <p id="billerEmail"></p>
+        </div>
+        <div id="payeeInfoPreview" class="pb-4 mb-4">
+            <p><b>BILL TO</b></p>
+            <h4 id="payeeName"></h4>
+            <p id="payeeBusinessNumber"></p>
+            <p id="payeeAddress"></p>
+            <p id="payeeZipCode"></p>
+            <p id="payeePhoneNumber"></p>
+            <p id="payeeEmail"></p>
+        </div>
+    </div>
+    <div id="invoiceItemsPreview" class="py-4 mb-4">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceItemsBodyPreview">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-right pr-4 pt-4">Subtotal</td>
+                    <td id="subtotalPreview" class="text-left pt-4"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right pr-4">Tax</td>
+                    <td id="taxPreview" class="text-left"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right pr-4">Overdue/Arrears</td>
+                    <td id="arrearsAmountPreview" class="text-left"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-right pr-4">Total</td>
+                    <td id="totalPreview" class="text-left"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="notesPreviewContainer" class="pb-4 mb-4">
+        <h4>Notes</h4>
+        <p id="notesPreview"></p>
+    </div>
+    <div id="signaturePreviewContainer">
+        <p id="signaturePreview"></p>
+    </div>
+    <div id="additionalImagesPreviewContainer">
+        <h4>Additional Images</h4>
+        <div id="additionalImagesPreview">
+        </div>
+    </div>
+</div>
+<% } else if(blockType === 'js') { %>
+    <script>
+        const addInvoiceNumber = () => {
+            const invoiceNumber = document.getElementById("invoiceNumber").value;
+            document.getElementById("invoiceNumberPreview").innerText = invoiceNumber;
+        }
+        const addLogo = () => {
+            const logoFile = getSingleImageUploaderInstance("logo-image-field").getFile();
+            if (logoFile) {
+                const logoPreview = document.getElementById("logoPreview");
+                logoPreview.innerHTML = `<img src="${URL.createObjectURL(logoFile)}" alt="Logo" style="width: 100%; height: auto;">`;
+                logoPreview.style.display = "block";
+            } else {
+                document.getElementById("logoPreview").style.display = "none";
+            }
+        }
+        const addBillerInfo = () => {
+            const billerName = document.getElementById("fromName").value;
+            const billerBusinessNumber = document.getElementById("fromBusinessNumber").value;
+            const billerAddress = document.getElementById("fromStreet").value;
+            const billerCity = document.getElementById("fromCity").value;
+            const billerZipCode = document.getElementById("fromZip").value;
+            const billerPhoneNumber = document.getElementById("fromPhone").value;
+            const billerEmail = document.getElementById("fromEmail").value;
+            document.getElementById("billerName").innerText = billerName;
+            document.getElementById("billerBusinessNumber").innerText = billerBusinessNumber;
+            document.getElementById("billerAddress").innerText = billerAddress;
+            document.getElementById("billerZipCode").innerText = billerZipCode;
+            document.getElementById("billerPhoneNumber").innerText = billerPhoneNumber;
+            document.getElementById("billerEmail").innerText = billerEmail;
+        }
+
+        const addPayeeInfo = () => {
+            const payeeName = document.getElementById("toName").value;
+            const payeeBusinessNumber = document.getElementById("toBusinessNumber").value;
+            const payeeAddress = document.getElementById("toStreet").value;
+            const payeeCity = document.getElementById("toCity").value;
+            const payeeZipCode = document.getElementById("toZip").value;
+            const payeePhoneNumber = document.getElementById("toPhone").value;
+            const payeeEmail = document.getElementById("toEmail").value;
+            document.getElementById("payeeName").innerText = payeeName;
+            document.getElementById("payeeBusinessNumber").innerText = payeeBusinessNumber;
+            document.getElementById("payeeAddress").innerText = payeeAddress;
+            document.getElementById("payeeZipCode").innerText = payeeZipCode;
+            document.getElementById("payeePhoneNumber").innerText = payeePhoneNumber;
+            document.getElementById("payeeEmail").innerText = payeeEmail;
+        }
+
+        const addInvoiceItems = () => {
+            const invoiceItemsBody = document.getElementById("invoiceItemsBodyPreview");
+            invoiceItemsBody.innerHTML = "";
+            const items = document.querySelectorAll(".item-row");
+            let subtotal = 0;
+            items.forEach(item => {
+                const itemName = item.querySelector(".item-name").value;
+                const itemDescription = item.querySelector(".item-description").value;
+                const itemQuantity = parseFloat(item.querySelector(".item-quantity").value) || 0;
+                const itemUnitPrice = parseFloat(item.querySelector(".item-unit-price").value) || 0;
+                const itemDiscountPercentage = parseFloat(item.querySelector(".item-discount").value) || 0;
+                let itemTotal = (itemQuantity * itemUnitPrice) - (itemQuantity * itemUnitPrice * itemDiscountPercentage / 100);
+                itemTotal = Math.max(itemTotal, 0);
+                itemTotal = parseFloat(itemTotal.toFixed(2));
+                subtotal += itemTotal;
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+            <td>
+                <p>${itemName}</p>
+                <p>${itemDescription}</p>
+            </td>
+            <td>${itemQuantity}</td>
+            <td>${itemUnitPrice.toFixed(2)}</td>
+            <td>${itemTotal.toFixed(2)}</td>
+        `;
+                invoiceItemsBody.appendChild(row);
+            });
+            document.getElementById("subtotalPreview").innerText = subtotal.toFixed(2);
+            const taxRate = parseFloat(document.getElementById("taxRate").value) || 0;
+            const tax = subtotal * (taxRate / 100);
+            const arrearsAmount = parseFloat(document.getElementById("arrears").value) || 0;
+            document.getElementById("taxPreview").innerText = tax.toFixed(2);
+            document.getElementById("arrearsAmountPreview").innerText = arrearsAmount.toFixed(2);
+            document.getElementById("totalPreview").innerText = (subtotal + tax + arrearsAmount).toFixed(2);
+            document.getElementById("invoiceBalanceAmountPreview").innerText = (subtotal + tax + arrearsAmount).toFixed(2);
+            document.getElementById("invoiceDatePreview").innerText = (new Date()).toLocaleDateString();
+            document.getElementById("invoiceDueDatePreview").innerText = dueDateField.getValue();
+        }
+        const addNotes = () => {
+            const notes = document.getElementById("notes").value;
+            document.getElementById("notesPreview").innerText = notes;
+            if(notes && notes.trim() !== "") {
+                document.querySelector("#notesPreviewContainer").style.display = "block";
+            } else {
+                document.querySelector("#notesPreviewContainer").style.display = "none";
+            }
+        }
+        const addSignature = () => {
+            const signatureFile = getSingleImageUploaderInstance("signature-image-field").getFile();
+            if (signatureFile) {
+                const signaturePreview = document.getElementById("signaturePreview");
+                signaturePreview.innerHTML = `<img src="${URL.createObjectURL(signatureFile)}" alt="Signature" class="img-preview">`;
+                signaturePreview.style.display = "block";
+            } else {
+                document.getElementById("signaturePreview").style.display = "none";
+            }
+        }
+        const addAdditionalImages = () => {
+            const additionalImagesContainer = document.getElementById("additionalImagesPreview");
+            additionalImagesContainer.innerHTML = "";
+            const additionalImages = getMultipleUploaderInstance("additional-images-field").getFiles();
+            console.log(additionalImages);
+            additionalImages.forEach(image => {
+                console.log(image);
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(image);
+                img.alt = "Additional Image";
+                img.className = "img-preview";
+                additionalImagesContainer.appendChild(img);
+            });
+            if (additionalImages.length > 0) {
+                document.getElementById("additionalImagesPreviewContainer").style.display = "block";
+            } else {
+                document.getElementById("additionalImagesPreviewContainer").style.display = "none";
+            }
+        }
+        const generateInvoicePreview = () => {
+            addLogo();
+            addBillerInfo();
+            addPayeeInfo();
+            addInvoiceNumber();
+            addInvoiceItems();
+            addNotes();
+            addSignature();
+            addAdditionalImages();
+        }
+
+        /*
+        document.getElementById("invoiceForm").addEventListener("input", generateInvoicePreview);
+        document.getElementById("invoiceForm").addEventListener("change", generateInvoicePreview);
+        document.querySelectorAll("input[type=file]").forEach(input => {
+            console.log(input);
+            input.addEventListener("change", generateInvoicePreview);
+        });
+        */
+    </script>
+<% } %>

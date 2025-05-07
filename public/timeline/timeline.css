@@ -1,0 +1,210 @@
+/* Basic Container Styles */
+#myTimelineContainer {
+    position: relative; /* Essential for positioning children absolutely */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    overflow: hidden; /* Hide overflow during layout transitions */
+    transition: height 0.5s ease, width 0.5s ease; /* Smooth transitions for container size */
+}
+
+/* CSS Variables (set by JS based on config) */
+/* --node-size: 20px; */
+/* --path-thickness: 4px; */
+/* --completed-path-color: #4CAF50; */
+/* --remaining-path-color: #ddd; */
+/* --node-fill: #2196F3; */
+/* --node-border: #1976D2; */
+/* --animation-duration: 1s; */
+/* --spiral-row-height: 80px; */ /* Variable for spiral mode */
+/* --spiral-horizontal-padding: 30px; */ /* Variable for spiral mode */
+
+
+/* --- General Node Styles --- */
+.timeline-node {
+    position: absolute; /* Positioned by JS */
+    width: var(--node-size, 20px);
+    height: var(--node-size, 20px);
+    border-radius: 50%;
+    background-color: var(--node-fill, #2196F3);
+    border: 2px solid var(--node-border, #1976D2);
+    box-sizing: border-box;
+    z-index: 10;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em;
+    color: white;
+    transition: transform 0.2s ease-in-out, left 0.5s ease, top 0.5s ease; /* Smooth transitions for position */
+}
+
+.timeline-node:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* --- Current Node Highlight --- */
+.timeline-node--current {
+    border-color: red;
+    animation: pulse var(--animation-duration, 1s) infinite ease-in-out;
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+}
+
+/* --- Node Info Popover Styles --- */
+.timeline-node .node-info {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 20;
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    visibility: hidden;
+    pointer-events: none;
+    min-width: 150px;
+    text-align: left;
+}
+
+/* Default popover position (for horizontal) */
+.timeline-node .node-info {
+     bottom: calc(var(--node-size, 20px) / 2 + 15px);
+     left: 50%;
+     transform: translateX(-50%);
+}
+
+/* Popover position for vertical mode */
+.timeline-container--vertical .timeline-node .node-info {
+     top: 50%; /* Vertically center relative to node */
+     left: calc(var(--node-size, 20px) / 2 + 15px); /* Position to the right of the node */
+     transform: translateY(-50%); /* Vertically center the popover */
+}
+
+/* Popover position for spiral mode (can be more complex, default might work or need JS adjustment) */
+/* For simplicity, let's use the horizontal positioning for spiral */
+.timeline-container--spiral .timeline-node .node-info {
+     bottom: calc(var(--node-size, 20px) / 2 + 15px);
+     left: 50%;
+     transform: translateX(-50%);
+}
+
+
+.timeline-node:hover .node-info {
+     display: block;
+     opacity: 1;
+     visibility: visible;
+     pointer-events: auto;
+}
+
+.timeline-node .node-info h4 {
+    margin-top: 0; margin-bottom: 8px; font-size: 1em; color: #0056b3; border-bottom: 1px solid #eee; padding-bottom: 5px;
+}
+.timeline-node .node-info p {
+    margin-bottom: 8px; font-size: 0.9em; color: #555; line-height: 1.4;
+}
+.timeline-node .node-info .app-list {
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;
+}
+.timeline-node .node-info .app-list div {
+    cursor: pointer; color: #007bff; text-decoration: underline; font-size: 0.9em; margin-bottom: 5px; transition: color 0.2s ease-in-out;
+}
+.timeline-node .node-info .app-list div:hover { color: #0056b3; }
+.timeline-node .node-info .app-list div:last-child { margin-bottom: 0; }
+.timeline-node .node-info .app-list div.app-disabled { color: #999; text-decoration: none; cursor: default; }
+
+
+/* --- General Path Styles --- */
+.timeline-path {
+    position: absolute; /* Positioned by JS */
+    height: var(--path-thickness, 4px); /* Default thickness (horizontal) */
+    z-index: 5;
+    box-sizing: border-box;
+    transition: width 0.5s ease, height 0.5s ease, left 0.5s ease, top 0.5s ease; /* Smooth transitions for path segments */
+}
+
+/* Vertical path segment style */
+.timeline-container--vertical .timeline-path {
+    width: var(--path-thickness, 4px); /* Thickness for vertical paths */
+    height: auto; /* Height will be set by JS */
+    left: 50%; /* Center vertically */
+    transform: translateX(-50%); /* Adjust to truly center */
+}
+
+/* --- Path Segment Color Styles --- */
+.timeline-path--completed {
+    background-color: var(--completed-path-color, #28a745);
+}
+
+.timeline-path--remaining {
+    background-color: var(--remaining-path-color, #ced4da);
+}
+
+
+/* --- Mode Specific Container Styles --- */
+
+/* Horizontal Mode (Default) */
+#myTimelineContainer.timeline-container--horizontal {
+    width: 95%;
+    max-width: 1400px;
+    margin: 50px auto;
+    height: 120px; /* Fixed height */
+}
+
+/* Vertical Mode */
+#myTimelineContainer.timeline-container--vertical {
+    width: 300px; /* Example fixed width for vertical layout */
+    max-width: 95%;
+    margin: 50px auto;
+    height: auto; /* Height will be determined by content */
+    padding-top: var(--node-size, 20px); /* Add padding for the first node */
+    padding-bottom: var(--node-size, 20px); /* Add padding for the last node */
+}
+
+/* Spiral Mode */
+#myTimelineContainer.timeline-container--spiral {
+    width: 95%;
+    max-width: 1400px;
+    margin: 50px auto;
+    height: auto; /* Height will depend on the number of rows */
+    padding: var(--spiral-row-height, 80px) var(--spiral-horizontal-padding, 30px); /* Padding for spiral effect */
+    position: relative; /* Ensure positioning context */
+}
+
+/* Basic responsiveness - adjust sizes on smaller screens */
+@media (max-width: 768px) {
+    /* Horizontal Adjustments */
+    #myTimelineContainer.timeline-container--horizontal {
+        height: 100px;
+    }
+    .timeline-node {
+        width: var(--node-size, 16px);
+        height: var(--node-size, 16px);
+    }
+    .timeline-path {
+        height: var(--path-thickness, 3px);
+    }
+    .timeline-node .node-info {
+        padding: 8px;
+        font-size: 0.8em;
+        min-width: 120px;
+    }
+     .timeline-node .node-info h4 { font-size: 0.9em; }
+     .timeline-node .node-info p, .timeline-node .node-info .app-list div { font-size: 0.8em; }
+
+    /* Vertical Adjustments */
+    #myTimelineContainer.timeline-container--vertical {
+        width: 200px; /* Adjust width for smaller screens */
+    }
+
+    /* Spiral Adjustments */
+    #myTimelineContainer.timeline-container--spiral {
+        padding: var(--spiral-row-height, 60px) var(--spiral-horizontal-padding, 20px); /* Adjust padding */
+    }
+}

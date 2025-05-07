@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML to PDF with jsPDF and html2canvas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
+    integrity="sha512-ad3j5/L4h648YM/KObaUfjCsZRBP9sAOmpjaT2BDx6u9aBrKFp7SbeHykruy83rxfmG42+5QqeL/ngcojglbJw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="/css/baseTheme.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .container {
+      width: 800px;
+      margin: 0 auto;
+    }
+    #content-to-pdf {
+      margin: 0 auto;
+      width: 800px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      font-family: var(--font-family-segoe);
+    }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    thead {
+      background-color: #f2f2f2;
+      border-bottom: 2px solid #ccc;
+    }
+    tbody {
+      border-bottom: 2px solid #ccc;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tfoot {
+      border-top: 2px solid #ccc;
+      background-color: #f2f2f2;
+    }
+    tfoot tr td:first-child {
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div>
+      <div>
+        <h1>Invoice</h1>
+      </div>
+      <div>
+        preview
+      </div>
+    </div>
+    <div class="form">
+      <form id="invoiceForm">
+        <h2>Invoice Details</h2>
+      
+        <div class="form-section">
+          <label for="invoiceNumber">Invoice Number:</label>
+          <input type="text" id="invoiceNumber" name="invoiceNumber" value="Invoice Number">
+        </div>
+      
+        <div class="form-section">
+          <h3>From (biller)</h3>
+          <label for="fromName">Name:</label>
+          <input type="text" id="fromName" name="fromName" value="Pro-Flyers.co"><br>
+      
+          <label for="fromEmail">Email:</label>
+          <input type="email" id="fromEmail" name="fromEmail" value="pulkit@incogtech.com"><br>
+      
+          <label for="fromStreet">Street:</label>
+          <input type="text" id="fromStreet" name="fromStreet" value="1234 Street Name"><br>
+      
+          <label for="fromCity">City, State, Zip:</label>
+          <input type="text" id="fromCity" name="fromCity" value="City, State, Zip"><br>
+      
+          <label for="fromZip">Zip:</label>
+          <input type="text" id="fromZip" name="fromZip" value="12345"><br>
+      
+          <label for="fromCountry">Country:</label>
+          <input type="text" id="fromCountry" name="fromCountry" value="Country"><br>
+      
+          <label for="fromPhone">Phone:</label>
+          <input type="tel" id="fromPhone" name="fromPhone" value="+1 (123) 456-7890"><br>
+      
+          <label for="fromBusinessNumber">Business Number (GST#):</label>
+          <input type="text" id="fromBusinessNumber" name="fromBusinessNumber" value="GST# 07ACIPY8431 FZS"><br>
+        </div>
+      
+        <div class="form-section">
+          <h3>Bill To (payee)</h3>
+          <label for="toName">Name:</label>
+          <input type="text" id="toName" name="toName" value="Pro-Flyers.co"><br>
+      
+          <label for="toEmail">Email:</label>
+          <input type="email" id="toEmail" name="toEmail" value="pulkit@incogtech.com"><br>
+      
+          <label for="toStreet">Street:</label>
+          <input type="text" id="toStreet" name="toStreet" value="1234 Street Name"><br>
+      
+          <label for="toCity">City, State, Zip:</label>
+          <input type="text" id="toCity" name="toCity" value="City, State, Zip"><br>
+      
+          <label for="toZip">Zip:</label>
+          <input type="text" id="toZip" name="toZip" value="12345"><br>
+      
+          <label for="toCountry">Country:</label>
+          <input type="text" id="toCountry" name="toCountry" value="Country"><br>
+      
+          <label for="toPhone">Phone:</label>
+          <input type="tel" id="toPhone" name="toPhone" value="+1 (123) 456-7890"><br>
+      
+          <label for="toFax">Fax:</label>
+          <input type="tel" id="toFax" name="toFax" value="1234455555"><br>
+      
+          <label for="toBusinessNumber">Business Number (GST#):</label>
+          <input type="text" id="toBusinessNumber" name="toBusinessNumber" value="GST# 07ACIPY8431 FZS"><br>
+        </div>
+      
+        <div class="form-section">
+          <h3>Items</h3>
+          <div id="itemRows">
+            <div class="item-row">
+              <label for="itemDescription_0">Description:</label>
+              <input type="text" id="itemDescription_0" name="itemDescription[]" value="Description of item 1">
+      
+              <label for="itemUnitPrice_0">Unit Price:</label>
+              <input type="number" id="itemUnitPrice_0" name="itemUnitPrice[]" value="10.00" step="0.01">
+      
+              <label for="itemQuantity_0">Quantity:</label>
+              <input type="number" id="itemQuantity_0" name="itemQuantity[]" value="2" min="0">
+      
+              <span>Total: $<span class="itemTotal">20.00</span></span>
+            </div>
+             <div class="item-row">
+              <label for="itemDescription_1">Description:</label>
+              <input type="text" id="itemDescription_1" name="itemDescription[]" value="Description of item 2">
+      
+              <label for="itemUnitPrice_1">Unit Price:</label>
+              <input type="number" id="itemUnitPrice_1" name="itemUnitPrice[]" value="15.00" step="0.01">
+      
+              <label for="itemQuantity_1">Quantity:</label>
+              <input type="number" id="itemQuantity_1" name="itemQuantity[]" value="1" min="0">
+      
+              <span>Total: $<span class="itemTotal">15.00</span></span>
+            </div>
+            </div>
+          <button type="button" id="addItem">Add Item</button>
+        </div>
+      
+        <div class="form-section">
+          <label for="subtotal">Subtotal:</label>
+          <input type="number" id="subtotal" name="subtotal" value="35.00" step="0.01" readonly>
+        </div>
+      
+        <div class="form-section">
+          <label for="taxRate">Tax Rate (%):</label>
+          <input type="number" id="taxRate" name="taxRate" value="10" step="0.1">
+      
+          <label for="taxAmount">Tax Amount:</label>
+          <input type="number" id="taxAmount" name="taxAmount" value="3.50" step="0.01" readonly>
+        </div>
+      
+        <div class="form-section">
+          <label for="total">Total:</label>
+          <input type="number" id="total" name="total" value="38.50" step="0.01" readonly>
+        </div>
+      
+        <div class="form-section">
+          <label for="notes">Notes:</label>
+          <textarea id="notes" name="notes">Notes</textarea>
+        </div>
+      
+        <div class="form-section">
+          <label for="logoImage">Upload Logo:</label>
+          <input type="file" id="logoImage" name="logoImage" accept="image/*">
+        </div>
+      
+        <div class="form-section">
+          <label for="signatureImage">Upload Signature Image:</label>
+          <input type="file" id="signatureImage" name="signatureImage" accept="image/*">
+        </div>
+      
+        <div class="form-section">
+          <label for="additionalImages">Upload Additional Images:</label>
+          <input type="file" id="additionalImages" name="additionalImages[]" accept="image/*" multiple>
+        </div>
+      
+        <button type="submit">Generate Invoice</button>
+      </form>
+      
+      <style>
+        .form-section {
+          margin-bottom: 20px;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+      
+        .form-section label {
+          display: inline-block;
+          width: 150px;
+          margin-bottom: 5px;
+        }
+      
+        .form-section input[type="text"],
+        .form-section input[type="email"],
+        .form-section input[type="tel"],
+        .form-section input[type="number"],
+        .form-section input[type="date"],
+        .form-section textarea {
+          width: calc(100% - 160px); /* Adjust based on label width and padding */
+          padding: 5px;
+          margin-bottom: 5px;
+        }
+      
+        .item-row {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px dashed #eee;
+        }
+      
+        .item-row label {
+            width: 100px;
+        }
+      </style>
+      
+      <script>
+        // Basic JavaScript to demonstrate adding items and calculating totals (requires further implementation)
+        document.getElementById('addItem').addEventListener('click', function() {
+          const itemRows = document.getElementById('itemRows');
+          const newItemRow = document.createElement('div');
+          newItemRow.classList.add('item-row');
+          const index = itemRows.children.length;
+          newItemRow.innerHTML = `
+            <label for="itemDescription_${index}">Description:</label>
+            <input type="text" id="itemDescription_${index}" name="itemDescription[]"><br>
+      
+            <label for="itemUnitPrice_${index}">Unit Price:</label>
+            <input type="number" id="itemUnitPrice_${index}" name="itemUnitPrice[]" value="0.00" step="0.01"><br>
+      
+            <label for="itemQuantity_${index}">Quantity:</label>
+            <input type="number" id="itemQuantity_${index}" name="itemQuantity[]" value="1" min="0"><br>
+      
+            <span>Total: $<span class="itemTotal">0.00</span></span>
+            <button type="button" class="removeItem">Remove Item</button>
+          `;
+          itemRows.appendChild(newItemRow);
+      
+          // Add event listener to the new remove button
+          newItemRow.querySelector('.removeItem').addEventListener('click', function() {
+            newItemRow.remove();
+            calculateTotals(); // Recalculate totals after removing an item
+          });
+      
+          // Add event listeners to the new inputs for calculation
+          newItemRow.querySelectorAll('input[type="number"]').forEach(input => {
+              input.addEventListener('input', calculateTotals);
+          });
+      
+          calculateTotals(); // Recalculate totals after adding an item
+        });
+      
+        // Function to calculate totals (simplified example)
+        function calculateTotals() {
+          let subtotal = 0;
+          document.querySelectorAll('.item-row').forEach(row => {
+            const unitPrice = parseFloat(row.querySelector('input[name="itemUnitPrice[]"]').value) || 0;
+            const quantity = parseInt(row.querySelector('input[name="itemQuantity[]"]').value) || 0;
+            const itemTotal = unitPrice * quantity;
+            row.querySelector('.itemTotal').textContent = itemTotal.toFixed(2);
+            subtotal += itemTotal;
+          });
+      
+          document.getElementById('subtotal').value = subtotal.toFixed(2);
+      
+          const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+          const taxAmount = subtotal * (taxRate / 100);
+          document.getElementById('taxAmount').value = taxAmount.toFixed(2);
+      
+          const total = subtotal + taxAmount;
+          document.getElementById('total').value = total.toFixed(2);
+        }
+      
+        // Add event listeners to initial inputs for calculation
+        document.querySelectorAll('.item-row input[type="number"]').forEach(input => {
+            input.addEventListener('input', calculateTotals);
+        });
+         document.getElementById('taxRate').addEventListener('input', calculateTotals);
+      
+        // Initial calculation
+        calculateTotals();
+      
+         // Add event listeners to remove buttons for initial items
+        document.querySelectorAll('.removeItem').forEach(button => {
+          button.addEventListener('click', function() {
+            button.closest('.item-row').remove();
+            calculateTotals(); // Recalculate totals after removing an item
+          });
+        });
+      
+      </script>
+    </div>
+  </div>
+  <div id="content-to-pdf">
+    <div class="section" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: start; margin-bottom: 20px;">
+      <div style="flex:1"> 
+        <img src="https://placehold.co/200x100?text=Logo" alt="Signature Image">
+      </div>
+      <div style="flex:1">Invoice Number</div>
+    </div>
+    <div class="section">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: start;">
+        <div style="flex:1"> 
+          <p>From (biller)</p>
+          <p id="fromName">Pro-Flyers.co</p>
+          <p id="fromEmail">pulkit@incogtech.com</p>
+          <p id="fromStreet">1234 Street Name</p>
+          <p id="fromCity">City, State, Zip</p>
+          <p id="fromZip">12345</p>
+          <p id="fromCountry">Country</p>
+          <p id="fromPhone">+1 (123) 456-7890</p>
+          <p id="fromBusinessNumber">GST# 07ACIPY8431 FZS</p>
+        </div>
+        <div style="flex:1">
+          <p>Bill To (payee)</p>
+          <p id="toName">Pro-Flyers.co</p>
+          <p id="toEmail">pulkit@incogtech.com</p>
+          <p id="toStreet">1234 Street Name</p>
+          <p id="toCity">City, State, Zip</p>
+          <p id="toZip">12345</p>
+          <p id="toCountry">Country</p>
+          <p id="toPhone">+1 (123) 456-7890</p>
+          <p id="toFax">1234455555</p>
+          <p id="toBusinessNumber">GST# 07ACIPY8431 FZS</p>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Description</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Item 1</td>
+            <td>Description of item 1</td>
+            <td>$10.00</td>
+            <td>2</td>
+            <td>$20.00</td>
+          </tr>
+          <tr>
+            <td>Item 2</td>
+            <td>Description of item 2</td>
+            <td>$15.00</td>
+            <td>1</td>
+            <td>$15.00</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-right">Subtotal</td>
+            <td class="text-left">$35.00</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-right">Tax (10%)</td>
+            <td class="text-left">$3.50</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-right">Total</td>
+            <td class="text-left">$38.50</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="section">
+      Notes
+    </div>
+    <div class="section">
+      Signature Image
+      <div>
+        <img src="https://placehold.co/200x100?text=Digital+Signature" alt="Signature Image">
+      </div>
+    </div>
+    <div>
+      Additional Images
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <img src="https://placehold.co/200x100" alt="Image 1">
+        <img src="https://placehold.co/200x100" alt="Image 2">
+        <img src="https://placehold.co/200x100" alt="Image 3">
+      </div>
+    </div>
+  </div>
+  <button id="generate-pdf">Generate PDF</button>
+
+  <script>
+    window.onload = function () {
+      document.getElementById('generate-pdf').addEventListener('click', () => {
+        const container = document.getElementById('content-to-pdf');
+
+        html2canvas(container, {
+          scale: 2,
+          useCORS: true
+        }).then(canvas => {
+          const imgData = canvas.toDataURL('image/png');
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: 'a4'
+          });
+
+          const imgWidth = pdf.internal.pageSize.getWidth();
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          //pdf.save('html_content_to_pdf.pdf');
+          const pdfBlobUrl = pdf.output('bloburl');
+
+          // Open the Blob URL in a new tab
+          window.open(pdfBlobUrl, '_blank');
+        });
+      });
+    };
+  </script>
+
+</body>
+
+</html>

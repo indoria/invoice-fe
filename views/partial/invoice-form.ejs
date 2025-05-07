@@ -1,0 +1,442 @@
+<% blockType=(typeof blockType !=='undefined' ? blockType : 'html' ); %>
+
+<% if(blockType==='css' ) { %>
+    <style>
+        .form-section {
+            margin-bottom: 20px;
+        }
+    
+        .form-field {
+            margin-bottom: 10px;
+        }
+    
+        .form-section label {
+            display: inline-block;
+            width: 150px;
+            vertical-align: top;
+        }
+    
+        .form-section input[type="text"],
+        .form-section input[type="email"],
+        .form-section input[type="tel"],
+        .form-section input[type="number"],
+        .form-section textarea {
+            width: calc(100% - 160px);
+        }
+    
+        .form-section input[type="file"] {
+            margin-top: 5px;
+        }
+    
+        .form-header {
+            display: flex;
+            margin-bottom: 20px;
+        }
+    
+        .form-header .form-section {
+            flex: 1;
+        }
+    
+        #invoiceItemsTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+    
+        #invoiceItemsTable th,
+        #invoiceItemsTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    
+        #invoiceItemsTable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    
+        #invoiceItemsTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    
+        #invoiceItemsTable tfoot {
+            border-top: 2px solid #333;
+        }
+    
+        #invoiceItemsTable tfoot td {
+            font-weight: bold;
+        }
+    
+        #invoiceItemsTable .text-right {
+            text-align: right;
+        }
+    
+        #invoiceItemsTable input[type="text"],
+        #invoiceItemsTable input[type="number"],
+        #invoiceItemsTable textarea {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            margin: 0;
+        }
+    
+        #invoiceItemsTable textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+    
+    
+        #invoiceItemsTable tfoot input[type="number"] {
+            width: auto;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    
+        #invoiceItemsTable tfoot label {
+            width: auto;
+            margin-bottom: 0;
+            margin-right: 5px;
+            display: inline-block;
+        }
+    
+        .billingDetails {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+    
+        .billingDetails .form-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        .logo-field {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+    </style>
+<% } else if(blockType==='html' ) { %>
+    <form id="invoiceForm" name="invoiceForm">
+        <div class="form-header">
+            <div class="form-section">
+                <div class="form-field logo-field" id="logo-image-field">
+                    <%- include('components/image-uploader-single', {"iusName": 'Logo'}) %>
+                </div>
+            </div>
+            <div class="form-field">
+                <label for="invoiceNumber">Invoice Number:</label>
+                <input type="text" id="invoiceNumber" name="invoiceNumber" value="INV-000001">
+            </div>
+        </div>
+        <div class="billingDetails">
+            <div class="form-section">
+                <h3>From (Biller)</h3>
+                <div class="form-field">
+                    <label for="fromName">Name:</label>
+                    <input type="text" id="fromName" name="fromName" value="Pro-Flyers.co">
+                </div>
+                <div class="form-field">
+                    <label for="fromEmail">Email:</label>
+                    <input type="email" id="fromEmail" name="fromEmail" value="pulkit@incogtech.com">
+                </div>
+                <div class="form-field">
+                    <label for="fromStreet">Street:</label>
+                    <input type="text" id="fromStreet" name="fromStreet" value="1234 Street Name">
+                </div>
+                <div class="form-field">
+                    <label for="fromCity">City, State:</label>
+                    <input type="text" id="fromCity" name="fromCity" value="City, State, Zip">
+                </div>
+                <div class="form-field">
+                    <label for="fromZip">Zip:</label>
+                    <input type="text" id="fromZip" name="fromZip" value="12345">
+                </div>
+                <div class="form-field">
+                    <label for="fromCountry">Country:</label>
+                    <input type="text" id="fromCountry" name="fromCountry" value="Country">
+                </div>
+                <div class="form-field">
+                    <label for="fromPhone">Phone:</label>
+                    <input type="tel" id="fromPhone" name="fromPhone" value="+1 (123) 456-7890">
+                </div>
+                <div class="form-field">
+                    <label for="fromBusinessNumber">Business Number:</label>
+                    <input type="text" id="fromBusinessNumber" name="fromBusinessNumber" value="GST# 07ACIPY8431 FZS">
+                </div>
+            </div>
+    
+            <div class="form-section">
+                <h3>Bill To (Payee)</h3>
+                <div class="form-field">
+                    <label for="toName">Name:</label>
+                    <input type="text" id="toName" name="toName" value="Pro-Flyers.co">
+                </div>
+                <div class="form-field">
+                    <label for="toEmail">Email:</label>
+                    <input type="email" id="toEmail" name="toEmail" value="pulkit@incogtech.com">
+                </div>
+                <div class="form-field">
+                    <label for="toStreet">Street:</label>
+                    <input type="text" id="toStreet" name="toStreet" value="1234 Street Name">
+                </div>
+                <div class="form-field">
+                    <label for="toCity">City, State, Zip:</label>
+                    <input type="text" id="toCity" name="toCity" value="City, State, Zip">
+                </div>
+                <div class="form-field">
+                    <label for="toZip">Zip:</label>
+                    <input type="text" id="toZip" name="toZip" value="12345">
+                </div>
+                <div class="form-field">
+                    <label for="toCountry">Country:</label>
+                    <input type="text" id="toCountry" name="toCountry" value="Country">
+                </div>
+                <div class="form-field">
+                    <label for="toPhone">Phone:</label>
+                    <input type="tel" id="toPhone" name="toPhone" value="+1 (123) 456-7890">
+                </div>
+                <div class="form-field">
+                    <label for="toFax">Fax:</label>
+                    <input type="tel" id="toFax" name="toFax" value="1234455555">
+                </div>
+                <div class="form-field">
+                    <label for="toBusinessNumber">Business Number:</label>
+                    <input type="text" id="toBusinessNumber" name="toBusinessNumber" value="GST# 07ACIPY8431 FZS">
+                </div>
+            </div>
+        </div>
+    
+    
+        <div class="form-section">
+            <h3>Items and Totals</h3>
+            <table id="invoiceItemsTable">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Discount (%)</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="item-row">
+                        <td>
+                            <input type="text" name="itemName[]" value="Item 1" class="item-name">
+                            <textarea name="itemDescription[]" class="item-description">Description of item 1</textarea>
+                        </td>
+                        <td>
+                            <input type="number" name="itemUnitPrice[]" value="10.00" step="0.01" class="item-unit-price">
+                        </td>
+                        <td>
+                            <input type="number" name="itemQuantity[]" value="2" min="0" class="item-quantity">
+                        </td>
+                        <td>
+                            <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount">
+                        </td>
+                        <td class="itemTotal">$20.00</td>
+                        <td>
+                            <button type="button" class="removeItem">Remove</button>
+                        </td>
+                    </tr>
+                    <tr class="item-row">
+                        <td>
+                            <input type="text" name="itemName[]" value="Item 2" class="item-name">
+                            <textarea name="itemDescription[]" class="item-description">Description of item 2</textarea>
+                        </td>
+                        <td>
+                            <input type="number" name="itemUnitPrice[]" value="15.00" step="0.01" class="item-unit-price">
+                        </td>
+                        <td>
+                            <input type="number" name="itemQuantity[]" value="1" min="0" class="item-quantity">
+                        </td>
+                        <td>
+                            <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount">
+                        </td>
+                        <td class="itemTotal">$15.00</td>
+                        <td>
+                            <button type="button" class="removeItem">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" class="text-right">Subtotal:</td>
+                        <td id="subtotal">$35.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right">
+                            <label for="overallDiscount">Overall Discount (%):</label>
+                            <input type="number" id="overallDiscount" name="overallDiscount" value="0" step="0.1" min="0"
+                                max="100">
+                        </td>
+                        <td id="overallDiscountAmount">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right">
+                            <label for="taxRate">Tax Rate (%):</label>
+                            <input type="number" id="taxRate" name="taxRate" value="10" step="0.1">
+                        </td>
+                        <td id="taxAmount">$3.50</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right">
+                            <label for="arrears">Overdue / Arrears:</label>
+                            <input type="number" id="arrears" name="arrears" value="0" step="0.01">
+                        </td>
+                        <td id="arrearsAmount">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-right">Total:</td>
+                        <td id="total">$38.50</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button type="button" id="addItem">Add Item</button>
+        </div>
+    
+        <div class="form-section">
+            <div class="form-field" id="due-date-field">
+                <span>Due Date:</span>
+                <div id="dueDateField"></div>
+            </div>
+        </div>
+    
+        <div class="form-section">
+            <div class="form-field">
+                <textarea id="notes" name="notes">
+                    Thank you for your business!
+
+                    Terms and Conditions:
+                    1. Payment is due within 30 days of the invoice date.
+                    2. Late payments may incur a fee of 1.5% per month.
+                    3. Please make checks payable to [Your Company Name].
+                    4. For any questions regarding this invoice, please contact us at [Your Contact Information].
+                </textarea>
+            </div>
+        </div>
+    
+        <div class="form-section">
+            <div class="form-field" id="signature-image-field">
+                <%- include('components/image-uploader-single', {"iusName": 'Signature'}) %>
+            </div>
+        </div>
+    
+        <div class="form-section">
+            <div class="form-field" id="additional-images-field">
+                <%- include('components/image-uploader-multiple', {"iumName": 'Additional'}) %>
+            </div>
+        </div>
+    </form>
+<% } else if(blockType==='js' ) { %>
+    <script>
+        const dueDateField = DueDateModule.create('dueDateField');
+        document.getElementById("invoiceForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            return false;
+        });
+        function calculateTotals() {
+            let subtotalBeforeDiscount = 0;
+            document.querySelectorAll('#invoiceItemsTable tbody tr.item-row').forEach(row => {
+                const unitPriceInput = row.querySelector('input[name="itemUnitPrice[]"]');
+                const quantityInput = row.querySelector('input[name="itemQuantity[]"]');
+                const itemDiscountInput = row.querySelector('input[name="itemDiscount[]"]');
+                const itemTotalCell = row.querySelector('.itemTotal');
+
+                const unitPrice = parseFloat(unitPriceInput.value) || 0;
+                const quantity = parseInt(quantityInput.value) || 0;
+                const itemDiscountRate = parseFloat(itemDiscountInput.value) || 0;
+
+                const itemTotalBeforeDiscount = unitPrice * quantity;
+                const itemDiscountAmount = itemTotalBeforeDiscount * (itemDiscountRate / 100);
+                const itemTotalAfterDiscount = itemTotalBeforeDiscount - itemDiscountAmount;
+
+                itemTotalCell.textContent = '$' + itemTotalAfterDiscount.toFixed(2);
+                subtotalBeforeDiscount += itemTotalAfterDiscount;
+            });
+
+            document.getElementById('subtotal').textContent = '$' + subtotalBeforeDiscount.toFixed(2);
+
+            const overallDiscountInput = document.getElementById('overallDiscount');
+            const overallDiscountAmountCell = document.getElementById('overallDiscountAmount');
+            const taxRateInput = document.getElementById('taxRate');
+            const taxAmountCell = document.getElementById('taxAmount');
+            const totalCell = document.getElementById('total');
+
+            const overallDiscountRate = parseFloat(overallDiscountInput.value) || 0;
+            const overallDiscountAmount = subtotalBeforeDiscount * (overallDiscountRate / 100);
+            overallDiscountAmountCell.textContent = '$' + overallDiscountAmount.toFixed(2);
+
+            const subtotalAfterOverallDiscount = subtotalBeforeDiscount - overallDiscountAmount;
+
+            const taxRate = parseFloat(taxRateInput.value) || 0;
+            const taxAmount = subtotalAfterOverallDiscount * (taxRate / 100);
+            taxAmountCell.textContent = '$' + taxAmount.toFixed(2);
+
+            const arrearsAmountCell = document.getElementById('arrearsAmount');
+            const arrearsInput = document.getElementById('arrears');
+            const arrears = parseFloat(arrearsInput.value) || 0;
+            arrearsAmountCell.textContent = '$' + arrears.toFixed(2);
+
+            const total = subtotalAfterOverallDiscount + taxAmount + arrears;
+            totalCell.textContent = '$' + total.toFixed(2);
+        }
+
+        document.getElementById('addItem').addEventListener('click', function () {
+            const tbody = document.querySelector('#invoiceItemsTable tbody');
+            const newItemRow = document.createElement('tr');
+            newItemRow.classList.add('item-row');
+            newItemRow.innerHTML = `
+    <td>
+        <input type="text" name="itemName[]" class="item-name">
+        <textarea name="itemDescription[]" class="item-description"></textarea>
+    </td>
+    <td>
+        <input type="number" name="itemUnitPrice[]" value="0.00" step="0.01" class="item-unit-price">
+    </td>
+    <td>
+        <input type="number" name="itemQuantity[]" value="1" min="0" class="item-quantity">
+    </td>
+     <td>
+        <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount">
+    </td>
+    <td class="itemTotal">$0.00</td>
+    <td>
+        <button type="button" class="removeItem">Remove</button>
+    </td>
+`;
+            tbody.appendChild(newItemRow);
+
+            newItemRow.querySelectorAll('input[type="number"], input[type="text"], textarea').forEach(input => {
+                input.addEventListener('input', calculateTotals);
+            });
+
+            newItemRow.querySelector('.removeItem').addEventListener('click', function () {
+                newItemRow.remove();
+                calculateTotals();
+            });
+
+            calculateTotals();
+        });
+
+        document.querySelectorAll('#invoiceItemsTable tbody input[type="number"], #invoiceItemsTable tbody input[type="text"], #invoiceItemsTable tbody textarea').forEach(input => {
+            input.addEventListener('input', calculateTotals);
+        });
+
+        document.getElementById('taxRate').addEventListener('input', calculateTotals);
+        document.getElementById('arrears').addEventListener('input', calculateTotals);
+        document.getElementById('overallDiscount').addEventListener('input', calculateTotals);
+
+
+        document.querySelectorAll('#invoiceItemsTable .removeItem').forEach(button => {
+            button.addEventListener('click', function () {
+                button.closest('.item-row').remove();
+                calculateTotals();
+            });
+        });
+
+        calculateTotals();
+    </script>
+<% } %>

@@ -1,0 +1,117 @@
+.ium-image-uploader-container {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.form-section label.ium-upload-area,
+label.ium-upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    min-height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ium-upload-area:hover {
+    border-color: #9ca3af;
+    background-color: #f9fafb;
+}
+
+.ium-default-image {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+ .ium-upload-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+ }
+
+.ium-upload-icon {
+    color: #6b7280;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 10px;
+}
+
+.ium-upload-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.ium-preview-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.ium-image-preview-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+.ium-image-preview {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ium-remove-image-button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #dc2626;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    z-index: 10;
+    padding: 0;
+}
+
+.ium-remove-image-button:hover {
+    background-color: rgba(255, 255, 255, 1);
+    color: #b91c1c;
+}
+
+.ium-remove-image-button svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+}
+
+.ium-hidden-input {
+    display: none;
+}

@@ -1,0 +1,196 @@
+/* style.css - Custom styles for a professional look */
+
+/* Apply base colors and font to the body */
+body {
+    font-family: var(--font-family-roboto);
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.6;
+    margin: 0; /* Remove default body margin */
+}
+
+/* Basic container for centering content */
+.container {
+    max-width: 1000px; /* Slightly wider container */
+    margin-left: auto;
+    margin-right: auto;
+    padding: var(--spacing-4); /* Apply padding from base.css */
+}
+
+/* Header Styling */
+header {
+    background-color: var(--background-color-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    padding: var(--spacing-4) 0; /* Use base.css padding */
+}
+
+header h1 {
+    color: var(--primary-color); /* Brand color for the main title */
+    margin-top: 0; /* Remove default h1 top margin */
+    margin-bottom: var(--spacing-4); /* Add space below h1 */
+    font-size: 2em; /* Larger font size */
+}
+
+/* Navigation Styling */
+nav a {
+    margin: 0 var(--spacing-4); /* Increase space between links using base.css */
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500; /* Slightly bolder font */
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+}
+
+nav a:hover {
+     color: var(--primary-color); /* Primary color on hover */
+}
+
+/* Main Content Styling */
+main {
+    padding: var(--spacing-8) 0; /* Add significant padding top/bottom */
+}
+
+section {
+    background-color: #fff; /* White background for sections */
+    padding: var(--spacing-8); /* Generous padding inside sections */
+    margin-bottom: var(--spacing-8); /* Space between sections */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+}
+
+/* Heading Styles */
+h2, h3, h4 {
+    color: var(--text-color); /* Use text color for headings */
+    margin-top: 0; /* Remove default top margin */
+    margin-bottom: var(--spacing-4); /* Consistent space below headings */
+}
+
+h2 {
+    font-size: 1.8em;
+    border-bottom: 2px solid var(--background-color); /* Subtle separator */
+    padding-bottom: var(--spacing-3); /* Space below the border */
+    margin-bottom: var(--spacing-6);
+}
+
+h3 {
+    font-size: 1.4em;
+    margin-bottom: var(--spacing-5);
+}
+
+h4 {
+    font-size: 1.1em;
+    color: var(--primary-color); /* Primary color for sub-headings/titles */
+    margin-bottom: var(--spacing-3);
+}
+
+
+/* Paragraph Styles */
+p {
+    margin-bottom: var(--spacing-4); /* Add space below paragraphs */
+}
+
+.lead { /* Style for introductory paragraph */
+    font-size: 1.2em;
+    font-weight: 300;
+    color: #555;
+    margin-bottom: var(--spacing-6);
+}
+
+/* List Styles (for milestones/modules) */
+ul {
+    list-style: disc; /* Use bullet points */
+    padding-left: var(--spacing-5); /* Indent list items */
+}
+
+li {
+    margin-bottom: var(--spacing-3); /* Space between list items */
+}
+
+li strong {
+    color: var(--primary-color); /* Highlight the milestone/module title */
+}
+
+
+/* Button and Form Element Styling */
+input[type="email"],
+input[type="text"],
+textarea {
+    display: block; /* Make inputs take full width if needed */
+    width: 100%; /* Adjust width as needed, perhaps within a container */
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    font-family: inherit; /* Inherit font from body */
+}
+
+button[type="submit"] {
+    display: inline-block;
+    padding: var(--spacing-3) var(--spacing-6);
+    background-color: var(--secondary-color); /* Secondary color for action buttons */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
+    font-weight: 500;
+}
+
+button[type="submit"]:hover {
+    background-color: darken(var(--secondary-color), 10%); /* Darken slightly on hover (Note: CSS variables don't support darken directly, you'd need SASS/LESS or define a hover color variable) - Using a slightly darker hex for demo */
+     background-color: #28b463; /* A slightly darker green */
+}
+
+a[style*="background-color: var(--secondary-color)"] { /* Style the "Suggest Feature" button link */
+    display: inline-block;
+    padding: var(--spacing-3) var(--spacing-6);
+    background-color: var(--secondary-color) !important; /* Use !important to override inline style */
+    color: white !important;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+a[style*="background-color: var(--secondary-color)"]:hover {
+    background-color: #28b463 !important; /* Slightly darker green on hover */
+}
+
+
+/* Footer Styling */
+footer {
+    background-color: var(--background-color-light);
+    padding: var(--spacing-6) 0; /* Use base.css padding */
+    font-size: 0.9em;
+    color: #555; /* Slightly muted text color */
+}
+
+footer a {
+     color: #555;
+     text-decoration: none;
+}
+ footer a:hover {
+     text-decoration: underline;
+ }
+
+/* Specific section styling examples */
+.cta-section {
+    background-color: var(--background-color-light); /* Lighter background for CTA */
+    padding: var(--spacing-8);
+    text-align: center;
+    border-radius: 8px;
+     box-shadow: none; /* No shadow needed on this lighter section */
+}
+
+.cta-form input[type="email"],
+.cta-form button {
+    display: inline-block; /* Arrange side-by-side */
+    width: auto; /* Auto width for inline elements */
+    vertical-align: top; /* Align to the top */
+}
+
+.cta-form input[type="email"] {
+     width: 250px; /* Give email input a fixed width */
+     margin-right: var(--spacing-3);
+     margin-bottom: 0; /* Remove bottom margin for inline element */
+}

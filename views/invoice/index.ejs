@@ -1,0 +1,209 @@
+<%- include("partial/header") %>
+<link rel="stylesheet" href="css/base-theme.css">
+<link rel="stylesheet" href="css/image-uploader-single.css">
+<link rel="stylesheet" href="css/image-uploader-multiple.css">
+<%- include("partial/invoice-preview", { 'blockType' : "css" }) %>
+<%- include("partial/invoice-form", { 'blockType' : "css" }) %>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        background-color: #333;
+    }
+
+    body {
+        background-color: rgb(240, 240, 240);
+        font-family: var(--font-family-segoe);
+    }
+
+    main {
+        min-height: calc(90vh);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    input[type="number"] {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+    }
+
+    .container {
+        width: 1200px;
+        margin: 0 auto;
+        display: flex;
+    }
+
+    .invoiceFormContainer {
+        width: 800px;
+    }
+
+    .invoiceForm {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        background-color: #fff;
+    }
+
+    aside {
+        width: 400px;
+        padding-left: 20px;
+    }
+
+    header {
+        background-color: #fff;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    footer {
+        background-color: rgb(68, 68, 68);
+        color: #fff;
+        padding: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    footer a,
+    footer a:visited {
+        color: #fff;
+    }
+
+    .asideSection {
+        padding: 20px 0;
+    }
+
+    .asideSection .title {
+        margin-bottom: 7px;
+        padding-bottom: 3px;
+        border-bottom: 1px solid #000;
+    }
+
+    .asideSection button {
+        margin-top: 10px;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .tab-content {
+        padding: 20px;
+        display: none;
+        background-color: #fff;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    #invoiceContainer {
+        flex: 1;
+    }
+
+    #notes {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
+</head>
+
+<body>
+    <header>
+        Header
+    </header>
+    <main>
+        <div class="container">
+            <div id="invoiceContainer">
+                <% include partial/navbar %>
+                <div id="invoiceFormContainer" class="tab-content active invoiceForm">
+                    <%- include("partial/invoice-form", { 'blockType' : 'html' }) %>
+                </div>
+                <div id="invoicePreviewContainer" class="tab-content invoicePreview">
+                    <%- include("partial/invoice-preview", { 'blockType' : "html" }) %>
+                </div>
+                <div id="invoiceHistoryContainer" class="tab-content invoiceHistory">
+                    <%- include("partial/invoice-history") %>
+                </div>
+                <div id="invoiceSchedulingContainer" class="tab-content invoiceScheduling">
+                    <%- include("partial/invoice-scheduling") %>
+                </div>
+                <div id="invoicePDFContainer" class="tab-content invoicePDF">
+                    <%- include("partial/invoice-pdf") %>
+                </div>
+                <div id="invoiceEmailContainer" class="tab-content invoiceEmail">
+                    <%- include("partial/invoice-email") %>
+                </div>
+        </div>
+        <aside>
+            <div class="asideSection">
+                <p class="title">Preview via email</p>
+                <p><input type="text" placeholder="email"></p>
+                <button class="navbar-button navbar-button-primary">Send</button>
+            </div>
+        </aside>
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
+    integrity="sha512-ad3j5/L4h648YM/KObaUfjCsZRBP9sAOmpjaT2BDx6u9aBrKFp7SbeHykruy83rxfmG42+5QqeL/ngcojglbJw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="js/image-uploader-single.js"></script>
+<script src="js/image-uploader-multiple.js"></script>
+<script src="js/due-date-picker.js"></script>
+<script>
+    const navbarButtons = document.querySelectorAll('nav .navbar-button');
+    navbarButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.classList.contains('active')) {
+                return;
+            }
+            button.classList.toggle('active');
+            navbarButtons.forEach(btn => {
+                if (btn !== button) {
+                    btn.classList.remove('active');
+                }
+            });
+
+
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            const targetTabId = button.getAttribute('data-tab');
+            const targetTabContent = document.getElementById(targetTabId);
+
+            if (targetTabContent) {
+                targetTabContent.classList.add('active');
+            }
+        });
+    });
+</script>
+<%- include("partial/invoice-form", { 'blockType' : "js" }) %>
+<%- include("partial/invoice-preview", { 'blockType' : "js" }) %>
+<script type="text/javascript" src="js/scripts.js"></script>
+<script>
+    document.querySelector("button[data-tab='invoicePreviewContainer']").addEventListener("click", () => {
+        generateInvoicePreview();
+    });
+    document.querySelector("button#generatePDFButton").addEventListener("click", () => {
+        console.log("PDF button clicked");
+        generateInvoicePreview();
+        generatePDF("invoicePreview");
+    });
+</script>
+<% include partial/footer %>
