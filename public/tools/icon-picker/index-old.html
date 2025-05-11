@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lucide Sprite Subset Builder</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    .toolbar, .textarea-toolbar { display: flex; align-items: center; padding: 10px; background: #f5f5f5; gap: 10px; }
+    #icon-container { display: flex; flex-wrap: wrap; padding: 10px; }
+    .icon-item { margin: 5px; cursor: pointer; stroke: currentColor; fill: currentColor; fill-opacity: 0.5; stroke-opacity: 0.9;}
+    .icon-item.selected { border: 2px solid dodgerblue; border-radius: 4px; }
+    textarea { width: 100%; font-family: monospace; }
+    .textarea-toolbar { justify-content: space-between; background: #eee; margin-top: 10px; }
+    .selected-preview { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; border-top: 1px solid #ddd; }
+    .slider-label { min-width: 50px; display: inline-block; text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <input type="text" id="icon-search" placeholder="Search icons..." />
+    <button id="select-all">Select All</button>
+    <label>Size: <input type="range" id="icon-size-slider" min="16" max="100" value="40" /> <span id="icon-size-value">40</span>px</label>
+  </div>
+  <div id="icon-container"></div>
+
+  <div class="textarea-toolbar">
+    <span>Selected icons</span>
+    <div>
+      <button id="copy-code">Copy</button>
+      <button id="format-minify">Minify</button>
+      <button id="format-symbols">Format Symbols</button>
+      <label>Preview Size: <input type="range" id="code-size-slider" min="10" max="100" value="40" /> <span id="code-size-value">40</span>px</label>
+    </div>
+  </div>
+  <div class="selected-preview" id="selected-preview"></div>
+  <textarea id="output-sprite" rows="10"></textarea>
+
+
+  <script>
+    const IconSubsetBuilder = (function () {
+  const container = document.getElementById("icon-container");
+  const searchInput = document.getElementById("icon-search");
+  const output = document.getElementById("output-sprite");
+  const preview = document.getElementById("selected-preview");
+  const iconSizeSlider = document.getElementById("icon-size-slider");
+  const codeSizeSlider = document.getElementById("code-size-slider");
+  const iconSizeValue = document.getElementById("icon-size-value");
+  const codeSizeValue = document.getElementById("code-size-value");
+  const selectedIcons = new Set();
+
+  const allSprites = [];
+
+  async function loadSprite(url) {
+    const res = await fetch(url);
+    const text = await res.text();
+    const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+    const symbols = [...doc.querySelectorAll("symbol")];
+    const name = url.split("/").pop(); // Get file name for title
+    allSprites.push({ url, symbols, name });
+    renderAllSprites();
+  }
+
+  function addSpriteURL(url) {
+    loadSprite(url);
+  }
+
+  function addSpritePath(path) {
+    loadSprite(path);
+  }
+
+  function addSpritesFromArray(arrayOfPaths) {
+    arrayOfPaths.forEach(path => loadSprite(path));
+  }
+
+  function renderAllSprites() {
+    container.innerHTML = "";
+    allSprites.forEach(({ url, symbols, name }) => {
+      const section = document.createElement("div");
+      section.classList.add("sprite-section");
+
+      const title = document.createElement("h3");
+      title.textContent = name;
+      section.appendChild(title);
+
+      const iconsWrapper = document.createElement("div");
+      iconsWrapper.classList.add("icons-wrapper");
+
+      symbols.forEach((symbol) => {
+        const id = symbol.id;
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("width", iconSizeSlider.value);
+        svg.setAttribute("height", iconSizeSlider.value);
+        svg.innerHTML = `<use href="${url}#${id}" />`;
+        svg.title = id;
+        svg.dataset.iconId = id;
+        svg.classList.add("icon-item");
+        if (selectedIcons.has(id)) svg.classList.add("selected");
+        svg.addEventListener("click", () => toggleSelection(id));
+        iconsWrapper.appendChild(svg);
+      });
+
+      section.appendChild(iconsWrapper);
+      container.appendChild(section);
+    });
+  }
+
+  function toggleSelection(id) {
+    if (selectedIcons.has(id)) {
+      selectedIcons.delete(id);
+    } else {
+      selectedIcons.add(id);
+    }
+    updateHighlights();
+    updateOutput();
+  }
+
+  function updateHighlights() {
+    document.querySelectorAll(".icon-item").forEach((el) => {
+      el.classList.toggle("selected", selectedIcons.has(el.dataset.iconId));
+    });
+  }
+
+  function updateOutput() {
+    const selectedSymbols = allSprites.flatMap(sprite =>
+      sprite.symbols.filter((s) => selectedIcons.has(s.id))
+    );
+    const sprite = `<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n${selectedSymbols.map((s) => s.outerHTML).join("\n")}\n</svg>`;
+    output.value = sprite;
+    renderPreview(selectedSymbols);
+  }
+
+  function renderPreview(symbols) {
+    preview.innerHTML = "";
+    symbols.forEach((symbol) => {
+      const id = symbol.id;
+      const sprite = allSprites.find(s => s.symbols.some(sym => sym.id === id));
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("width", codeSizeSlider.value);
+      svg.setAttribute("height", codeSizeSlider.value);
+      svg.innerHTML = `<use href="${sprite.url}#${id}"></use>`;
+      preview.appendChild(svg);
+    });
+  }
+
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    container.querySelectorAll(".sprite-section").forEach((section) => {
+      section.querySelectorAll(".icon-item").forEach((icon) => {
+        const match = icon.title.toLowerCase().includes(q);
+        icon.style.display = match ? "inline-block" : "none";
+      });
+    });
+  });
+
+  document.getElementById("select-all").addEventListener("click", () => {
+    allSprites.forEach(sprite =>
+      sprite.symbols.forEach(s => selectedIcons.add(s.id))
+    );
+    updateHighlights();
+    updateOutput();
+  });
+
+  iconSizeSlider.addEventListener("input", () => {
+    iconSizeValue.textContent = iconSizeSlider.value;
+    document.querySelectorAll(".icon-item").forEach((el) => {
+      el.setAttribute("width", iconSizeSlider.value);
+      el.setAttribute("height", iconSizeSlider.value);
+    });
+  });
+
+  codeSizeSlider.addEventListener("input", () => {
+    codeSizeValue.textContent = codeSizeSlider.value;
+    renderPreview(
+      allSprites.flatMap(sprite => sprite.symbols.filter((s) => selectedIcons.has(s.id)))
+    );
+  });
+
+  document.getElementById("copy-code").addEventListener("click", () => {
+    output.select();
+    document.execCommand("copy");
+  });
+
+  document.getElementById("format-minify").addEventListener("click", () => {
+    const minified = output.value.replace(/\s+/g, " ").replace(/>\s+</g, "><").trim();
+    output.value = minified;
+  });
+
+  document.getElementById("format-symbols").addEventListener("click", () => {
+    const formatted = `<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n` +
+      [...selectedIcons].map((id) => {
+        const s = allSprites.flatMap(sprite => sprite.symbols).find((sym) => sym.id === id);
+        return `    ${s.outerHTML.replace(/\s+/g, " ").trim()}`;
+      }).join("\n") +
+      `\n</svg>`;
+    output.value = formatted;
+  });
+
+  return {
+    addSpriteURL,
+    addSpritePath,
+    addSpritesFromArray,
+    selectIcon: (id) => selectedIcons.add(id),
+    deselectIcon: (id) => selectedIcons.delete(id),
+    toggleSelection,
+  };
+})();
+
+
+    //IconSubsetBuilder.loadPath("/img/icons/lucide-sprite.svg");
+    //IconSubsetBuilder.loadPath("/img/icons/bootstrap-icons.svg");
+    //IconSubsetBuilder.loadPath("/img/icons/feather-sprite.svg");
+    //IconSubsetBuilder.loadPath("/img/icons/ionic-sprite.svg"); - Not working
+    //IconSubsetBuilder.loadPath("/img/icons/material-sprite.svg"); - Not working
+    IconSubsetBuilder.loadPath("/img/icons/tabler-sprite.svg");
+  </script>
+</body>
+</html>

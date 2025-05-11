@@ -1,0 +1,9 @@
+[
+    {
+        "template": "index.ejs",
+        "output": "index.html",
+        "data": {
+            "title": "Home Page"
+        }
+    }
+]

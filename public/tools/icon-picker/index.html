@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Icon Picker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toolbar,
+        .textarea-toolbar {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f5f5f5;
+            gap: 10px;
+        }
+
+        #icon-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .icon-item {
+            margin: 5px;
+            cursor: pointer;
+            stroke: currentColor;
+            fill: currentColor;
+            fill-opacity: 0.1;
+            stroke-opacity: 0.9;
+            border: 2px solid transparent;
+        }
+
+        #selected-preview svg {
+            margin: 5px;
+            stroke: currentColor;
+            fill: currentColor;
+            fill-opacity: 0.1;
+            stroke-opacity: 0.9;
+        }
+
+        .icon-item.selected {
+            border: 2px solid dodgerblue;
+            border-radius: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            font-family: monospace;
+        }
+
+        .textarea-toolbar {
+            justify-content: space-between;
+            background: #eee;
+            margin-top: 10px;
+        }
+
+        .selected-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .slider-label {
+            min-width: 50px;
+            display: inline-block;
+            text-align: right;
+        }
+
+        #selection-info {
+            margin: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 100, 0.05);
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Icon Picker Tool</h1>
+    </header>
+    <main>
+        <div class="toolbar">
+            <input type="text" id="icon-search" placeholder="Search icons..." />
+            <button id="select-all">Select All</button>
+            <button id="clear-selection">Clear Selection</button>
+            <label>
+                Size:
+                <input type="range" id="icon-size-slider" min="16" max="100" value="32" />
+                <span id="icon-size-value">32</span>px
+            </label>
+        </div>
+        <div id="icon-container"></div>
+        <div id="selection-info">
+            <pre id="output"></pre>
+            <div class="selected-preview" id="selected-preview"></div>
+        </div>
+        <div class="textarea-toolbar">
+            <span>Selected icons</span>
+            <div>
+                <button id="copy-code">Copy</button>
+                <button id="format-minify">Minify</button>
+                <button id="format-symbols">Format Symbols</button>
+                <label>
+                    Preview Size:
+                    <input type="range" id="code-size-slider" min="10" max="100" value="40" />
+                    <span id="code-size-value">40</span>px
+                </label>
+            </div>
+        </div>
+        <textarea id="output-sprite" rows="10"></textarea>
+
+    </main>
+    <footer>
+        <p>&copy; 2023 Icon Picker Tool</p>
+    </footer>
+    <script>
+        const SpriteIconBuilder = (function () {
+            let isRendering = false;
+            let spriteContainer;
+            let iconSources = [];
+            let selectedIcons = new Set();
+            let iconSize = 24;
+            let previewSize = 24;
+            let isMultiSelectEnabled = true;
+            let eventHandlers = {
+                select: [],
+                deselect: [],
+                loaded: [],
+                rendered: [],
+            };
+            let allSymbols = [];
+
+            async function loadSprite(path) {
+                try {
+                    const res = await fetch(path);
+                    if (!res.ok) throw new Error(`Failed to load ${path}`);
+                    const text = await res.text();
+                    const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+                    const symbols = [...doc.querySelectorAll("symbol")];
+                    return { url: path, symbols };
+                } catch {
+                    return { url: path, symbols: [] };
+                }
+            }
+
+            async function render() {
+                if (isRendering) return;
+                isRendering = true;
+
+                spriteContainer.innerHTML = '';
+
+                allSymbols = [];
+
+                for (const source of iconSources) {
+                    const { url, symbols } = await loadSprite(source);
+                    allSymbols.push(...symbols);
+
+                    const section = document.createElement("div");
+                    section.classList.add("sprite-section");
+
+                    const title = document.createElement("h3");
+                    title.textContent = url.split('/').pop();
+                    section.appendChild(title);
+
+                    const iconsWrapper = document.createElement("div");
+                    iconsWrapper.classList.add("icons-wrapper");
+
+                    symbols.forEach((symbol) => {
+                        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svg.setAttribute("viewBox", "0 0 24 24");
+                        svg.setAttribute("width", iconSize);
+                        svg.setAttribute("height", iconSize);
+                        svg.innerHTML = `<use href="${url}#${symbol.id}" />`;
+                        svg.title = symbol.id;
+                        svg.dataset.iconId = symbol.id;
+                        svg.classList.add("icon-item");
+                        if (selectedIcons.has(symbol.id)) svg.classList.add("selected");
+                        svg.addEventListener("click", () => toggleSelection(symbol.id));
+                        iconsWrapper.appendChild(svg);
+                    });
+
+                    section.appendChild(iconsWrapper);
+                    spriteContainer.appendChild(section);
+                }
+
+                isRendering = false;
+                triggerEvent('rendered');
+            }
+
+
+            function triggerEvent(eventName, ...args) {
+                if (eventHandlers[eventName]) {
+                    eventHandlers[eventName].forEach(handler => handler(...args));
+                }
+            }
+
+            function toggleSelection(iconId) {
+                if (selectedIcons.has(iconId)) {
+                    deselect(iconId);
+                } else {
+                    select(iconId);
+                }
+            }
+
+            function select(iconId) {
+                selectedIcons.add(iconId);
+                updateSelection();
+                triggerEvent('select', iconId);
+            }
+
+            function deselect(iconId) {
+                selectedIcons.delete(iconId);
+                updateSelection();
+                triggerEvent('deselect', iconId);
+            }
+
+            function updateSelection() {
+                document.querySelectorAll(".icon-item").forEach((el) => {
+                    el.classList.toggle("selected", selectedIcons.has(el.dataset.iconId));
+                });
+            }
+
+            function filter(query) {
+                query = query.toLowerCase();
+                document.querySelectorAll(".icon-item").forEach((el) => {
+                    const isVisible = el.title.toLowerCase().includes(query);
+                    el.style.display = isVisible ? "inline-block" : "none";
+                });
+            }
+
+            return {
+                init(container) {
+                    spriteContainer = container;
+                },
+
+                setSources(paths) {
+                    iconSources = Array.isArray(paths) ? paths : [paths];
+                    render();
+                },
+
+                addSource(path) {
+                    iconSources.push(path);
+                    render();
+                },
+
+                setBaseURLPrefix(prefix) {
+                    iconSources = iconSources.map(path => prefix + path);
+                    render();
+                },
+
+                setIconSize(size) {
+                    iconSize = size;
+                    render();
+                },
+
+                configure: function (options = {}) {
+                    if (options.iconSize !== undefined) iconSize = options.iconSize;
+                    if (options.previewSize !== undefined) previewSize = options.previewSize;
+                    if (options.multiSelect !== undefined) isMultiSelectEnabled = options.multiSelect;
+                    if (Array.isArray(options.sources)) iconSources = options.sources;
+                    render();
+                },
+
+                setPreviewSize(size) {
+                    previewSize = size;
+                },
+
+                enableMultiSelect(enabled) {
+                    isMultiSelectEnabled = enabled;
+                },
+
+                select,
+
+                deselect,
+
+                toggle: toggleSelection,
+
+                getSelectedIcons() {
+                    return Array.from(selectedIcons);
+                },
+
+                clearSelection() {
+                    selectedIcons.clear();
+                    updateSelection();
+                },
+
+                selectAll() {
+                    document.querySelectorAll(".icon-item").forEach((el) => {
+                        select(el.dataset.iconId);
+                    });
+                },
+
+                clear() {
+                    spriteContainer.innerHTML = '';
+                    iconSources = [];
+                    selectedIcons.clear();
+                },
+
+                refresh() {
+                    render();
+                },
+
+                filter,
+
+                resetFilter() {
+                    document.querySelectorAll(".icon-item").forEach((el) => {
+                        el.style.display = "inline-block";
+                    });
+                },
+
+                renderSelected: function (targetContainer) {
+                    if (!targetContainer) return;
+
+                    targetContainer.innerHTML = '';
+
+                    iconSources.forEach(async (source) => {
+                        const { url, symbols } = await loadSprite(source);
+                        const selectedSymbols = symbols.filter(s => selectedIcons.has(s.id));
+
+                        selectedSymbols.forEach(symbol => {
+                            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                            svg.setAttribute("viewBox", "0 0 24 24");
+                            svg.setAttribute("width", previewSize);
+                            svg.setAttribute("height", previewSize);
+                            svg.innerHTML = `<use href="${url}#${symbol.id}" />`;
+                            targetContainer.appendChild(svg);
+                        });
+                    });
+                },
+
+                exportMinifiedSprite() {
+                    const selectedSymbols = allSymbols.filter(s => selectedIcons.has(s.id));
+                    if (selectedSymbols.length === 0) return '';
+                    return `<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n${selectedSymbols.map(s => s.outerHTML.replace(/\s+/g, " ").trim()).join("\n")}\n</svg>`;
+                },
+
+                exportSprite: async function () {
+                    const symbolMap = new Map();
+
+                    for (const source of iconSources) {
+                        const { symbols } = await loadSprite(source);
+                        symbols.forEach((s) => {
+                            if (selectedIcons.has(s.id)) {
+                                symbolMap.set(s.id, s);
+                            }
+                        });
+                    }
+
+                    if (symbolMap.size === 0) return '';
+
+                    const formattedSymbols = [...symbolMap.values()].map(s => {
+                        const outer = s.outerHTML.trim();
+                        return '    ' + outer.replace(/\n/g, '\n');
+                    }).join('\n');
+
+                    return `<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">\n${formattedSymbols}\n</svg>`;
+                },
+
+                on(eventName, handler) {
+                    if (eventHandlers[eventName]) {
+                        eventHandlers[eventName].push(handler);
+                    }
+                },
+
+                off(eventName, handler) {
+                    if (eventHandlers[eventName]) {
+                        eventHandlers[eventName] = eventHandlers[eventName].filter(h => h !== handler);
+                    }
+                },
+
+                logState() {
+                    console.log({
+                        iconSources,
+                        selectedIcons,
+                        iconSize,
+                        previewSize,
+                        isMultiSelectEnabled,
+                    });
+                }
+            };
+        })();
+
+
+        const searchInput = document.getElementById('icon-search');
+        const selectAllButton = document.getElementById('select-all');
+        const clearSelectionButton = document.getElementById('clear-selection');
+        const iconSizeSlider = document.getElementById('icon-size-slider');
+
+        const spriteContainer = document.getElementById('icon-container');
+        const output = document.getElementById('output');
+
+        searchInput.addEventListener('input', () => {
+            spriteBuilder.filter(searchInput.value);
+        });
+        selectAllButton.addEventListener('click', () => {
+            spriteBuilder.selectAll();
+        });
+        clearSelectionButton.addEventListener('click', () => {
+            spriteBuilder.clearSelection();
+        });
+        iconSizeSlider.addEventListener('input', (e) => {
+            const size = e.target.value;
+            document.getElementById('icon-size-value').textContent = size;
+            spriteBuilder.setIconSize(size);
+        });
+
+        const spriteBuilder = SpriteIconBuilder;
+        spriteBuilder.init(spriteContainer);
+        spriteBuilder.configure({
+            iconSize: 32,
+            multiSelect: true,
+            sources: ['/img/icons/lucide-sprite.svg']
+        });
+        //spriteBuilder.addSource('/img/icons/bootstrap-icons.svg');
+
+
+        spriteBuilder.on('select', (iconId) => {
+            console.log(`Icon selected: ${iconId}`);
+            updateOutput();
+        });
+
+        spriteBuilder.on('deselect', (iconId) => {
+            console.log(`Icon deselected: ${iconId}`);
+            updateOutput();
+        });
+
+        async function updateOutput() {
+            const selectedIcons = spriteBuilder.getSelectedIcons();
+            output.textContent = `Selected Icons: \n${selectedIcons.join(', ')}`;
+            spriteBuilder.renderSelected(document.getElementById('selected-preview'));
+            document.getElementById('output-sprite').value = await spriteBuilder.exportSprite();
+        }
+
+        const minifiedSprite = spriteBuilder.exportMinifiedSprite();
+        console.log("Minified Sprite:", minifiedSprite);
+
+        spriteBuilder.on('rendered', () => {
+            console.log('Icons rendered');
+        });
+    </script>
+    <script>
+        /*
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("icon-picker-container");
+      SpriteIconBuilder.init(container);
+      SpriteIconBuilder.setSources(["path/to/sprite1.svg", "path/to/sprite2.svg"]);
+      SpriteIconBuilder.setIconSize(24);
+      SpriteIconBuilder.setPreviewSize(48);
+
+      const searchInput = document.createElement("input");
+      searchInput.type = "text";
+      searchInput.placeholder = "Search icons...";
+      searchInput.addEventListener("input", (e) => {
+        SpriteIconBuilder.filter(e.target.value);
+      });
+      container.appendChild(searchInput);
+
+      const selectAllButton = document.createElement("button");
+      selectAllButton.textContent = "Select All";
+      selectAllButton.addEventListener("click", () => {
+        SpriteIconBuilder.selectAll();
+      });
+      container.appendChild(selectAllButton);
+
+      const outputArea = document.createElement("textarea");
+      outputArea.id = "output";
+      outputArea.rows = 10;
+      outputArea.cols = 50;
+      container.appendChild(outputArea);
+
+      const previewArea = document.createElement("div");
+      previewArea.id = "preview";
+      container.appendChild(previewArea);
+    });
+    */
+    </script>
+</body>
+
+</html>

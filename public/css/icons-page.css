@@ -1,0 +1,116 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.categories {
+    width: 200px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.categories h2 {
+    margin-top: 0;
+    color: #ecf0f1;
+}
+
+.categories ul {
+    list-style: none;
+    padding: 0;
+}
+
+.categories li {
+    margin-bottom: 10px;
+}
+
+.category-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px 0;
+    width: 100%;
+    text-align: left;
+    transition: color 0.3s ease;
+}
+
+.category-button:hover:not(.active) {
+    color: #3498db;
+}
+
+.category-button.active {
+    font-weight: bold;
+    color: #3498db;
+}
+
+.icon-display {
+    flex-grow: 1;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid */
+    gap: 20px;
+}
+
+.icon-card {
+    background-color: #34495e; /* Dark blue background */
+    color: #ecf0f1; /* Light text color */
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.icon-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-symbol {
+    font-size: 3em; /* Make the icon larger */
+    margin-bottom: 10px;
+    color: #ecf0f1; /* Icon color */
+}
+
+.icon-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    height: 3em; /* Give description a fixed height to prevent layout shifts */
+    overflow: hidden;
+}
+
+.icon-details {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #556a7f; /* Separator line */
+    text-align: left;
+    font-size: 0.8em;
+}
+
+.icon-details p {
+    margin: 5px 0;
+    word-break: break-all; /* Prevent long codes from overflowing */
+}
+
+.icon-details strong {
+    color: #bdc3c7; /* Slightly lighter label color */
+    display: inline-block;
+    width: 60px; /* Align the values */
+}
+
+.hidden {
+    display: none;
+}

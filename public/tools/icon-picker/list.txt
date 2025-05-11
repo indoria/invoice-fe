@@ -1,0 +1,116 @@
+https://chromium.googlesource.com/external/github.com/google/material-design-icons/+/refs/tags/2.2.2/sprites/svg-sprite/
+
+
+npm install @tabler/icons-sprite
+
+
+✅ Libraries with Available SVG Sprites
+Bootstrap Icons
+
+Sprite URL: bootstrap-icons.svg
+
+License: MIT
+
+Details: Provides a comprehensive SVG sprite file for easy integration.
+
+Feather Icons
+
+Sprite URL: feather-sprite.svg
+
+License: MIT
+
+Details: Lightweight icons with a minimalist design, available as a sprite.
+UNPKG
++1
+UNPKG
++1
+
+Tabler Icons
+
+Sprite URL: tabler-icons.svg
+
+License: MIT
+
+Details: Extensive icon set with a ready-to-use SVG sprite.
+GitHub
++2
+npm
++2
+Tabler
++2
+
+Boxicons
+
+Sprite URL: boxicons.svg
+
+License: CC BY 4.0
+
+Details: Offers a versatile collection of icons in a single sprite file.
+SVG Repo
++3
+Iconbuddy
++3
+GitHub
++3
+
+Remix Icon
+
+Sprite URL: remixicon.svg
+
+License: Apache 2.0
+
+Details: High-quality icons suitable for various applications, provided as a sprite.
+GitHub
++4
+Free SVG Icons
++4
+benjifisher.medium.com
++4
+
+Ionicons
+
+Sprite URL: ionicons-sprite.svg
+
+License: MIT
+
+Details: Community-maintained sprite version of Ionicons.
+GitHub
++1
+GitHub
++1
+GitHub
++1
+Free SVG Icons
++1
+
+Material Icons
+
+Sprite Directory: material-design-icons/sprites
+
+License: Apache 2.0
+
+Details: Google's official icon set with categorized SVG sprites.
+Chromium Git Repositories
+Iconduck
++2
+GitHub
++2
+SourceForge
++2
+
+🛠️ Libraries Requiring Manual Sprite Compilation
+Heroicons
+
+Website: heroicons.com
+
+Details: Provides individual SVG files; users can compile them into a sprite using tools like svg-sprite.
+
+Iconoir
+
+Website: iconoir.com
+
+Details: Offers a vast collection of SVG icons; sprite generation can be done manually.
+
+Eva Icons
+
+Website: akveo.github.io/eva-icons

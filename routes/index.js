@@ -1,30 +1,48 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+import path from 'path';
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('pages/home', { title: 'Bizkit : Tools for Businesses' });
-});
-router.get('/plan-and-milestones', function(req, res, next) {
-  res.render('pages/plan-and-milestones', { title: 'Express' });
-});
-router.get('/contact-us', function(req, res, next) {
-  res.render('pages/contact-us', { title: 'Contact Us' });
-});
-router.get('/invoice', function(req, res, next) {
-  res.render('invoice/index', { title: 'Express' });
-});
-router.get('/layout', function(req, res, next) {
-  res.render('layout', { title: 'Express' });
-});
-router.get('/pdf-1', function(req, res, next) {
-  res.render('js-pdf-1', { title: 'jsPDF' });
-});
-router.get('/pdf-2', function(req, res, next) {
-  res.render('js-pdf-2', { title: 'jsPDF + html2canvas' });
-});
-router.get('/pdf-3', function(req, res, next) {
-  res.render('js-pdf-3', { title: 'jsPDF + html2canvas' });
-});
+const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = router;
+const mountMapOverride = {
+    'home.js': '/',
+    'admin/index.js': '/admin-dashboard',
+};
+
+function getMountPath(relativePath) {
+    const override = mountMapOverride[relativePath];
+    if (override) return override;
+
+    let routePath = '/' + relativePath.replace(/\\/g, '/').replace(/\.js$/, '');
+    return routePath.endsWith('/index') ? routePath.slice(0, -6) : routePath;
+}
+
+async function loadRoutes(dir, baseDir = __dirname) {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        const relativePath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
+
+        if (entry.isDirectory()) {
+            await loadRoutes(fullPath, baseDir);
+        } else if (entry.isFile() && entry.name.endsWith('.js') && entry.name !== 'index.js') {
+            const mountPath = getMountPath(relativePath);
+            const routeModule = await import(`./${relativePath}`);
+            router.use(mountPath, routeModule.default);
+            console.log(`✅ Mounted: ${mountPath} → ./${relativePath}`);
+        } else if (entry.isFile() && entry.name === 'index.js' && dir !== baseDir) {
+            const mountPath = getMountPath(relativePath);
+            const routeModule = await import(`./${relativePath}`);
+            router.use(mountPath, routeModule.default);
+            console.log(`✅ Mounted: ${mountPath} → ./${relativePath}`);
+        }
+    }
+}
+
+await loadRoutes(__dirname);
+
+export default router;

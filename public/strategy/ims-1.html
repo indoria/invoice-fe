@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System REST API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7f6;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 2.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.8em;
+            color: #3498db;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        h3 {
+            font-size: 1.4em;
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        .endpoint {
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .method {
+            font-weight: bold;
+            margin-right: 10px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            color: white;
+        }
+        .get { background-color: #2ecc71; } /* Green */
+        .post { background-color: #3498db; } /* Blue */
+        .put { background-color: #f39c12; } /* Orange */
+        .patch { background-color: #e67e22; } /* Darker Orange */
+        .delete { background-color: #e74c3c; } /* Red */
+        .path {
+            font-family: monospace;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+        .parameters, .request-body {
+            margin-top: 8px;
+            font-size: 0.9em;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .parameters strong, .request-body strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body class="container mx-auto px-4">
+
+    <h1>Inventory Management System REST API Design</h1>
+
+    <p>This document outlines a comprehensive REST API design for an enterprise-grade Inventory Management System (IMS). The API is organized into functional categories to provide a clear and structured approach to managing inventory data and processes.</p>
+
+    <p><strong>Base Path:</strong> <span class="path">/api/v1/</span></p>
+
+    <section>
+        <h2>1. Item Management</h2>
+        <p>Manages the definition and attributes of all products or items in the system.</p>
+
+        <h3>Items</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/items</span>
+            <div class="description">Retrieve a list of all items.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>category</code>, <code>status</code>, <code>supplier</code>, <code>page</code>, <code>pageSize</code>, <code>sortBy</code>, <code>sortOrder</code>, <code>search</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/items</span>
+            <div class="description">Create a new item.</div>
+            <div class="request-body"><strong>Request Body:</strong> Item details (SKU, name, description, categoryId, unitOfMeasureId, costPrice, sellingPrice, etc.)</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/items/{itemId}</span>
+            <div class="description">Retrieve details of a specific item by ID.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/items/{itemId}</span>
+            <div class="description">Update all details of a specific item by ID.</div>
+            <div class="request-body"><strong>Request Body:</strong> Complete item details.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method patch">PATCH</span> <span class="path">/api/v1/items/{itemId}</span>
+            <div class="description">Partially update details of a specific item by ID.</div>
+            <div class="request-body"><strong>Request Body:</strong> Fields to be updated.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/items/{itemId}</span>
+            <div class="description">Delete a specific item by ID.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/items/{itemId}/stock</span>
+            <div class="description">Retrieve stock levels for a specific item across all locations.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/items/{itemId}/locations</span>
+            <div class="description">Retrieve locations where a specific item is stocked.</div>
+        </div>
+         <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/items/batch</span>
+            <div class="description">Create multiple items in a single request.</div>
+            <div class="request-body"><strong>Request Body:</strong> Array of item details.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/items/batch</span>
+            <div class="description">Update multiple items in a single request.</div>
+            <div class="request-body"><strong>Request Body:</strong> Array of item IDs and updated details.</div>
+        </div>
+
+        <h3>Categories</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/categories</span>
+            <div class="description">Retrieve a list of all item categories.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/categories</span>
+            <div class="description">Create a new item category.</div>
+            <div class="request-body"><strong>Request Body:</strong> Category details (name, description).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/categories/{categoryId}</span>
+            <div class="description">Retrieve details of a specific category.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/categories/{categoryId}</span>
+            <div class="description">Update details of a specific category.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/categories/{categoryId}</span>
+            <div class="description">Delete a specific category.</div>
+        </div>
+
+        <h3>Units of Measure (UoM)</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/units-of-measure</span>
+            <div class="description">Retrieve a list of all UoMs.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/units-of-measure</span>
+            <div class="description">Create a new UoM.</div>
+            <div class="request-body"><strong>Request Body:</strong> UoM details (name, abbreviation).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/units-of-measure/{uomId}</span>
+            <div class="description">Retrieve details of a specific UoM.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/units-of-measure/{uomId}</span>
+            <div class="description">Update details of a specific UoM.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/units-of-measure/{uomId}</span>
+            <div class="description">Delete a specific UoM.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/units-of-measure/conversions</span>
+            <div class="description">Retrieve UoM conversion rules.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/units-of-measure/conversions</span>
+            <div class="description">Create a new UoM conversion rule.</div>
+            <div class="request-body"><strong>Request Body:</strong> Conversion details (fromUomId, toUomId, factor).</div>
+        </div>
+
+        <h3>Item Pricing</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/items/{itemId}/pricing</span>
+            <div class="description">Retrieve pricing details for a specific item.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/items/{itemId}/pricing</span>
+            <div class="description">Update pricing details for a specific item.</div>
+            <div class="request-body"><strong>Request Body:</strong> Pricing details (costPrice, sellingPrice, multiLevelPricing).</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>2. Location Management</h2>
+        <p>Manages physical storage locations like warehouses, zones, rows, shelves, and bins.</p>
+
+        <h3>Warehouses</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/warehouses</span>
+            <div class="description">Retrieve a list of all warehouses.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>status</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/warehouses</span>
+            <div class="description">Create a new warehouse.</div>
+            <div class="request-body"><strong>Request Body:</strong> Warehouse details (name, address, capacity).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/warehouses/{warehouseId}</span>
+            <div class="description">Retrieve details of a specific warehouse.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/warehouses/{warehouseId}</span>
+            <div class="description">Update details of a specific warehouse.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/warehouses/{warehouseId}</span>
+            <div class="description">Delete a specific warehouse.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/warehouses/{warehouseId}/stock</span>
+            <div class="description">Retrieve total stock levels for a specific warehouse.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/warehouses/{warehouseId}/locations</span>
+            <div class="description">Retrieve all specific locations (bins, etc.) within a warehouse.</div>
+        </div>
+
+        <h3>Locations (General - can represent zones, rows, bins, etc.)</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/locations</span>
+            <div class="description">Retrieve a list of all specific locations.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>warehouseId</code>, <code>type</code>, <code>status</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/locations</span>
+            <div class="description">Create a new location.</div>
+            <div class="request-body"><strong>Request Body:</strong> Location details (warehouseId, type, name, capacity).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/locations/{locationId}</span>
+            <div class="description">Retrieve details of a specific location.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/locations/{locationId}</span>
+            <div class="description">Update details of a specific location.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method patch">PATCH</span> <span class="path">/api/v1/locations/{locationId}</span>
+            <div class="description">Partially update details of a specific location.</div>
+            <div class="request-body"><strong>Request Body:</strong> Fields to be updated.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/locations/{locationId}</span>
+            <div class="description">Delete a specific location.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/locations/{locationId}/stock</span>
+            <div class="description">Retrieve stock levels for a specific location.</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>3. Inventory Management (Stock & Transactions)</h2>
+        <p>Handles the core inventory levels, movements, and adjustments.</p>
+
+        <h3>Stock Levels</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock</span>
+            <div class="description">Retrieve current stock levels across all items and locations.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>itemId</code>, <code>locationId</code>, <code>status</code>, <code>lotNumber</code>, <code>serialNumber</code>, <code>expiryDateBefore</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock/{stockEntryId}</span>
+            <div class="description">Retrieve details of a specific stock entry (a specific quantity of an item at a location, potentially with lot/serial/expiry).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/items/{itemId}/stock/{locationId}</span>
+            <div class="description">Retrieve stock level for a specific item at a specific location.</div>
+        </div>
+
+        <h3>Stock Adjustments</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock-adjustments</span>
+            <div class="description">Retrieve a list of stock adjustments.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>itemId</code>, <code>locationId</code>, <code>reason</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stock-adjustments</span>
+            <div class="description">Create a new stock adjustment.</div>
+            <div class="request-body"><strong>Request Body:</strong> Adjustment details (itemId, locationId, quantityChange, reason, lotNumber, serialNumber, expiryDate).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock-adjustments/{adjustmentId}</span>
+            <div class="description">Retrieve details of a specific stock adjustment.</div>
+        </div>
+
+        <h3>Stock Transfers</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock-transfers</span>
+            <div class="description">Retrieve a list of stock transfers.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>fromLocationId</code>, <code>toLocationId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stock-transfers</span>
+            <div class="description">Create a new stock transfer request.</div>
+            <div class="request-body"><strong>Request Body:</strong> Transfer details (transferNumber, fromLocationId, toLocationId, items: [{itemId, quantity, lotNumber, serialNumber}]).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock-transfers/{transferId}</span>
+            <div class="description">Retrieve details of a specific stock transfer.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/stock-transfers/{transferId}/status</span>
+            <div class="description">Update the status of a stock transfer.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status (e.g., 'In Transit', 'Completed', 'Cancelled').</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stock-transfers/{transferId}/receipts</span>
+            <div class="description">Record the receipt of items for a specific stock transfer at the destination.</div>
+            <div class="request-body"><strong>Request Body:</strong> Received items and quantities.</div>
+        </div>
+
+        <h3>Inventory Transactions / Movement History</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/inventory-transactions</span>
+            <div class="description">Retrieve a history of all inventory movements.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>itemId</code>, <code>locationId</code>, <code>transactionType</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>sourceDocumentType</code>, <code>sourceDocumentId</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/inventory-transactions/{transactionId}</span>
+            <div class="description">Retrieve details of a specific inventory transaction.</div>
+        </div>
+
+        <h3>Stock Statuses</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stock-statuses</span>
+            <div class="description">Retrieve a list of defined stock statuses.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/stock/{stockEntryId}/status</span>
+            <div class="description">Update the status of a specific stock entry.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status ID.</div>
+        </div>
+
+        <h3>Serial/Lot/Expiry Tracking</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/serial-numbers</span>
+            <div class="description">Retrieve a list of all tracked serial numbers.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>itemId</code>, <code>currentLocationId</code>, <code>status</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/serial-numbers/{serialNumber}</span>
+            <div class="description">Retrieve the history and current location of a specific serial number.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/lot-numbers</span>
+            <div class="description">Retrieve a list of all tracked lot numbers.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>itemId</code>, <code>currentLocationId</code>, <code>expiryDateBefore</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/lot-numbers/{lotNumber}</span>
+            <div class="description">Retrieve details and associated stock entries for a specific lot number.</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>4. Order Management (Sales)</h2>
+        <p>Manages sales orders and outgoing inventory.</p>
+
+        <h3>Sales Orders</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/sales-orders</span>
+            <div class="description">Retrieve a list of all sales orders.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>customerId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/sales-orders</span>
+            <div class="description">Create a new sales order.</div>
+            <div class="request-body"><strong>Request Body:</strong> Order details (customerId, orderDate, items: [{itemId, quantity, unitPrice}], shippingAddress).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/sales-orders/{orderId}</span>
+            <div class="description">Retrieve details of a specific sales order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/sales-orders/{orderId}</span>
+            <div class="description">Update details of a specific sales order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/sales-orders/{orderId}</span>
+            <div class="description">Cancel or delete a sales order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/sales-orders/{orderId}/allocate</span>
+            <div class="description">Allocate stock to a sales order.</div>
+            <div class="request-body"><strong>Request Body:</strong> Items and quantities to allocate, optionally specifying locations.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/sales-orders/{orderId}/shipments</span>
+            <div class="description">Create a shipment for a sales order. This action triggers inventory reduction.</div>
+            <div class="request-body"><strong>Request Body:</strong> Shipment details (items: [{itemId, quantity, locationId, serialNumbers, lotNumbers}], trackingNumber, carrier).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/sales-orders/{orderId}/shipments</span>
+            <div class="description">Retrieve shipments associated with a sales order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/sales-orders/{orderId}/fulfill</span>
+            <div class="description">Mark a sales order as fulfilled.</div>
+        </div>
+
+        <h3>Shipments</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/shipments</span>
+            <div class="description">Retrieve a list of all shipments.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>salesOrderId</code>, <code>status</code>, <code>carrier</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/shipments/{shipmentId}</span>
+            <div class="description">Retrieve details of a specific shipment.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/shipments/{shipmentId}/status</span>
+            <div class="description">Update the status of a shipment.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status (e.g., 'Picked', 'Packed', 'Shipped', 'Delivered').</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/shipments/{shipmentId}/track</span>
+            <div class="description">Add or update tracking information for a shipment.</div>
+            <div class="request-body"><strong>Request Body:</strong> Tracking details (trackingNumber, carrier, trackingUrl).</div>
+        </div>
+
+        <h3>Sales Returns</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/sales-returns</span>
+            <div class="description">Retrieve a list of sales returns.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>salesOrderId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/sales-returns</span>
+            <div class="description">Create a new sales return request.</div>
+            <div class="request-body"><strong>Request Body:</strong> Return details (salesOrderId, returnDate, items: [{itemId, quantity, reason}], returnLocationId).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/sales-returns/{returnId}</span>
+            <div class="description">Retrieve details of a specific sales return.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/sales-returns/{returnId}/status</span>
+            <div class="description">Update the status of a sales return.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status (e.g., 'Pending Inspection', 'Received', 'Restocked', 'Refunded').</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/sales-returns/{returnId}/receive</span>
+            <div class="description">Record the physical receipt of returned items.</div>
+            <div class="request-body"><strong>Request Body:</strong> Received items, quantities, and potentially lot/serial/expiry info, and the actual location where stock is placed.</div>
+        </div>
+
+        <h3>Customers</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/customers</span>
+            <div class="description">Retrieve a list of all customers.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>search</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/customers</span>
+            <div class="description">Create a new customer.</div>
+            <div class="request-body"><strong>Request Body:</strong> Customer details (name, contact information, address).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/customers/{customerId}</span>
+            <div class="description">Retrieve details of a specific customer.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/customers/{customerId}</span>
+            <div class="description">Update details of a specific customer.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/customers/{customerId}</span>
+            <div class="description">Delete a specific customer.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/customers/{customerId}/sales-orders</span>
+            <div class="description">Retrieve sales orders for a specific customer.</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>5. Order Management (Purchasing)</h2>
+        <p>Manages purchase orders and incoming inventory.</p>
+
+        <h3>Purchase Orders</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/purchase-orders</span>
+            <div class="description">Retrieve a list of all purchase orders.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>supplierId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/purchase-orders</span>
+            <div class="description">Create a new purchase order.</div>
+            <div class="request-body"><strong>Request Body:</strong> Order details (supplierId, orderDate, items: [{itemId, quantity, unitCost}], shippingDetails).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/purchase-orders/{orderId}</span>
+            <div class="description">Retrieve details of a specific purchase order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/purchase-orders/{orderId}</span>
+            <div class="description">Update details of a specific purchase order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/purchase-orders/{orderId}</span>
+            <div class="description">Cancel or delete a purchase order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/purchase-orders/{orderId}/receipts</span>
+            <div class="description">Record the receipt of items against a purchase order. This action increases inventory.</div>
+            <div class="request-body"><strong>Request Body:</strong> Received items, quantities, destination locationId, and potentially lot/serial/expiry info.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/purchase-orders/{orderId}/receipts</span>
+            <div class="description">Retrieve receipts associated with a purchase order.</div>
+        </div>
+
+        <h3>Receipts (from POs)</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/receipts</span>
+            <div class="description">Retrieve a list of all receipts.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>purchaseOrderId</code>, <code>supplierId</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/receipts/{receiptId}</span>
+            <div class="description">Retrieve details of a specific receipt.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/receipts/{receiptId}/status</span>
+            <div class="description">Update the status of a receipt.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status (e.g., 'Received', 'Inspected', 'Put Away').</div>
+        </div>
+
+        <h3>Purchase Returns</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/purchase-returns</span>
+            <div class="description">Retrieve a list of purchase returns to suppliers.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>supplierId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/purchase-returns</span>
+            <div class="description">Create a new purchase return.</div>
+            <div class="request-body"><strong>Request Body:</strong> Return details (supplierId, returnDate, items: [{itemId, quantity, reason}], sourceLocationId).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/purchase-returns/{returnId}</span>
+            <div class="description">Retrieve details of a specific purchase return.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/purchase-returns/{returnId}/status</span>
+            <div class="description">Update the status of a purchase return.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/purchase-returns/{returnId}/ship</span>
+            <div class="description">Record the shipment of returned items to the supplier. This action reduces inventory.</div>
+            <div class="request-body"><strong>Request Body:</strong> Shipped items and quantities.</div>
+        </div>
+
+        <h3>Suppliers</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/suppliers</span>
+            <div class="description">Retrieve a list of all suppliers.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>search</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/suppliers</span>
+            <div class="description">Create a new supplier.</div>
+            <div class="request-body"><strong>Request Body:</strong> Supplier details (name, contact information, address).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/suppliers/{supplierId}</span>
+            <div class="description">Retrieve details of a specific supplier.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/suppliers/{supplierId}</span>
+            <div class="description">Update details of a specific supplier.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/suppliers/{supplierId}</span>
+            <div class="description">Delete a specific supplier.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/suppliers/{supplierId}/purchase-orders</span>
+            <div class="description">Retrieve purchase orders for a specific supplier.</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>6. Stocktaking & Cycle Counting</h2>
+        <p>Manages the process of verifying physical inventory counts.</p>
+
+        <h3>Stocktake Events</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stocktakes</span>
+            <div class="description">Retrieve a list of stocktake events.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stocktakes</span>
+            <div class="description">Create a new stocktake event.</div>
+            <div class="request-body"><strong>Request Body:</strong> Stocktake details (name, description, locations, items, categories to include).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stocktakes/{stocktakeId}</span>
+            <div class="description">Retrieve details of a specific stocktake event.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/stocktakes/{stocktakeId}/status</span>
+            <div class="description">Update the status of a stocktake event.</div>
+            <div class="request-body"><strong>Request Body:</strong> New status (e.g., 'Initiated', 'Counting', 'Reconciliation', 'Completed').</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stocktakes/{stocktakeId}/counts</span>
+            <div class="description">Submit physical counts for items within a stocktake event.</div>
+            <div class="request-body"><strong>Request Body:</strong> Array of count entries (itemId, locationId, countedQuantity, lotNumber, serialNumber, expiryDate).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/stocktakes/{stocktakeId}/counts</span>
+            <div class="description">Retrieve recorded counts for a stocktake event.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stocktakes/{stocktakeId}/reconcile</span>
+            <div class="description">Initiate the reconciliation process for a stocktake event.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/stocktakes/{stocktakeId}/adjustments</span>
+            <div class="description">Apply generated stock adjustments based on the reconciliation.</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>7. Kitting & Manufacturing (Optional)</h2>
+        <p>For systems handling assembly or disassembly.</p>
+
+        <h3>Bill of Materials (BOM)</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/boms</span>
+            <div class="description">Retrieve a list of all BOMs.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>finishedItemId</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/boms</span>
+            <div class="description">Create a new BOM.</div>
+            <div class="request-body"><strong>Request Body:</strong> BOM details (finishedItemId, components: [{componentItemId, quantity}]).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/boms/{bomId}</span>
+            <div class="description">Retrieve details of a specific BOM.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/boms/{bomId}</span>
+            <div class="description">Update details of a specific BOM.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/boms/{bomId}</span>
+            <div class="description">Delete a specific BOM.</div>
+        </div>
+
+        <h3>Production/Assembly Orders</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/production-orders</span>
+            <div class="description">Retrieve a list of production orders.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>finishedItemId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/production-orders</span>
+            <div class="description">Create a new production order. This consumes components and increases finished goods.</div>
+            <div class="request-body"><strong>Request Body:</strong> Order details (finishedItemId, quantity, locationId).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/production-orders/{orderId}</span>
+            <div class="description">Retrieve details of a specific production order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/production-orders/{orderId}/status</span>
+            <div class="description">Update the status of a production order.</div>
+        </div>
+
+        <h3>Disassembly Orders</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/disassembly-orders</span>
+            <div class="description">Retrieve a list of disassembly orders.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>finishedItemId</code>, <code>status</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/disassembly-orders</span>
+            <div class="description">Create a new disassembly order. This consumes finished goods and increases components.</div>
+            <div class="request-body"><strong>Request Body:</strong> Order details (finishedItemId, quantity, locationId).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/disassembly-orders/{orderId}</span>
+            <div class="description">Retrieve details of a specific disassembly order.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/disassembly-orders/{orderId}/status</span>
+            <div class="description">Update the status of a disassembly order.</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>8. Reporting & Analytics</h2>
+        <p>Provides endpoints to retrieve various inventory reports and analytical data.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/stock-levels</span>
+            <div class="description">Retrieve a report of current stock levels.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>itemId</code>, <code>categoryId</code>, <code>locationId</code>, <code>status</code>, <code>includeZeroStock</code>, <code>format</code> (e.g., csv, json)</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/inventory-valuation</span>
+            <div class="description">Retrieve an inventory valuation report.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>date</code>, <code>valuationMethod</code> (e.g., FIFO, LIFO, AverageCost), <code>itemId</code>, <code>categoryId</code>, <code>locationId</code>, <code>format</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/sales-by-item</span>
+            <div class="description">Retrieve a report of sales quantities by item.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>dateFrom</code>, <code>dateTo</code>, <code>itemId</code>, <code>categoryId</code>, <code>customerId</code>, <code>locationId</code>, <code>format</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/purchases-by-item</span>
+            <div class="description">Retrieve a report of purchase quantities by item.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>dateFrom</code>, <code>dateTo</code>, <code>itemId</code>, <code>categoryId</code>, <code>supplierId</code>, <code>locationId</code>, <code>format</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/inventory-turnover</span>
+            <div class="description">Retrieve an inventory turnover ratio report.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>dateFrom</code>, <code>dateTo</code>, <code>itemId</code>, <code>categoryId</code>, <code>locationId</code>, <code>format</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/low-stock</span>
+            <div class="description">Retrieve a report of items below reorder point or safety stock.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>locationId</code>, <code>includeZeroStock</code>, <code>format</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/expired-stock</span>
+            <div class="description">Retrieve a report of expired or near-expiry stock.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>expiryDateBefore</code>, <code>locationId</code>, <code>format</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/reports/audit-log</span>
+            <div class="description">Retrieve a report of inventory-related audit logs.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>userId</code>, <code>actionType</code>, <code>entityType</code>, <code>entityId</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>format</code></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>9. System/Utility</h2>
+        <p>Endpoints for system-level functions and master data.</p>
+
+        <h3>Audit Logs</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/audit-logs</span>
+            <div class="description">Retrieve a list of system audit logs.</div>
+            <div class="parameters"><strong>Query Parameters:</strong> <code>userId</code>, <code>actionType</code>, <code>entityType</code>, <code>entityId</code>, <code>dateFrom</code>, <code>dateTo</code>, <code>page</code>, <code>pageSize</code></div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/audit-logs/{logId}</span>
+            <div class="description">Retrieve details of a specific audit log entry.</div>
+        </div>
+
+        <h3>Attachments</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/attachments/{entityType}/{entityId}</span>
+            <div class="description">Retrieve a list of attachments for a specific entity.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/attachments/{entityType}/{entityId}</span>
+            <div class="description">Upload an attachment for a specific entity.</div>
+            <div class="request-body"><strong>Request Body:</strong> File data.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/attachments/{attachmentId}</span>
+            <div class="description">Download a specific attachment.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/attachments/{attachmentId}</span>
+            <div class="description">Delete a specific attachment.</div>
+        </div>
+
+        <h3>Settings/Configuration</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/settings/inventory</span>
+            <div class="description">Retrieve inventory-related system settings.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/settings/inventory</span>
+            <div class="description">Update inventory-related system settings.</div>
+            <div class="request-body"><strong>Request Body:</strong> Settings data.</div>
+        </div>
+
+        <h3>Webhooks (Management Endpoints)</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/webhooks/subscriptions</span>
+            <div class="description">Retrieve a list of webhook subscriptions.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method post">POST</span> <span class="path">/api/v1/webhooks/subscriptions</span>
+            <div class="description">Create a new webhook subscription.</div>
+            <div class="request-body"><strong>Request Body:</strong> Subscription details (callbackUrl, eventTypes: ['stock.updated', 'order.created', etc.]).</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/webhooks/subscriptions/{subscriptionId}</span>
+            <div class="description">Retrieve details of a specific subscription.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method put">PUT</span> <span class="path">/api/v1/webhooks/subscriptions/{subscriptionId}</span>
+            <div class="description">Update a specific subscription.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method delete">DELETE</span> <span class="path">/api/v1/webhooks/subscriptions/{subscriptionId}</span>
+            <div class="description">Delete a specific subscription.</div>
+        </div>
+        <div class="endpoint">
+            <span class="method get">GET</span> <span class="path">/api/v1/webhooks/event-types</span>
+            <div class="description">Retrieve a list of available webhook event types.</div>
+        </div>
+    </section>
+    <pre>
+
+        1. Item Management
+        This category handles the definition and management of all products or items within the inventory.
+        
+        Items:
+        
+        GET /api/v1/items: Get a list of all items. Supports filtering, sorting, and pagination via query parameters (e.g., ?category=electronics&status=active&page=1&pageSize=10).
+        POST /api/v1/items: Create a new item. Request body contains item details (SKU, name, description, category, UoM, pricing, etc.).
+        GET /api/v1/items/{itemId}: Get details of a specific item by its ID.
+        PUT /api/v1/items/{itemId}: Update details of a specific item by its ID. Request body contains updated item details.
+        PATCH /api/v1/items/{itemId}: Partially update details of a specific item by its ID. Request body contains fields to be updated.
+        DELETE /api/v1/items/{itemId}: Delete a specific item by its ID. (May require checking for dependencies like existing stock or orders).
+        GET /api/v1/items/{itemId}/stock: Get stock levels for a specific item across all locations.
+        GET /api/v1/items/{itemId}/locations: Get locations where a specific item is stocked.
+        Categories:
+        
+        GET /api/v1/categories: Get a list of all item categories.
+        POST /api/v1/categories: Create a new item category.
+        GET /api/v1/categories/{categoryId}: Get details of a specific category.
+        PUT /api/v1/categories/{categoryId}: Update details of a specific category.
+        DELETE /api/v1/categories/{categoryId}: Delete a specific category.
+        Units of Measure (UoM):
+        
+        GET /api/v1/units-of-measure: Get a list of all UoMs.
+        POST /api/v1/units-of-measure: Create a new UoM.
+        GET /api/v1/units-of-measure/{uomId}: Get details of a specific UoM.
+        PUT /api/v1/units-of-measure/{uomId}: Update details of a specific UoM.
+        DELETE /api/v1/units-of-measure/{uomId}: Delete a specific UoM.
+        GET /api/v1/units-of-measure/conversions: Get UoM conversion rules.
+        POST /api/v1/units-of-measure/conversions: Create a new UoM conversion rule.
+        Item Pricing:
+        
+        GET /api/v1/items/{itemId}/pricing: Get pricing details for a specific item (cost, selling price, multi-level pricing).
+        PUT /api/v1/items/{itemId}/pricing: Update pricing details for a specific item.
+        2. Location Management
+        This category handles the definition and management of physical storage locations (warehouses, bins, etc.).
+        
+        Warehouses:
+        
+        GET /api/v1/warehouses: Get a list of all warehouses.
+        POST /api/v1/warehouses: Create a new warehouse.
+        GET /api/v1/warehouses/{warehouseId}: Get details of a specific warehouse.
+        PUT /api/v1/warehouses/{warehouseId}: Update details of a specific warehouse.
+        DELETE /api/v1/warehouses/{warehouseId}: Delete a specific warehouse.
+        GET /api/v1/warehouses/{warehouseId}/stock: Get total stock levels for a specific warehouse.
+        GET /api/v1/warehouses/{warehouseId}/bins: Get a list of bins within a warehouse.
+        Bins (or specific locations within a warehouse):
+        
+        GET /api/v1/warehouses/{warehouseId}/bins: Get a list of bins in a specific warehouse.
+        POST /api/v1/warehouses/{warehouseId}/bins: Create a new bin in a specific warehouse.
+        GET /api/v1/bins/{binId}: Get details of a specific bin (could also be /api/v1/warehouses/{warehouseId}/bins/{binId}).
+        PUT /api/v1/bins/{binId}: Update details of a specific bin.
+        DELETE /api/v1/bins/{binId}: Delete a specific bin.
+        GET /api/v1/bins/{binId}/stock: Get stock levels for a specific bin.
+        3. Inventory Management (Stock & Transactions)
+        This is the core of the IMS API, handling stock levels, movements, and adjustments.
+        
+        Stock Levels:
+        
+        GET /api/v1/stock: Get current stock levels across all items and locations. Supports filtering by item, location, status, etc.
+        GET /api/v1/stock/{stockId}: Get details of a specific stock entry (representing a quantity of an item at a location, potentially with lot/serial/expiry).
+        GET /api/v1/items/{itemId}/stock/{locationId}: Get stock level for a specific item at a specific location.
+        PUT /api/v1/stock/{stockId}: Update details of a specific stock entry (e.g., status, lot/serial/expiry info). Note: Directly updating quantity via PUT/PATCH on a stock entry is generally discouraged for auditing purposes; adjustments/movements are preferred.
+        POST /api/v1/stock/adjustments: Create a stock adjustment (increase or decrease). Request body includes item, location, quantity, reason, and potentially lot/serial/expiry info.
+        GET /api/v1/stock/adjustments: Get a list of stock adjustments.
+        GET /api/v1/stock/adjustments/{adjustmentId}: Get details of a specific stock adjustment.
+        Stock Transfers:
+        
+        GET /api/v1/stock/transfers: Get a list of stock transfers (between locations).
+        POST /api/v1/stock/transfers: Create a new stock transfer request. Request body includes item(s), source location, destination location, quantities.
+        GET /api/v1/stock/transfers/{transferId}: Get details of a specific stock transfer.
+        PUT /api/v1/stock/transfers/{transferId}/status: Update the status of a stock transfer (e.g., In Transit, Completed, Cancelled).
+        POST /api/v1/stock/transfers/{transferId}/receipts: Record the receipt of items for a specific stock transfer at the destination location.
+        Inventory Transactions / Movement History:
+        
+        GET /api/v1/inventory-transactions: Get a history of all inventory movements (receipts, shipments, adjustments, transfers). Supports filtering by item, location, type, date range.
+        GET /api/v1/inventory-transactions/{transactionId}: Get details of a specific inventory transaction.
+        Stock Statuses:
+        
+        GET /api/v1/stock-statuses: Get a list of defined stock statuses (e.g., Available, Allocated, On Hand, In Transit, Defective).
+        PUT /api/v1/stock/{stockId}/status: Update the status of a specific stock entry.
+        Serial/Lot/Expiry Tracking:
+        
+        GET /api/v1/stock/{stockId}/serial-numbers: Get serial numbers associated with a specific stock entry.
+        POST /api/v1/stock/{stockId}/serial-numbers: Add serial numbers to a stock entry.
+        GET /api/v1/stock/{stockId}/lot-numbers: Get lot numbers and quantities associated with a specific stock entry.
+        POST /api/v1/stock/{stockId}/lot-numbers: Add lot numbers and quantities to a stock entry.
+        GET /api/v1/stock/{stockId}/expiry-dates: Get expiry dates and quantities associated with a specific stock entry.
+        POST /api/v1/stock/{stockId}/expiry-dates: Add expiry dates and quantities to a stock entry.
+        GET /api/v1/serial-numbers/{serialNumber}: Get the history/location of a specific serial number.
+        GET /api/v1/lot-numbers/{lotNumber}: Get the history/locations/items associated with a specific lot number.
+        4. Order Management (Sales)
+        This category covers managing sales orders and outgoing inventory movements.
+        
+        Sales Orders:
+        
+        GET /api/v1/sales-orders: Get a list of all sales orders. Supports filtering by customer, status, date range, etc.
+        POST /api/v1/sales-orders: Create a new sales order. Request body includes customer, items, quantities, pricing, shipping address.
+        GET /api/v1/sales-orders/{orderId}: Get details of a specific sales order.
+        PUT /api/v1/sales-orders/{orderId}: Update details of a specific sales order.
+        DELETE /api/v1/sales-orders/{orderId}: Cancel or delete a sales order.
+        POST /api/v1/sales-orders/{orderId}/allocate: Allocate stock to a sales order. Request body specifies items and quantities to allocate from available stock (system can suggest locations).
+        POST /api/v1/sales-orders/{orderId}/ship: Create a shipment for a sales order (or parts of it). Request body includes items, quantities, tracking information, and source location(s). This action reduces inventory levels.
+        GET /api/v1/sales-orders/{orderId}/shipments: Get shipments associated with a sales order.
+        POST /api/v1/sales-orders/{orderId}/fulfill: Mark a sales order as fulfilled (can be a high-level action triggering allocation and shipping).
+        Shipments:
+        
+        GET /api/v1/shipments: Get a list of all shipments.
+        GET /api/v1/shipments/{shipmentId}: Get details of a specific shipment.
+        PUT /api/v1/shipments/{shipmentId}/status: Update the status of a shipment (e.g., Picked, Packed, Shipped, Delivered).
+        POST /api/v1/shipments/{shipmentId}/track: Add tracking information to a shipment.
+        Sales Returns:
+        
+        GET /api/v1/sales-returns: Get a list of sales returns.
+        POST /api/v1/sales-returns: Create a new sales return request. Request body includes original sales order, items to return, quantities, reason, destination location for returned stock.
+        GET /api/v1/sales-returns/{returnId}: Get details of a specific sales return.
+        PUT /api/v1/sales-returns/{returnId}/status: Update the status of a sales return (e.g., Pending Inspection, Restocked, Refunded).
+        POST /api/v1/sales-returns/{returnId}/receive: Record the physical receipt of returned items. This action increases inventory levels, potentially to a specific "returns" location or status.
+        Customers:
+        
+        GET /api/v1/customers: Get a list of all customers.
+        POST /api/v1/customers: Create a new customer.
+        GET /api/v1/customers/{customerId}: Get details of a specific customer.
+        PUT /api/v1/customers/{customerId}: Update details of a specific customer.
+        DELETE /api/v1/customers/{customerId}: Delete a specific customer.
+        GET /api/v1/customers/{customerId}/sales-orders: Get sales orders for a specific customer.
+        5. Order Management (Purchasing)
+        This category covers managing purchase orders and incoming inventory movements.
+        
+        Purchase Orders:
+        
+        GET /api/v1/purchase-orders: Get a list of all purchase orders. Supports filtering by supplier, status, date range, etc.
+        POST /api/v1/purchase-orders: Create a new purchase order. Request body includes supplier, items, quantities, pricing, shipping details.
+        GET /api/v1/purchase-orders/{orderId}: Get details of a specific purchase order.
+        PUT /api/v1/purchase-orders/{orderId}: Update details of a specific purchase order.
+        DELETE /api/v1/purchase-orders/{orderId}: Cancel or delete a purchase order.
+        POST /api/v1/purchase-orders/{orderId}/receive: Record the receipt of items against a purchase order. Request body includes items, quantities received, and destination location(s). This action increases inventory levels.
+        GET /api/v1/purchase-orders/{orderId}/receipts: Get receipts associated with a purchase order.
+        Receipts (from POs):
+        
+        GET /api/v1/receipts: Get a list of all receipts.
+        GET /api/v1/receipts/{receiptId}: Get details of a specific receipt.
+        PUT /api/v1/receipts/{receiptId}/status: Update the status of a receipt (e.g., Received, Inspected, Put Away).
+        Purchase Returns:
+        
+        GET /api/v1/purchase-returns: Get a list of purchase returns to suppliers.
+        POST /api/v1/purchase-returns: Create a new purchase return. Request body includes original purchase order (optional), items to return, quantities, reason, source location.
+        GET /api/v1/purchase-returns/{returnId}: Get details of a specific purchase return.
+        PUT /api/v1/purchase-returns/{returnId}/status: Update the status of a purchase return.
+        POST /api/v1/purchase-returns/{returnId}/ship: Record the shipment of returned items to the supplier. This action reduces inventory levels.
+        Suppliers:
+        
+        GET /api/v1/suppliers: Get a list of all suppliers.
+        POST /api/v1/suppliers: Create a new supplier.
+        GET /api/v1/suppliers/{supplierId}: Get details of a specific supplier.
+        PUT /api/v1/suppliers/{supplierId}: Update details of a specific supplier.
+        DELETE /api/v1/suppliers/{supplierId}: Delete a specific supplier.
+        GET /api/v1/suppliers/{supplierId}/purchase-orders: Get purchase orders for a specific supplier.
+        6. Stocktaking & Cycle Counting
+        APIs to manage the process of verifying physical inventory counts against system records.
+        
+        Stocktake Events:
+        GET /api/v1/stocktakes: Get a list of stocktake events.
+        POST /api/v1/stocktakes: Create a new stocktake event. Request body specifies locations, items, or categories to be counted.
+        GET /api/v1/stocktakes/{stocktakeId}: Get details of a specific stocktake event.
+        PUT /api/v1/stocktakes/{stocktakeId}/status: Update the status of a stocktake event (e.g., Initiated, Counting, Reconciliation, Completed).
+        POST /api/v1/stocktakes/{stocktakeId}/counts: Submit physical counts for items within a stocktake event. Request body includes item, location, counted quantity, and potentially lot/serial/expiry info.
+        GET /api/v1/stocktakes/{stocktakeId}/counts: Get recorded counts for a stocktake event.
+        POST /api/v1/stocktakes/{stocktakeId}/reconcile: Initiate the reconciliation process for a stocktake event, generating variance reports and suggesting adjustments.
+        POST /api/v1/stocktakes/{stocktakeId}/adjustments: Apply generated stock adjustments based on the reconciliation.
+        7. Kitting & Manufacturing (Optional)
+        For systems that handle assembling or disassembling products.
+        
+        Bill of Materials (BOM):
+        
+        GET /api/v1/boms: Get a list of all BOMs.
+        POST /api/v1/boms: Create a new BOM (defines components for a finished good).
+        GET /api/v1/boms/{bomId}: Get details of a specific BOM.
+        PUT /api/v1/boms/{bomId}: Update details of a specific BOM.
+        DELETE /api/v1/boms/{bomId}: Delete a specific BOM.
+        Production/Assembly Orders:
+        
+        GET /api/v1/production-orders: Get a list of production orders.
+        POST /api/v1/production-orders: Create a new production order (to assemble items based on a BOM). Request body includes the finished good, quantity, and location. This action consumes component stock and increases finished good stock.
+        GET /api/v1/production-orders/{orderId}: Get details of a specific production order.
+        PUT /api/v1/production-orders/{orderId}/status: Update the status of a production order.
+        Disassembly Orders:
+        
+        GET /api/v1/disassembly-orders: Get a list of disassembly orders.
+        POST /api/v1/disassembly-orders: Create a new disassembly order (to break down a finished good into its components). Request body includes the finished good, quantity, and location. This action consumes finished good stock and increases component stock.
+        GET /api/v1/disassembly-orders/{orderId}: Get details of a specific disassembly order.
+        PUT /api/v1/disassembly-orders/{orderId}/status: Update the status of a disassembly order.
+        8. Reporting & Analytics
+        APIs to retrieve various reports and analytical data about inventory. These endpoints are typically GET requests with extensive query parameters for filtering, grouping, and aggregation.
+        
+        GET /api/v1/reports/stock-levels: Get a report of current stock levels (can be filtered by item, category, location, status, etc.).
+        GET /api/v1/reports/inventory-valuation: Get an inventory valuation report (calculates the total value of inventory based on cost price). Supports valuation methods (FIFO, LIFO, Average Cost) via query parameters.
+        GET /api/v1/reports/sales-by-item: Get a report of sales quantities by item. Supports date range, customer, location filters.
+        GET /api/v1/reports/purchases-by-item: Get a report of purchase quantities by item. Supports date range, supplier, location filters.
+        GET /api/v1/reports/inventory-turnover: Get an inventory turnover ratio report. Supports date range and item/category filters.
+        GET /api/v1/reports/low-stock: Get a report of items below their reorder point or safety stock level.
+        GET /api/v1/reports/expired-stock: Get a report of expired or near-expiry stock (requires expiry date tracking).
+        GET /api/v1/reports/audit-log: Get a report of inventory-related audit logs (who did what and when). Supports filtering by user, action, entity, date range.
+        9. System/Utility
+        Endpoints for system-level functionalities.
+        
+        Audit Logs:
+        
+        GET /api/v1/audit-logs: Get a list of system audit logs. Supports filtering by user, entity type, entity ID, action type (create, update, delete, move, etc.), date range.
+        GET /api/v1/audit-logs/{logId}: Get details of a specific audit log entry.
+        Attachments:
+        
+        GET /api/v1/attachments/{entityType}/{entityId}: Get a list of attachments for a specific entity (e.g., item, order, receipt).
+        POST /api/v1/attachments/{entityType}/{entityId}: Upload an attachment for a specific entity.
+        GET /api/v1/attachments/{attachmentId}: Download a specific attachment.
+        DELETE /api/v1/attachments/{attachmentId}: Delete a specific attachment.
+        Settings/Configuration:
+        
+        GET /api/v1/settings/inventory: Get inventory-related system settings (e.g., default UoM, valuation method).
+        PUT /api/v1/settings/inventory: Update inventory-related system settings.
+        Considerations for Enterprise-Grade API:
+        Authentication and Authorization: Implement robust authentication (e.g., OAuth2, API Keys) and granular authorization to control access to different endpoints and data.
+        Pagination, Filtering, Sorting: Implement these features for all collection endpoints (GET /resource) to handle large datasets efficiently.
+        Error Handling: Provide clear and informative error responses using standard HTTP status codes and error payloads.
+        Versioning: Include versioning in the API path (e.g., /api/v1/) to allow for future changes without breaking existing integrations.
+        Webhooks: Consider adding webhook capabilities to notify external systems of key events (e.g., stock level changes, order status updates). While not strictly REST endpoints called by the user, the system needs endpoints to manage webhook subscriptions.
+        Batch Operations: For common tasks like updating stock levels or creating multiple items, provide batch endpoints (e.g., POST /api/v1/items/batch, PUT /api/v1/stock/batch-update) to improve performance.
+        Asynchronous Operations: For long-running processes (like large stocktakes or complex reports), consider asynchronous APIs where the initial request triggers a background job, and the API provides an endpoint to check the job's status.
+        Data Validation: Implement strict data validation on all incoming requests to ensure data integrity.
+        Rate Limiting: Implement rate limiting to protect the API from abuse and ensure fair usage.
+        Documentation: Provide comprehensive API documentation (e.g., using OpenAPI/Swagger) detailing each endpoint, parameters, request/response bodies, and error codes.
+        This exhaustive list covers the vast majority of functionalities expected in a modern, enterprise-grade Inventory Management System REST API, categorized logically for clarity
+    </pre>
+    <pre>
+        -- This SQL script creates the database schema for an Inventory Management System.
+        -- It defines tables, columns, data types, primary keys, foreign keys, and constraints.
+        -- This script uses standard SQL syntax and should be compatible with most RDBMS.
+
+        -- Drop tables if they exist (useful for development/testing)
+        -- Be cautious when using this in production environments!
+        -- DROP TABLE IF EXISTS WebhookSubscriptions;
+        -- DROP TABLE IF EXISTS WebhookEventTypes;
+        -- DROP TABLE IF EXISTS Settings;
+        -- DROP TABLE IF EXISTS AuditLogs;
+        -- DROP TABLE IF EXISTS DisassemblyOrderItems;
+        -- DROP TABLE IF EXISTS DisassemblyOrders;
+        -- DROP TABLE IF EXISTS ProductionOrderItems;
+        -- DROP TABLE IF EXISTS ProductionOrders;
+        -- DROP TABLE IF EXISTS BomComponents;
+        -- DROP TABLE IF EXISTS BillOfMaterials;
+        -- DROP TABLE IF EXISTS StocktakeCounts;
+        -- DROP TABLE IF EXISTS StocktakeEvents;
+        -- DROP TABLE IF EXISTS PurchaseReturnItems;
+        -- DROP TABLE IF EXISTS PurchaseReturns;
+        -- DROP TABLE IF EXISTS ReceiptItems;
+        -- DROP TABLE IF EXISTS Receipts;
+        -- DROP TABLE IF EXISTS PurchaseOrderItems;
+        -- DROP TABLE IF EXISTS PurchaseOrders;
+        -- DROP TABLE IF EXISTS Suppliers;
+        -- DROP TABLE IF EXISTS SalesReturnItems;
+        -- DROP TABLE IF EXISTS SalesReturns;
+        -- DROP TABLE IF EXISTS ShipmentItems;
+        -- DROP TABLE IF EXISTS Shipments;
+        -- DROP TABLE IF EXISTS SalesOrderItems;
+        -- DROP TABLE IF EXISTS SalesOrders;
+        -- DROP TABLE IF EXISTS Customers;
+        -- DROP TABLE IF EXISTS SerialNumbers;
+        -- DROP TABLE IF EXISTS ExpiryDates;
+        -- DROP TABLE IF EXISTS LotNumbers;
+        -- DROP TABLE IF EXISTS InventoryTransactions;
+        -- DROP TABLE IF EXISTS StockTransferItems;
+        -- DROP TABLE IF EXISTS StockTransfers;
+        -- DROP TABLE IF EXISTS StockAdjustments;
+        -- DROP TABLE IF EXISTS StockEntries;
+        -- DROP TABLE IF EXISTS StockStatuses;
+        -- DROP TABLE IF EXISTS Locations;
+        -- DROP TABLE IF EXISTS Warehouses;
+        -- DROP TABLE IF EXISTS ItemPricing;
+        -- DROP TABLE IF EXISTS UnitConversionRules;
+        -- DROP TABLE IF EXISTS UnitsOfMeasure;
+        -- DROP TABLE IF EXISTS Categories;
+        -- DROP TABLE IF EXISTS Items;
+
+
+        -- 1. Item Management Tables
+
+        -- Table for storing item categories
+        CREATE TABLE Categories (
+            CategoryId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(255) NOT NULL UNIQUE,
+            Description TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for storing units of measure
+        CREATE TABLE UnitsOfMeasure (
+            UomId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(100) NOT NULL UNIQUE,
+            Abbreviation VARCHAR(20) NOT NULL UNIQUE,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for storing conversion rules between units of measure
+        CREATE TABLE UnitConversionRules (
+            RuleId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            FromUomId INT NOT NULL,
+            ToUomId INT NOT NULL,
+            Factor DECIMAL(18, 8) NOT NULL, -- Factor to multiply 'From' quantity to get 'To' quantity
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (FromUomId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (ToUomId) REFERENCES UnitsOfMeasure(UomId),
+            UNIQUE (FromUomId, ToUomId) -- Ensure only one conversion rule between two UoMs
+        );
+
+        -- Table for storing main item details
+        CREATE TABLE Items (
+            ItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            SKU VARCHAR(100) NOT NULL UNIQUE,
+            Name VARCHAR(255) NOT NULL,
+            Description TEXT,
+            CategoryId INT,
+            UnitOfMeasureId INT NOT NULL, -- Base unit of measure for this item
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive, Discontinued
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+        );
+
+        -- Table for storing item pricing (can handle multiple price levels if needed)
+        CREATE TABLE ItemPricing (
+            PricingId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ItemId INT NOT NULL,
+            PriceType VARCHAR(50) NOT NULL, -- e.g., CostPrice, SellingPrice, Tier1Price
+            Currency VARCHAR(10) DEFAULT 'USD', -- Currency code
+            Price DECIMAL(18, 4) NOT NULL,
+            EffectiveDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When this price becomes effective
+            EndDate TIMESTAMP, -- When this price expires (optional)
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId) ON DELETE CASCADE, -- Delete pricing if item is deleted
+            UNIQUE (ItemId, PriceType, EffectiveDate) -- Ensure uniqueness for pricing types and effective dates
+        );
+
+
+        -- 2. Location Management Tables
+
+        -- Table for storing warehouse details
+        CREATE TABLE Warehouses (
+            WarehouseId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(255) NOT NULL UNIQUE,
+            Address TEXT,
+            Capacity DECIMAL(18, 4), -- Optional: Store capacity if relevant
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for storing specific locations within warehouses (zones, rows, bins)
+        CREATE TABLE Locations (
+            LocationId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            WarehouseId INT NOT NULL,
+            Name VARCHAR(255) NOT NULL, -- Name or identifier for the location (e.g., Aisle 1, Bin 1A-1)
+            LocationType VARCHAR(50), -- e.g., Zone, Aisle, Rack, Shelf, Bin, Staging
+            Capacity DECIMAL(18, 4), -- Optional: Capacity of this specific location
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive, Restricted
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (WarehouseId) REFERENCES Warehouses(WarehouseId) ON DELETE CASCADE, -- Delete locations if warehouse is deleted
+            UNIQUE (WarehouseId, Name) -- Location names should be unique within a warehouse
+        );
+
+
+        -- 3. Inventory Management (Stock & Transactions) Tables
+
+        -- Table for defining possible stock statuses
+        CREATE TABLE StockStatuses (
+            StockStatusId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(100) NOT NULL UNIQUE, -- e.g., Available, Allocated, On Hand, In Transit, Defective, Returns
+            Description TEXT,
+            IsAvailableForSale BOOLEAN DEFAULT TRUE, -- Can stock with this status be sold?
+            IsTracked BOOLEAN DEFAULT TRUE, -- Is this status actively tracked?
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for storing stock entries (quantity of an item at a specific location with specific attributes)
+        CREATE TABLE StockEntries (
+            StockEntryId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ItemId INT NOT NULL,
+            LocationId INT NOT NULL,
+            Quantity DECIMAL(18, 4) NOT NULL DEFAULT 0,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this specific stock quantity (could differ from item base UoM)
+            StockStatusId INT NOT NULL,
+            LotNumber VARCHAR(255), -- Optional: For lot-tracked items
+            SerialNumber VARCHAR(255), -- Optional: For serial-tracked items
+            ExpiryDate DATE, -- Optional: For items with expiry dates
+            ManufactureDate DATE, -- Optional: For items with manufacture dates
+            ReceivedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When this stock was initially received
+            LastActivityAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Last time quantity or status changed
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (StockStatusId) REFERENCES StockStatuses(StockStatusId)
+            -- Consider adding unique constraints based on tracking requirements (e.g., UNIQUE(ItemId, LocationId, LotNumber) for lot-tracked)
+            -- For serial tracked, each serial number should ideally be a separate StockEntry or tracked in SerialNumbers table
+        );
+
+        -- Table for tracking individual serial numbers
+        CREATE TABLE SerialNumbers (
+            SerialNumberId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            SerialNumber VARCHAR(255) NOT NULL UNIQUE,
+            ItemId INT NOT NULL,
+            CurrentStockEntryId INT, -- Link to the current stock entry if it exists
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Sold, Returned, Defective
+            ManufactureDate DATE,
+            ReceivedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (CurrentStockEntryId) REFERENCES StockEntries(StockEntryId) ON DELETE SET NULL -- If stock entry is deleted, serial number still exists but is unlinked
+        );
+
+        -- Table for tracking lot numbers (can be linked to multiple stock entries)
+        CREATE TABLE LotNumbers (
+            LotNumberId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            LotNumber VARCHAR(255) NOT NULL UNIQUE,
+            ItemId INT, -- Can be linked to an item, but a lot might contain multiple items in some systems
+            ManufactureDate DATE,
+            ExpiryDate DATE,
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Expired, Recalled
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId) -- Optional link
+        );
+
+        -- Table for recording inventory adjustments (increases or decreases not tied to orders/transfers)
+        CREATE TABLE StockAdjustments (
+            AdjustmentId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ItemId INT NOT NULL,
+            LocationId INT NOT NULL,
+            QuantityChange DECIMAL(18, 4) NOT NULL, -- Positive for increase, negative for decrease
+            UnitOfMeasureId INT NOT NULL, -- UoM of the quantity change
+            Reason VARCHAR(255), -- e.g., Damage, Loss, Found, Count Discrepancy
+            AdjustmentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            AdjustedByUserId INT, -- Link to a Users table (assuming one exists)
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+            -- FOREIGN KEY (AdjustedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for tracking stock transfers between locations
+        CREATE TABLE StockTransfers (
+            TransferId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            TransferNumber VARCHAR(100) UNIQUE, -- User-friendly transfer number
+            FromLocationId INT NOT NULL,
+            ToLocationId INT NOT NULL,
+            Status VARCHAR(50) DEFAULT 'Requested', -- e.g., Requested, In Transit, Received, Cancelled
+            RequestDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ShipDate TIMESTAMP, -- When items were shipped from source
+            ReceiveDate TIMESTAMP, -- When items were received at destination
+            RequestedByUserId INT, -- Link to a Users table
+            ShippedByUserId INT, -- Link to a Users table
+            ReceivedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (FromLocationId) REFERENCES Locations(LocationId),
+            FOREIGN KEY (ToLocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (RequestedByUserId) REFERENCES Users(UserId), -- Requires a Users table
+            -- FOREIGN KEY (ShippedByUserId) REFERENCES Users(UserId), -- Requires a Users table
+            -- FOREIGN KEY (ReceivedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items included in a stock transfer
+        CREATE TABLE StockTransferItems (
+            TransferItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            TransferId INT NOT NULL,
+            ItemId INT NOT NULL,
+            RequestedQuantity DECIMAL(18, 4) NOT NULL,
+            ShippedQuantity DECIMAL(18, 4), -- Actual quantity shipped
+            ReceivedQuantity DECIMAL(18, 4), -- Actual quantity received
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the transfer
+            Notes TEXT,
+            FOREIGN KEY (TransferId) REFERENCES StockTransfers(TransferId) ON DELETE CASCADE,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+        );
+
+
+        -- Table for logging all inventory transactions/movements
+        CREATE TABLE InventoryTransactions (
+            TransactionId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ItemId INT NOT NULL,
+            LocationId INT NOT NULL,
+            TransactionType VARCHAR(50) NOT NULL, -- e.g., Receipt, Shipment, Adjustment, TransferIn, TransferOut, ProductionIn, ProductionOut, ReturnIn, ReturnOut
+            QuantityChange DECIMAL(18, 4) NOT NULL, -- Positive for increase, negative for decrease
+            UnitOfMeasureId INT NOT NULL, -- UoM of the quantity change
+            TransactionDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            SourceDocumentType VARCHAR(50), -- e.g., SalesOrder, PurchaseOrder, StockTransfer, StockAdjustment, ProductionOrder, SalesReturn, PurchaseReturn
+            SourceDocumentId INT, -- ID of the source document
+            RelatedStockEntryId INT, -- Link to the stock entry affected (if applicable)
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info at transaction time
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            TransactedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (RelatedStockEntryId) REFERENCES StockEntries(StockEntryId) ON DELETE SET NULL
+            -- FOREIGN KEY (TransactedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+
+        -- 4. Order Management (Sales) Tables
+
+        -- Table for storing customer details
+        CREATE TABLE Customers (
+            CustomerId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(255) NOT NULL,
+            ContactPerson VARCHAR(255),
+            Email VARCHAR(255),
+            Phone VARCHAR(50),
+            Address TEXT,
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for storing sales order headers
+        CREATE TABLE SalesOrders (
+            OrderId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            OrderNumber VARCHAR(100) NOT NULL UNIQUE, -- User-friendly order number
+            CustomerId INT NOT NULL,
+            OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Status VARCHAR(50) DEFAULT 'Draft', -- e.g., Draft, Pending, Allocated, Shipped, Fulfilled, Cancelled
+            ShippingAddress TEXT,
+            BillingAddress TEXT,
+            TotalAmount DECIMAL(18, 4), -- Calculated total
+            Currency VARCHAR(10) DEFAULT 'USD',
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId)
+        );
+
+        -- Table for detailing items within a sales order
+        CREATE TABLE SalesOrderItems (
+            OrderItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            OrderId INT NOT NULL,
+            ItemId INT NOT NULL,
+            Quantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the order
+            UnitPrice DECIMAL(18, 4) NOT NULL,
+            LineTotal DECIMAL(18, 4), -- Calculated line total
+            AllocatedQuantity DECIMAL(18, 4) DEFAULT 0, -- Quantity allocated from stock
+            ShippedQuantity DECIMAL(18, 4) DEFAULT 0, -- Quantity shipped
+            Status VARCHAR(50) DEFAULT 'Pending', -- e.g., Pending, Allocated, PartiallyShipped, Shipped, Returned
+            Notes TEXT,
+            FOREIGN KEY (OrderId) REFERENCES SalesOrders(OrderId) ON DELETE CASCADE,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+        );
+
+        -- Table for storing shipment headers (linked to sales orders)
+        CREATE TABLE Shipments (
+            ShipmentId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ShipmentNumber VARCHAR(100) UNIQUE, -- User-friendly shipment number
+            OrderId INT NOT NULL,
+            ShipDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Status VARCHAR(50) DEFAULT 'Pending', -- e.g., Pending, Picked, Packed, Shipped, Delivered, Cancelled
+            TrackingNumber VARCHAR(255),
+            Carrier VARCHAR(100),
+            ShippingAddress TEXT, -- Capture shipping address at time of shipment
+            ShippedFromLocationId INT, -- Where the shipment originated
+            ShippedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (OrderId) REFERENCES SalesOrders(OrderId),
+            FOREIGN KEY (ShippedFromLocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (ShippedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items included in a shipment
+        CREATE TABLE ShipmentItems (
+            ShipmentItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ShipmentId INT NOT NULL,
+            OrderItemId INT NOT NULL, -- Link back to the original sales order item
+            ItemId INT NOT NULL, -- Redundant but useful for direct access
+            ShippedQuantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the shipment
+            LocationId INT, -- The specific location the item was picked from
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info at shipment time
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (ShipmentId) REFERENCES Shipments(ShipmentId) ON DELETE CASCADE,
+            FOREIGN KEY (OrderItemId) REFERENCES SalesOrderItems(OrderItemId),
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId)
+        );
+
+        -- Table for storing sales return headers
+        CREATE TABLE SalesReturns (
+            ReturnId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ReturnNumber VARCHAR(100) UNIQUE, -- User-friendly return number
+            SalesOrderId INT, -- Optional: Link to original sales order
+            CustomerId INT NOT NULL,
+            ReturnDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Status VARCHAR(50) DEFAULT 'Requested', -- e.g., Requested, Pending Inspection, Received, Restocked, Refunded, Cancelled
+            ReturnReason VARCHAR(255),
+            ReturnLocationId INT, -- Where the return is expected/received
+            ReceivedDate TIMESTAMP, -- When items were physically received
+            ProcessedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (SalesOrderId) REFERENCES SalesOrders(OrderId),
+            FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId),
+            FOREIGN KEY (ReturnLocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (ProcessedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items included in a sales return
+        CREATE TABLE SalesReturnItems (
+            ReturnItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ReturnId INT NOT NULL,
+            OrderItemId INT, -- Optional: Link back to the original sales order item
+            ItemId INT NOT NULL,
+            ReturnedQuantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the return
+            ReceivedQuantity DECIMAL(18, 4), -- Actual quantity received
+            Condition VARCHAR(100), -- e.g., New, Used, Damaged
+            RestockedLocationId INT, -- Where the item was restocked (if applicable)
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info on return
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (ReturnId) REFERENCES SalesReturns(ReturnId) ON DELETE CASCADE,
+            FOREIGN KEY (OrderItemId) REFERENCES SalesOrderItems(OrderItemId),
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (RestockedLocationId) REFERENCES Locations(LocationId)
+        );
+
+
+        -- 5. Order Management (Purchasing) Tables
+
+        -- Table for storing supplier details
+        CREATE TABLE Suppliers (
+            SupplierId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(255) NOT NULL UNIQUE,
+            ContactPerson VARCHAR(255),
+            Email VARCHAR(255),
+            Phone VARCHAR(50),
+            Address TEXT,
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for storing purchase order headers
+        CREATE TABLE PurchaseOrders (
+            OrderId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            OrderNumber VARCHAR(100) NOT NULL UNIQUE, -- User-friendly order number
+            SupplierId INT NOT NULL,
+            OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Status VARCHAR(50) DEFAULT 'Draft', -- e.g., Draft, Pending, Ordered, Received, PartiallyReceived, Closed, Cancelled
+            ShippingAddress TEXT, -- Where the order should be shipped
+            BillingAddress TEXT,
+            TotalAmount DECIMAL(18, 4), -- Calculated total
+            Currency VARCHAR(10) DEFAULT 'USD',
+            ExpectedDeliveryDate DATE,
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (SupplierId) REFERENCES Suppliers(SupplierId)
+        );
+
+        -- Table for detailing items within a purchase order
+        CREATE TABLE PurchaseOrderItems (
+            OrderItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            OrderId INT NOT NULL,
+            ItemId INT NOT NULL,
+            Quantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the order
+            UnitCost DECIMAL(18, 4) NOT NULL,
+            LineTotal DECIMAL(18, 4), -- Calculated line total
+            ReceivedQuantity DECIMAL(18, 4) DEFAULT 0, -- Quantity received so far
+            Status VARCHAR(50) DEFAULT 'Pending', -- e.g., Pending, Received, PartiallyReceived, Returned
+            Notes TEXT,
+            FOREIGN KEY (OrderId) REFERENCES PurchaseOrders(OrderId) ON DELETE CASCADE,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+        );
+
+        -- Table for storing receipt headers (from purchase orders or standalone)
+        CREATE TABLE Receipts (
+            ReceiptId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ReceiptNumber VARCHAR(100) UNIQUE, -- User-friendly receipt number
+            PurchaseOrderId INT, -- Optional: Link to original purchase order
+            SupplierId INT, -- Optional: Link to supplier if not from PO
+            ReceiptDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Status VARCHAR(50) DEFAULT 'Pending', -- e.g., Pending, Received, Inspected, Put Away, Cancelled
+            ReceivedByUserId INT, -- Link to a Users table
+            ReceivingLocationId INT NOT NULL, -- Where the items were received
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (PurchaseOrderId) REFERENCES PurchaseOrders(OrderId),
+            FOREIGN KEY (SupplierId) REFERENCES Suppliers(SupplierId),
+            FOREIGN KEY (ReceivingLocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (ReceivedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items included in a receipt
+        CREATE TABLE ReceiptItems (
+            ReceiptItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ReceiptId INT NOT NULL,
+            PurchaseOrderItemId INT, -- Optional: Link back to the original purchase order item
+            ItemId INT NOT NULL,
+            ReceivedQuantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the receipt
+            PutAwayLocationId INT, -- Optional: Where the item was put away
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info on receipt
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            ManufactureDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (ReceiptId) REFERENCES Receipts(ReceiptId) ON DELETE CASCADE,
+            FOREIGN KEY (PurchaseOrderItemId) REFERENCES PurchaseOrderItems(OrderItemId),
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (PutAwayLocationId) REFERENCES Locations(LocationId)
+        );
+
+        -- Table for storing purchase return headers (to suppliers)
+        CREATE TABLE PurchaseReturns (
+            ReturnId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ReturnNumber VARCHAR(100) UNIQUE, -- User-friendly return number
+            PurchaseOrderId INT, -- Optional: Link to original purchase order
+            SupplierId INT NOT NULL,
+            ReturnDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Status VARCHAR(50) DEFAULT 'Requested', -- e.g., Requested, Approved, Shipped, Completed, Cancelled
+            ReturnReason VARCHAR(255),
+            ShipmentDate TIMESTAMP, -- When items were shipped back
+            ShippedByUserId INT, -- Link to a Users table
+            ShippedFromLocationId INT, -- Where the return originated
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (PurchaseOrderId) REFERENCES PurchaseOrders(OrderId),
+            FOREIGN KEY (SupplierId) REFERENCES Suppliers(SupplierId),
+            FOREIGN KEY (ShippedFromLocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (ShippedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items included in a purchase return
+        CREATE TABLE PurchaseReturnItems (
+            ReturnItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ReturnId INT NOT NULL,
+            PurchaseOrderItemId INT, -- Optional: Link back to the original purchase order item
+            ItemId INT NOT NULL,
+            ReturnedQuantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM for this item in the return
+            ShippedQuantity DECIMAL(18, 4), -- Actual quantity shipped back
+            Reason VARCHAR(255),
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info on return
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (ReturnId) REFERENCES PurchaseReturns(ReturnId) ON DELETE CASCADE,
+            FOREIGN KEY (PurchaseOrderItemId) REFERENCES PurchaseOrderItems(OrderItemId),
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+        );
+
+
+        -- 6. Stocktaking & Cycle Counting Tables
+
+        -- Table for storing stocktake event headers
+        CREATE TABLE StocktakeEvents (
+            StocktakeId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            StocktakeNumber VARCHAR(100) UNIQUE, -- User-friendly stocktake number
+            Name VARCHAR(255) NOT NULL,
+            Description TEXT,
+            ScheduledDate DATE,
+            StartDate TIMESTAMP, -- When counting started
+            EndDate TIMESTAMP, -- When counting ended
+            Status VARCHAR(50) DEFAULT 'Scheduled', -- e.g., Scheduled, Initiated, Counting, Reconciliation, Completed, Cancelled
+            InitiatedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+            -- FOREIGN KEY (InitiatedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for specifying locations included in a stocktake (optional, can also be item/category based)
+        -- CREATE TABLE StocktakeLocations (
+        --     StocktakeLocationId INT PRIMARY KEY AUTO_INCREMENT,
+        --     StocktakeId INT NOT NULL,
+        --     LocationId INT NOT NULL,
+        --     FOREIGN KEY (StocktakeId) REFERENCES StocktakeEvents(StocktakeId) ON DELETE CASCADE,
+        --     FOREIGN KEY (LocationId) REFERENCES Locations(LocationId),
+        --     UNIQUE (StocktakeId, LocationId)
+        -- );
+
+        -- Table for recording physical counts during a stocktake
+        CREATE TABLE StocktakeCounts (
+            CountId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            StocktakeId INT NOT NULL,
+            ItemId INT NOT NULL,
+            LocationId INT NOT NULL,
+            CountedQuantity DECIMAL(18, 4) NOT NULL,
+            UnitOfMeasureId INT NOT NULL, -- UoM used for counting
+            SystemQuantityAtCountTime DECIMAL(18, 4), -- System's recorded quantity when count was recorded
+            Variance DECIMAL(18, 4), -- Calculated variance (Counted - System)
+            CountedByUserId INT, -- Link to a Users table
+            CountedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info for the count
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (StocktakeId) REFERENCES StocktakeEvents(StocktakeId) ON DELETE CASCADE,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+            -- FOREIGN KEY (CountedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+
+        -- 7. Kitting & Manufacturing Tables (Optional)
+
+        -- Table for storing Bill of Materials headers
+        CREATE TABLE BillOfMaterials (
+            BomId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            BomNumber VARCHAR(100) UNIQUE, -- User-friendly BOM number
+            FinishedItemId INT NOT NULL, -- The item produced by this BOM
+            Name VARCHAR(255) NOT NULL,
+            Description TEXT,
+            Version VARCHAR(50) DEFAULT '1.0',
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive, Obsolete
+            EffectiveDate DATE,
+            EndDate DATE,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (FinishedItemId) REFERENCES Items(ItemId),
+            UNIQUE (FinishedItemId, Version) -- Ensure unique versions per finished item
+        );
+
+        -- Table for detailing components within a BOM
+        CREATE TABLE BomComponents (
+            BomComponentId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            BomId INT NOT NULL,
+            ComponentItemId INT NOT NULL, -- The item that is a component
+            Quantity DECIMAL(18, 4) NOT NULL, -- Quantity of the component needed
+            UnitOfMeasureId INT NOT NULL, -- UoM for the component quantity
+            Notes TEXT,
+            FOREIGN KEY (BomId) REFERENCES BillOfMaterials(BomId) ON DELETE CASCADE,
+            FOREIGN KEY (ComponentItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId)
+        );
+
+        -- Table for storing production order headers (assembly)
+        CREATE TABLE ProductionOrders (
+            ProductionOrderId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ProductionOrderNumber VARCHAR(100) UNIQUE, -- User-friendly order number
+            BomId INT NOT NULL, -- The BOM being used
+            FinishedItemId INT NOT NULL, -- The item being produced
+            QuantityToProduce DECIMAL(18, 4) NOT NULL,
+            QuantityProduced DECIMAL(18, 4) DEFAULT 0,
+            UnitOfMeasureId INT NOT NULL, -- UoM for the finished item quantity
+            LocationId INT NOT NULL, -- Where production occurs and finished goods are placed
+            Status VARCHAR(50) DEFAULT 'Planned', -- e.g., Planned, In Progress, Completed, Cancelled
+            StartDate TIMESTAMP,
+            EndDate TIMESTAMP,
+            CreatedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (BomId) REFERENCES BillOfMaterials(BomId),
+            FOREIGN KEY (FinishedItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (CreatedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items consumed/produced in a production order
+        -- This can track components consumed and finished goods produced
+        CREATE TABLE ProductionOrderItems (
+            ProductionOrderItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            ProductionOrderId INT NOT NULL,
+            ItemId INT NOT NULL, -- The item (component or finished good)
+            Quantity DECIMAL(18, 4) NOT NULL, -- Quantity consumed (negative) or produced (positive)
+            UnitOfMeasureId INT NOT NULL, -- UoM of the quantity
+            LocationId INT NOT NULL, -- Location where component was taken from or finished good was placed
+            TransactionType VARCHAR(50) NOT NULL, -- 'Consume' or 'Produce'
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (ProductionOrderId) REFERENCES ProductionOrders(ProductionOrderId) ON DELETE CASCADE,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId)
+        );
+
+        -- Table for storing disassembly order headers
+        CREATE TABLE DisassemblyOrders (
+            DisassemblyOrderId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            DisassemblyOrderNumber VARCHAR(100) UNIQUE, -- User-friendly order number
+            FinishedItemId INT NOT NULL, -- The item being disassembled
+            QuantityToDisassemble DECIMAL(18, 4) NOT NULL,
+            QuantityDisassembled DECIMAL(18, 4) DEFAULT 0,
+            UnitOfMeasureId INT NOT NULL, -- UoM for the finished item quantity
+            LocationId INT NOT NULL, -- Where disassembly occurs and components are placed
+            Status VARCHAR(50) DEFAULT 'Planned', -- e.g., Planned, In Progress, Completed, Cancelled
+            StartDate TIMESTAMP,
+            EndDate TIMESTAMP,
+            CreatedByUserId INT, -- Link to a Users table
+            Notes TEXT,
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Adjust for specific DB
+            FOREIGN KEY (FinishedItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId)
+            -- FOREIGN KEY (CreatedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for detailing items consumed/produced in a disassembly order
+        -- This tracks finished goods consumed and components produced
+        CREATE TABLE DisassemblyOrderItems (
+            DisassemblyOrderItemId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            DisassemblyOrderId INT NOT NULL,
+            ItemId INT NOT NULL, -- The item (finished good or component)
+            Quantity DECIMAL(18, 4) NOT NULL, -- Quantity consumed (negative) or produced (positive)
+            UnitOfMeasureId INT NOT NULL, -- UoM of the quantity
+            LocationId INT NOT NULL, -- Location where finished good was taken from or component was placed
+            TransactionType VARCHAR(50) NOT NULL, -- 'Consume' or 'Produce'
+            LotNumber VARCHAR(255), -- Capture lot/serial/expiry info
+            SerialNumber VARCHAR(255),
+            ExpiryDate DATE,
+            Notes TEXT,
+            FOREIGN KEY (DisassemblyOrderId) REFERENCES DisassemblyOrders(DisassemblyOrderId) ON DELETE CASCADE,
+            FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+            FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitsOfMeasure(UomId),
+            FOREIGN KEY (LocationId) REFERENCES Locations(LocationId)
+        );
+
+
+        -- 9. System/Utility Tables
+
+        -- Table for storing system audit logs
+        CREATE TABLE AuditLogs (
+            LogId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            UserId INT, -- Link to the user who performed the action
+            ActionType VARCHAR(100) NOT NULL, -- e.g., Create, Update, Delete, Login, Logout, StockAdjustment, ItemMove
+            EntityType VARCHAR(100), -- e.g., Item, Location, SalesOrder, StockEntry
+            EntityId INT, -- ID of the entity affected
+            Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Details TEXT, -- JSON or text details about the change
+            IpAddress VARCHAR(50),
+            UserAgent TEXT
+            -- FOREIGN KEY (UserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for storing metadata about attached files
+        CREATE TABLE Attachments (
+            AttachmentId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            FileName VARCHAR(255) NOT NULL,
+            FilePath VARCHAR(512) NOT NULL, -- Path or identifier to the stored file
+            FileType VARCHAR(100), -- MIME type
+            FileSize INT, -- File size in bytes
+            EntityType VARCHAR(100) NOT NULL, -- e.g., Item, SalesOrder, Receipt
+            EntityId INT NOT NULL, -- ID of the entity the attachment belongs to
+            UploadedByUserId INT, -- Link to a Users table
+            UploadedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            Notes TEXT
+            -- FOREIGN KEY (UploadedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for storing system settings (simple key-value pairs or more structured)
+        CREATE TABLE Settings (
+            SettingId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            SettingKey VARCHAR(255) NOT NULL UNIQUE,
+            SettingValue TEXT, -- Store value as text, JSON, or appropriate type
+            Description TEXT,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+        );
+
+        -- Table for defining available webhook event types
+        CREATE TABLE WebhookEventTypes (
+            EventTypeId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            Name VARCHAR(100) NOT NULL UNIQUE, -- e.g., stock.updated, salesorder.created, receipt.completed
+            Description TEXT
+        );
+
+        -- Table for storing webhook subscriptions
+        CREATE TABLE WebhookSubscriptions (
+            SubscriptionId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            CallbackUrl VARCHAR(512) NOT NULL, -- URL to send webhook payload
+            SecretKey VARCHAR(255), -- Optional shared secret for verification
+            Status VARCHAR(50) DEFAULT 'Active', -- e.g., Active, Inactive, Error
+            SubscribedByUserId INT, -- Link to a Users table
+            CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Adjust for specific DB
+            -- FOREIGN KEY (SubscribedByUserId) REFERENCES Users(UserId) -- Requires a Users table
+        );
+
+        -- Table for linking webhook subscriptions to specific event types
+        CREATE TABLE SubscriptionEventTypes (
+            SubscriptionEventTypeId INT PRIMARY KEY AUTO_INCREMENT, -- Using AUTO_INCREMENT for simplicity, adjust for specific DB
+            SubscriptionId INT NOT NULL,
+            EventTypeId INT NOT NULL,
+            FOREIGN KEY (SubscriptionId) REFERENCES WebhookSubscriptions(SubscriptionId) ON DELETE CASCADE,
+            FOREIGN KEY (EventTypeId) REFERENCES WebhookEventTypes(EventTypeId),
+            UNIQUE (SubscriptionId, EventTypeId)
+        );
+
+
+        -- Optional: Add indexes for frequently queried columns to improve performance
+        -- CREATE INDEX idx_items_category ON Items(CategoryId);
+        -- CREATE INDEX idx_items_uom ON Items(UnitOfMeasureId);
+        -- CREATE INDEX idx_locations_warehouse ON Locations(WarehouseId);
+        -- CREATE INDEX idx_stockentries_item_location ON StockEntries(ItemId, LocationId);
+        -- CREATE INDEX idx_stockentries_status ON StockEntries(StockStatusId);
+        -- CREATE INDEX idx_stockadjustments_item_location ON StockAdjustments(ItemId, LocationId);
+        -- CREATE INDEX idx_stocktransfers_from_to ON StockTransfers(FromLocationId, ToLocationId);
+        -- CREATE INDEX idx_inventorytransactions_item_location ON InventoryTransactions(ItemId, LocationId);
+        -- CREATE INDEX idx_inventorytransactions_type ON InventoryTransactions(TransactionType);
+        -- CREATE INDEX idx_salesorders_customer ON SalesOrders(CustomerId);
+        -- CREATE INDEX idx_salesorderitems_order ON SalesOrderItems(OrderId);
+        -- CREATE INDEX idx_shipments_order ON Shipments(OrderId);
+        -- CREATE INDEX idx_purchaseorders_supplier ON PurchaseOrders(SupplierId);
+        -- CREATE INDEX idx_purchaseorderitems_order ON PurchaseOrderItems(OrderId);
+        -- CREATE INDEX idx_receipts_po ON Receipts(PurchaseOrderId);
+        -- CREATE INDEX idx_stocktakecounts_stocktake_item_location ON StocktakeCounts(StocktakeId, ItemId, LocationId);
+        -- CREATE INDEX idx_auditlogs_user ON AuditLogs(UserId);
+        -- CREATE INDEX idx_auditlogs_entity ON AuditLogs(EntityType, EntityId);
+
+
+        -- Optional: Add a Users table if not managed externally
+        -- CREATE TABLE Users (
+        --     UserId INT PRIMARY KEY AUTO_INCREMENT,
+        --     Username VARCHAR(255) NOT NULL UNIQUE,
+        --     PasswordHash VARCHAR(255) NOT NULL,
+        --     Email VARCHAR(255) UNIQUE,
+        --     FullName VARCHAR(255),
+        --     Status VARCHAR(50) DEFAULT 'Active',
+        --     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        --     UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        -- );
+
+        -- Remember to configure relationships to the Users table if you create it.
+    </pre>
+</body>
+</html>

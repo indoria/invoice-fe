@@ -1,73 +1,76 @@
-/* style.css - Custom styles for a professional look */
-
-/* Apply base colors and font to the body */
 body {
     font-family: var(--font-family-roboto);
     color: var(--text-color);
     background-color: var(--background-color);
     line-height: 1.6;
-    margin: 0; /* Remove default body margin */
 }
 
-/* Basic container for centering content */
 .container {
-    max-width: 1000px; /* Slightly wider container */
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
-    padding: var(--spacing-4); /* Apply padding from base.css */
+    padding: var(--spacing-4);
 }
 
-/* Header Styling */
 header {
     background-color: var(--background-color-light);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
-    padding: var(--spacing-4) 0; /* Use base.css padding */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: var(--spacing-4) 0;
 }
 
 header h1 {
-    color: var(--primary-color); /* Brand color for the main title */
-    margin-top: 0; /* Remove default h1 top margin */
-    margin-bottom: var(--spacing-4); /* Add space below h1 */
-    font-size: 2em; /* Larger font size */
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: var(--spacing-4);
+    font-size: 2em;
 }
 
-/* Navigation Styling */
 nav a {
-    margin: 0 var(--spacing-4); /* Increase space between links using base.css */
+    margin: 0 var(--spacing-4);
     text-decoration: none;
     color: var(--text-color);
-    font-weight: 500; /* Slightly bolder font */
-    transition: color 0.3s ease; /* Smooth color transition on hover */
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 nav a:hover {
-     color: var(--primary-color); /* Primary color on hover */
+     color: var(--primary-color);
 }
 
-/* Main Content Styling */
+header .container {
+    position: relative;
+}
+
+.user-actions {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    gap: var(--spacing-4);
+}
+
 main {
-    padding: var(--spacing-8) 0; /* Add significant padding top/bottom */
+    padding: var(--spacing-8) 0;
 }
 
 section {
-    background-color: #fff; /* White background for sections */
-    padding: var(--spacing-8); /* Generous padding inside sections */
-    margin-bottom: var(--spacing-8); /* Space between sections */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+    background-color: #fff;
+    padding: var(--spacing-8);
+    margin-bottom: var(--spacing-8);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Heading Styles */
 h2, h3, h4 {
-    color: var(--text-color); /* Use text color for headings */
-    margin-top: 0; /* Remove default top margin */
-    margin-bottom: var(--spacing-4); /* Consistent space below headings */
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: var(--spacing-4);
 }
 
 h2 {
     font-size: 1.8em;
-    border-bottom: 2px solid var(--background-color); /* Subtle separator */
-    padding-bottom: var(--spacing-3); /* Space below the border */
+    border-bottom: 2px solid var(--background-color);
+    padding-bottom: var(--spacing-3);
     margin-bottom: var(--spacing-6);
 }
 
@@ -78,74 +81,70 @@ h3 {
 
 h4 {
     font-size: 1.1em;
-    color: var(--primary-color); /* Primary color for sub-headings/titles */
+    color: var(--primary-color);
     margin-bottom: var(--spacing-3);
 }
 
 
-/* Paragraph Styles */
 p {
-    margin-bottom: var(--spacing-4); /* Add space below paragraphs */
+    margin-bottom: var(--spacing-4);
 }
 
-.lead { /* Style for introductory paragraph */
+.lead {
     font-size: 1.2em;
     font-weight: 300;
     color: #555;
     margin-bottom: var(--spacing-6);
 }
 
-/* List Styles (for milestones/modules) */
 ul {
-    list-style: disc; /* Use bullet points */
-    padding-left: var(--spacing-5); /* Indent list items */
+    list-style: disc;
+    padding-left: var(--spacing-5);
 }
 
 li {
-    margin-bottom: var(--spacing-3); /* Space between list items */
+    margin-bottom: var(--spacing-3);
 }
 
 li strong {
-    color: var(--primary-color); /* Highlight the milestone/module title */
+    color: var(--primary-color);
 }
 
 
-/* Button and Form Element Styling */
 input[type="email"],
 input[type="text"],
 textarea {
-    display: block; /* Make inputs take full width if needed */
-    width: 100%; /* Adjust width as needed, perhaps within a container */
+    display: block;
+    width: 100%;
     padding: var(--spacing-3);
     margin-bottom: var(--spacing-4);
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1em;
-    font-family: inherit; /* Inherit font from body */
+    font-family: inherit;
 }
 
 button[type="submit"] {
     display: inline-block;
     padding: var(--spacing-3) var(--spacing-6);
-    background-color: var(--secondary-color); /* Secondary color for action buttons */
+    background-color: var(--secondary-color);
     color: white;
     border: none;
     border-radius: 4px;
     font-size: 1.1em;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition */
+    transition: background-color 0.3s ease;
     font-weight: 500;
 }
 
 button[type="submit"]:hover {
-    background-color: darken(var(--secondary-color), 10%); /* Darken slightly on hover (Note: CSS variables don't support darken directly, you'd need SASS/LESS or define a hover color variable) - Using a slightly darker hex for demo */
-     background-color: #28b463; /* A slightly darker green */
+     background-color: #28b463;
 }
 
-a[style*="background-color: var(--secondary-color)"] { /* Style the "Suggest Feature" button link */
+a[style*="background-color: var(--secondary-color)"] {
     display: inline-block;
     padding: var(--spacing-3) var(--spacing-6);
-    background-color: var(--secondary-color) !important; /* Use !important to override inline style */
+    background-color: var(--secondary-color) !important;
     color: white !important;
     text-decoration: none;
     border-radius: 4px;
@@ -153,16 +152,15 @@ a[style*="background-color: var(--secondary-color)"] { /* Style the "Suggest Fea
     transition: background-color 0.3s ease;
 }
 a[style*="background-color: var(--secondary-color)"]:hover {
-    background-color: #28b463 !important; /* Slightly darker green on hover */
+    background-color: #28b463 !important;
 }
 
 
-/* Footer Styling */
 footer {
     background-color: var(--background-color-light);
-    padding: var(--spacing-6) 0; /* Use base.css padding */
+    padding: var(--spacing-6) 0;
     font-size: 0.9em;
-    color: #555; /* Slightly muted text color */
+    color: #555;
 }
 
 footer a {
@@ -173,24 +171,23 @@ footer a {
      text-decoration: underline;
  }
 
-/* Specific section styling examples */
 .cta-section {
-    background-color: var(--background-color-light); /* Lighter background for CTA */
+    background-color: var(--background-color-light);
     padding: var(--spacing-8);
     text-align: center;
     border-radius: 8px;
-     box-shadow: none; /* No shadow needed on this lighter section */
+     box-shadow: none;
 }
 
 .cta-form input[type="email"],
 .cta-form button {
-    display: inline-block; /* Arrange side-by-side */
-    width: auto; /* Auto width for inline elements */
-    vertical-align: top; /* Align to the top */
+    display: inline-block;
+    width: auto;
+    vertical-align: top;
 }
 
 .cta-form input[type="email"] {
-     width: 250px; /* Give email input a fixed width */
+     width: 250px;
      margin-right: var(--spacing-3);
-     margin-bottom: 0; /* Remove bottom margin for inline element */
+     margin-bottom: 0;
 }

@@ -1,0 +1,322 @@
+<pre>
+    [entity] : user, role, permission, audit-log, setting, notification, api-doc, warehouse, product, category, purchase-order, sales-order, inventory, webhooks
+    [userEntity] : user, role, permission
+    [auditLogEntity] : user, role, permission
+</pre>
+<pre>
+    1. Authentication & Authorization
+Handles user access and permissions.
+POST   /auth/login               -> User login
+POST   /auth/logout              -> User logout
+POST   /auth/register            -> Register new user (admin-only)
+POST   /auth/refresh             -> Refresh access token
+GET    /auth/me                  -> Get current user info
+</pre>
+
+<pre>
+    2. User Management
+Handles user-related operations.
+GET    /users                    -> Get all users
+POST   /users                    -> Create new user
+
+GET    /users/{id}               -> Get user by ID
+PUT    /users/{id}               -> Update user by ID
+DELETE /users/{id}               -> Delete user by ID
+
+GET    /users/{id}/permissions    -> Get user permissions
+PUT    /users/{id}/permissions    -> Update user permissions
+
+GET    /users/{id}/roles          -> Get user roles
+PUT    /users/{id}/roles          -> Update user roles
+</pre>
+
+<pre>
+    3. Role Management
+Handles role-related operations.
+GET    /roles                    -> Get all roles
+GET    /roles/{id}               -> Get role by ID
+POST   /roles                    -> Create new role
+PUT    /roles/{id}               -> Update role by ID
+DELETE /roles/{id}               -> Delete role by ID
+
+GET    /roles/{id}/permissions    -> Get role permissions
+PUT    /roles/{id}/permissions    -> Update role permissions
+GET    /roles/{id}/users          -> Get users with this role
+PUT    /roles/{id}/users          -> Update users with this role
+</pre>
+<pre>
+    4. Permission Management
+Handles permission-related operations.
+GET    /permissions                -> Get all permissions
+GET    /permissions/{id}           -> Get permission by ID
+POST   /permissions                -> Create new permission
+PUT    /permissions/{id}           -> Update permission by ID
+DELETE /permissions/{id}           -> Delete permission by ID
+GET    /permissions/{id}/roles     -> Get roles with this permission
+PUT    /permissions/{id}/roles     -> Update roles with this permission
+GET    /permissions/{id}/users     -> Get users with this permission
+PUT    /permissions/{id}/users     -> Update users with this permission
+</pre>
+<pre>
+    5. Audit Logs
+Handles audit log-related operations.
+GET    /audit-logs               -> Get all audit logs
+GET    /audit-logs/{id}           -> Get audit log by ID
+POST   /audit-logs               -> Create new audit log
+PUT    /audit-logs/{id}           -> Update audit log by ID
+DELETE /audit-logs/{id}         -> Delete audit log by ID
+GET    /audit-logs/{id}/details    -> Get audit log details
+PUT    /audit-logs/{id}/details     -> Update audit log details
+GET    /audit-logs/{id}/users       -> Get users related to this audit log
+PUT    /audit-logs/{id}/users       -> Update users related to this audit log
+GET    /audit-logs/{id}/roles       -> Get roles related to this audit log
+PUT    /audit-logs/{id}/roles       -> Update roles related to this audit log
+GET    /audit-logs/{id}/permissions  -> Get permissions related to this audit log
+PUT    /audit-logs/{id}/permissions -> Update permissions related to this audit log
+</pre>
+<pre>
+    6. Settings
+Handles application settings.
+GET    /settings                 -> Get all settings
+GET    /settings/{id}             -> Get setting by ID
+POST   /settings                 -> Create new setting
+PUT    /settings/{id}             -> Update setting by ID
+DELETE /settings/{id}          -> Delete setting by ID
+
+GET    /settings/{id}/users        -> Get users related to this setting
+PUT    /settings/{id}/users        -> Update users related to this setting
+GET    /settings/{id}/roles        -> Get roles related to this setting
+PUT    /settings/{id}/roles        -> Update roles related to this setting
+GET    /settings/{id}/permissions  -> Get permissions related to this setting
+PUT    /settings/{id}/permissions -> Update permissions related to this setting
+</pre>
+<pre>
+    7. Notifications
+Handles notification-related operations.
+GET    /notifications            -> Get all notifications
+GET    /notifications/{id}        -> Get notification by ID
+POST   /notifications            -> Create new notification
+PUT    /notifications/{id}        -> Update notification by ID
+DELETE /notifications/{id}     -> Delete notification by ID
+GET    /notifications/{id}/users   -> Get users related to this notification
+PUT    /notifications/{id}/users   -> Update users related to this notification
+GET    /notifications/{id}/roles   -> Get roles related to this notification
+PUT    /notifications/{id}/roles   -> Update roles related to this notification
+
+GET    /notifications/{id}/permissions -> Get permissions related to this notification
+PUT    /notifications/{id}/permissions -> Update permissions related to this notification
+</pre>
+<pre>
+    8. API Documentation
+Handles API documentation-related operations.
+GET    /docs                     -> Get API documentation
+GET    /docs/{id}                 -> Get API documentation by ID
+POST   /docs                     -> Create new API documentation
+PUT    /docs/{id}                 -> Update API documentation by ID
+DELETE /docs/{id}              -> Delete API documentation by ID
+GET    /docs/{id}/users            -> Get users related to this API documentation
+PUT    /docs/{id}/users            -> Update users related to this API documentation
+GET    /docs/{id}/roles            -> Get roles related to this API documentation
+PUT    /docs/{id}/roles            -> Update roles related to this API documentation
+GET    /docs/{id}/permissions      -> Get permissions related to this API documentation
+PUT    /docs/{id}/permissions      -> Update permissions related to this API documentation
+GET    /docs/{id}/audit-logs       -> Get audit logs related to this API documentation
+PUT    /docs/{id}/audit-logs       -> Update audit logs related to this API documentation
+GET    /docs/{id}/settings         -> Get settings related to this API documentation
+PUT    /docs/{id}/settings         -> Update settings related to this API documentation
+GET    /docs/{id}/notifications    -> Get notifications related to this API documentation
+PUT    /docs/{id}/notifications    -> Update notifications related to this API documentation
+GET    /docs/{id}/notifications/{notificationId} -> Get specific notification related to this API documentation
+PUT    /docs/{id}/notifications/{notificationId} -> Update specific notification related to this API documentation
+GET    /docs/{id}/notifications/{notificationId}/users -> Get users related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/users -> Update users related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/roles -> Get roles related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/roles -> Update roles related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/permissions -> Get permissions related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/permissions -> Update permissions related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/audit-logs -> Get audit logs related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/audit-logs -> Update audit logs related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/settings -> Get settings related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/settings -> Update settings related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/docs -> Get API documentation related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/docs -> Update API documentation related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/audit-logs -> Get audit logs related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/audit-logs -> Update audit logs related to this specific notification
+GET    /docs/{id}/notifications/{notificationId}/settings -> Get settings related to this specific notification
+PUT    /docs/{id}/notifications/{notificationId}/settings -> Update settings related to this specific notification-related
+</pre>
+<pre>
+    9. Error Handling
+Handles error-related operations.
+GET    /errors                   -> Get all errors
+GET    /errors/{id}               -> Get error by ID
+POST   /errors                   -> Create new error
+PUT    /errors/{id}               -> Update error by ID
+DELETE /errors/{id}            -> Delete error by ID
+GET    /errors/{id}/users          -> Get users related to this error
+PUT    /errors/{id}/users          -> Update users related to this error
+GET    /errors/{id}/roles          -> Get roles related to this error
+PUT    /errors/{id}/roles          -> Update roles related to this error
+GET    /errors/{id}/permissions    -> Get permissions related to this error
+PUT    /errors/{id}/permissions    -> Update permissions related to this error
+GET    /errors/{id}/audit-logs     -> Get audit logs related to this error
+PUT    /errors/{id}/audit-logs     -> Update audit logs related to this error
+GET    /errors/{id}/settings       -> Get settings related to this error
+PUT    /errors/{id}/settings       -> Update settings related to this error
+GET    /errors/{id}/notifications  -> Get notifications related to this error
+PUT    /errors/{id}/notifications  -> Update notifications related to this error
+GET    /errors/{id}/docs          -> Get API documentation related to this error
+PUT    /errors/{id}/docs          -> Update API documentation related to this error
+</pre>
+<pre>
+    10. Health Check
+Handles health check-related operations.
+GET    /health                   -> Get application health status
+GET    /health/{id}               -> Get health check by ID
+POST   /health                   -> Create new health check
+PUT    /health/{id}               -> Update health check by ID
+DELETE /health/{id}            -> Delete health check by ID
+GET    /health/{id}/users          -> Get users related to this health check
+PUT    /health/{id}/users          -> Update users related to this health check
+...
+</pre>
+
+<pre>
+    11. Product Management
+Handles product-related operations.
+GET    /products                 -> List all products
+GET    /products/{id}            -> Get product details
+POST   /products                 -> Create new product
+PUT    /products/{id}            -> Update product
+DELETE /products/{id}            -> Delete product
+
+GET    /products/search?q=       -> Search products by keyword
+</pre>
+
+<pre>
+    12. Category Management
+    Group and tag products for better organization.
+GET    /categories               -> List all categories
+GET    /categories/{id}           -> Get category details
+POST   /categories               -> Create new category
+PUT    /categories/{id}           -> Update category
+DELETE /categories/{id}           -> Delete category
+GET    /categories/{id}/products   -> Get products in this category
+PUT    /categories/{id}/products   -> Update products in this category
+GET    /categories/{id}/subcategories -> Get subcategories in this category
+PUT    /categories/{id}/subcategories -> Update subcategories in this category
+GET    /categories/{id}/tags        -> Get tags in this category
+PUT    /categories/{id}/tags        -> Update tags in this category
+GET    /categories/{id}/products/search?q= -> Search products in this category
+PUT    /categories/{id}/products/search?q= -> Update products in this category
+GET    /categories/{id}/products/{productId} -> Get specific product in this category
+PUT    /categories/{id}/products/{productId} -> Update specific product in this category
+GET    /categories/{id}/products/{productId}/tags -> Get tags for this product in this category
+PUT    /categories/{id}/products/{productId}/tags -> Update tags for this product in this category
+GET    /categories/{id}/products/{productId}/subcategories -> Get subcategories for this product in this category
+PUT    /categories/{id}/products/{productId}/subcategories -> Update subcategories for this product in this category
+GET    /categories/{id}/products/{productId}/categories -> Get categories for this product in this category
+PUT    /categories/{id}/products/{productId}/categories -> Update categories for this product in this category
+GET    /categories/{id}/products/{productId}/categories/{categoryId} -> Get specific category for this product in this category
+PUT    /categories/{id}/products/{productId}/categories/{categoryId} -> Update specific category for this product in this category
+GET    /categories/{id}/products/{productId}/categories/{categoryId}/tags -> Get tags for this product in this category
+PUT    /categories/{id}/products/{productId}/categories/{categoryId}/tags -> Update tags for this product in this category
+GET    /categories/{id}/products/{productId}/categories/{categoryId}/subcategories -> Get subcategories for this product in this category
+PUT    /categories/{id}/products/{productId}/categories/{categoryId}/subcategories -> Update subcategories for this product in this category
+
+GET    /categories               -> List categories
+POST   /categories               -> Create category
+PUT    /categories/{id}          -> Update category
+DELETE /categories/{id}          -> Delete category
+
+GET    /tags                     -> List tags
+POST   /tags                     -> Create tag
+PUT    /tags/{id}                -> Update tag
+DELETE /tags/{id}                -> Delete tag
+</pre>
+
+<pre>
+    13. Order Management
+Handles order-related operations.
+GET    /orders                   -> List all orders
+GET    /orders/{id}               -> Get order details
+POST   /orders                   -> Create new order
+PUT    /orders/{id}               -> Update order
+DELETE /orders/{id}               -> Delete order
+GET    /orders/{id}/products       -> Get products in this order
+PUT    /orders/{id}/products       -> Update products in this order
+GET    /orders/{id}/users          -> Get users related to this order
+PUT    /orders/{id}/users          -> Update users related to this order
+GET    /orders/{id}/categories      -> Get categories related to this order
+PUT    /orders/{id}/categories      -> Update categories related to this order
+GET    /orders/{id}/tags           -> Get tags related to this order
+PUT    /orders/{id}/tags           -> Update tags related to this order
+GET    /orders/{id}/audit-logs     -> Get audit logs related to this order
+PUT    /orders/{id}/audit-logs     -> Update audit logs related to this order
+GET    /orders/{id}/settings       -> Get settings related to this order
+PUT    /orders/{id}/settings       -> Update settings related to this order
+GET    /orders/{id}/notifications   -> Get notifications related to this order
+PUT    /orders/{id}/notifications   -> Update notifications related to this order
+GET    /orders/{id}/docs           -> Get API documentation related to this order
+PUT    /orders/{id}/docs           -> Update API documentation related to this order
+GET    /orders/{id}/errors         -> Get errors related to this order
+PUT    /orders/{id}/errors         -> Update errors related to this order
+GET    /orders/{id}/health         -> Get health check related to this order
+PUT    /orders/{id}/health         -> Update health check related to this order
+GET    /orders/{id}/products/search?q= -> Search products in this order
+PUT    /orders/{id}/products/search?q= -> Update products in this order
+GET    /orders/{id}/products/{productId} -> Get specific product in this order
+PUT    /orders/{id}/products/{productId} -> Update specific product in this order
+GET    /orders/{id}/products/{productId}/tags -> Get tags for this product in this order
+PUT    /orders/{id}/products/{productId}/tags -> Update tags for this product in this order
+GET    /orders/{id}/products/{productId}/subcategories -> Get subcategories for this product in this order
+PUT    /orders/{id}/products/{productId}/subcategories -> Update subcategories for this product in this order
+GET    /orders/{id}/products/{productId}/categories -> Get categories for this product in this order
+PUT    /orders/{id}/products/{productId}/categories -> Update categories for this product in this order
+GET    /orders/{id}/products/{productId}/categories/{categoryId} -> Get specific category for this product in this order
+PUT    /orders/{id}/products/{productId}/categories/{categoryId} -> Update specific category for this product in this order
+GET    /orders/{id}/products/{productId}/categories/{categoryId}/tags -> Get tags for this product in this order
+PUT    /orders/{id}/products/{productId}/categories/{categoryId}/tags -> Update tags for this product in this order
+GET    /orders/{id}/products/{productId}/categories/{categoryId}/subcategories -> Get subcategories for this product in this order
+PUT    /orders/{id}/products/{productId}/categories/{categoryId}/subcategories -> Update subcategories for this product in this Order
+</pre>
+
+<pre>
+    14. Inventory Management
+    Tracks product stock levels.
+GET    /inventory                -> List all inventory items
+GET    /inventory/{id}            -> Get inventory item details
+POST   /inventory                -> Create new inventory item
+PUT    /inventory/{id}            -> Update inventory item
+DELETE /inventory/{id}            -> Delete inventory item
+GET    /inventory/{id}/products     -> Get products in this inventory item
+PUT    /inventory/{id}/products     -> Update products in this inventory item
+GET    /inventory/{id}/categories   -> Get categories related to this inventory item
+PUT    /inventory/{id}/categories   -> Update categories related to this inventory item
+GET    /inventory/{id}/tags        -> Get tags related to this inventory item
+PUT    /inventory/{id}/tags        -> Update tags related to this inventory items
+
+GET    /inventory                -> List inventory for all products
+GET    /inventory/{product_id}   -> Inventory by product
+PUT    /inventory/{product_id}   -> Update inventory count
+POST   /inventory/adjustments    -> Record stock adjustments
+</pre>
+
+<pre>
+    15. Webhooks and integrations for external services and apps
+Handles webhook-related operations.
+POST   /webhooks/register        -> Register external webhook
+GET    /webhooks                 -> List webhooks
+DELETE /webhooks/{id}            -> Remove webhook
+GET    /webhooks/{id}             -> Get webhook details
+PUT    /webhooks/{id}             -> Update webhook
+</pre>
+
+<pre>
+    16. Reports
+    Generates various reports.
+    GET    /reports/stock-summary
+    GET    /reports/sales-summary
+    GET    /reports/low-stock
+    GET    /reports/inventory-valuation
+</pre>
