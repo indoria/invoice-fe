@@ -1,0 +1,196 @@
+<%- include("partials/head", {"pageTitle" : "Simple Invoicing Software" }) %>
+</head>
+<%- include("partials/header") %>
+<style>
+  .card_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .card_box {
+    width: 200px;
+    min-height: 250px;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55);
+    cursor: pointer;
+    transition: transform .3s ease-in-out;
+    padding: 50px 10px;
+  }
+
+  .card_box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.55);
+  }
+
+  .card_box span {
+    position: absolute;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+    top: -10px;
+    left: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card_box span::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 40px;
+    background-image: linear-gradient(45deg, #ff6547 0%, #ffb144 51%, #ff7053 100%);
+    transform: rotate(-45deg) translateY(-20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.23);
+  }
+
+  .card_box span::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    z-index: -1;
+    box-shadow: 140px -140px #cc3f47;
+    background-image: linear-gradient(45deg, #FF512F 0%, #F09819 51%, #FF512F 100%);
+  }
+  .card_box.free_plan span::before {
+    content: 'Free';
+  }
+  .card_box.basic_plan span::before {
+    content: 'Basic';
+  }
+  .card_box.standard_plan span::before {
+    content: 'Standard';
+  }
+  .card_box.premium_plan {
+    color: #fff;
+    background: linear-gradient(170deg, rgba(58, 56, 56, 0.623) 0%, rgb(31, 31, 31) 100%);
+  }
+  .card_box.premium_plan span::before {
+    content: 'Premium';
+  }
+  .card_box .title {
+    text-align: right;
+    margin: 0;
+  }
+  .card_box ul {
+    margin-top: 20px;
+    padding-top: 20px;
+    text-align: left;
+    border-top: 1px solid currentColor;
+  }
+  .card_box ul li {
+    list-style: disc;
+  }
+  .card_box_static {
+    width: 90%;
+    min-height: 250px;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55);
+    padding: 50px 10px;
+    text-align: center;
+    background-color: #f8f8f8;
+    margin-top: 75px;
+    max-width: 998px;
+  }
+  #faq_container {
+    box-shadow: 0px 2px 11px 0px rgba(0, 0, 0, 0.21);
+    background-color: #fff;
+    max-width: 90%;
+    margin: 0 auto;
+    width: 998px;
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 50px;
+  }
+</style>
+
+<body>
+  <main>
+    <div class="card_container">
+      <div class="card_box free_plan">
+        <span></span>
+        <p class="title">Features</p>
+        <p class="title">$0</p>
+        <ul>
+          <li>5 Invoices monthly</li>
+        </ul>
+      </div>
+      <div class="card_box basic_plan">
+        <span></span>
+        <p class="title">Features</p>
+        <p class="title">$3.99</p>
+        <ul>
+          <li>10 Invoices monthly</li>
+          <li>Address book</li>
+        </ul>
+      </div>
+      <div class="card_box standard_plan">
+        <span></span>
+        <p class="title">Features</p>
+        <p class="title">$6.99</p>
+        <ul>
+          <li>15 Invoices monthly</li>
+          <li>Address book</li>
+          <li>Inventory</li>
+          <li>Recurring Invoices</li>
+          <li>Template Library</li>
+        </ul>
+      </div>
+      <div class="card_box premium_plan">
+        <span></span>
+        <p class="title">Features</p>
+        <p class="title">$35.99</p>
+        <ul>
+          <li>30 Invoices monthly</li>
+          <li>Address book</li>
+          <li>Inventory</li>
+          <li>Recurring Invoices</li>
+          <li>Template Library</li>
+          <li>2 hours of development time</li>
+          <li>24/7 Support</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card_container">
+      <div class="card_box_static">
+        <h2>Create your own plan.</h2>
+        <p>You can pick and choose from array of services we provide and build up your own plan.</p>
+      </div>
+    </div>
+    <div id="faq_container">
+      <h2>Frequently Asked Questions</h2>
+      <p>What is the difference between the plans?</p>
+      <p>The free plan allows you to create 5 invoices per month. The basic plan allows you to create 10 invoices per month and includes an address book. The standard plan allows you to create 15 invoices per month and includes an address book, inventory, recurring invoices, and Template Library. The premium plan allows you to create 30 invoices per month and includes all the features of the standard plan, plus 8 developer hours and 24/7 support.</p>
+      <p>Can I upgrade or downgrade my plan?</p>
+      <p>Yes, you can upgrade or downgrade your plan at any time. Your billing will be adjusted accordingly.</p>
+      <p>What payment methods do you accept?</p>
+      <p>We accept all major credit cards, PayPal, and bank transfers.</p>
+      <p>Is there a money-back guarantee?</p>
+      <p>Yes, we offer a 30-day money-back guarantee. If you are not satisfied with our service, you can request a full refund within 30 days of your purchase.</p>
+      <p>How do I cancel my subscription?</p>
+      <p>You can cancel your subscription at any time by going to your account settings and selecting the cancel option. Your subscription will remain active until the end of the billing cycle.</p>
+      <p>Do you offer a free trial?</p>
+      <p>Yes, we offer a 14-day free trial for all new users. You can sign up for the trial on our website.</p>
+      <p>Can I use the software offline?</p>
+      <p>No, our software is cloud-based and requires an internet connection to access. However, you can download your invoices as PDFs for offline use.</p>
+      <p>Is my data secure?</p>
+      <p>Yes, we take data security very seriously. We use industry-standard encryption and security measures to protect your data. We also have a strict privacy policy in place to ensure that your data is never shared with third parties without your consent.</p>
+      <p>Can I access my account from multiple devices?</p>
+      <p>Yes, you can access your account from any device with an internet connection. Your data will be synced across all devices.</p>
+    </div>
+  </main>
+  <%- include("partials/footer") %>

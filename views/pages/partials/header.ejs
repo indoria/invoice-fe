@@ -1,15 +1,16 @@
 <header>
     <div class="container text-center">
         <h1>BizKit : Tools for Business</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/plan-and-milestones">Milestones & Modules</a>
-            <a href="/contact-us">Contact</a>
-            <a href="/invoice">Invoice</a>
+        <nav id="main-nav">
+            <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Home</a>
+            <a href="/pricing" class="<%= currentPath === '/pricing' ? 'active' : '' %>">Pricing</a>
+            <a href="/plan-and-milestones" class="<%= currentPath === '/plan-and-milestones' ? 'active' : '' %>">Milestones & Modules</a>
+            <a href="/contact-us" class="<%= currentPath === '/contact-us' ? 'active' : '' %>">Contact</a>
+            <a href="/invoice" class="<%= currentPath === '/' ? 'active' : '' %>">Invoice</a>
         </nav>
         <div class="user-actions">
-            <a href="/login" class="btn btn-primary">Login</a>
-            <a href="/register" class="btn btn-secondary">Register</a>
+            <span href="/login" class="btn btn-primary">Login</span>
+            <span href="/register" class="btn btn-secondary">Register</span>
         </div>
     </div>
 </header>

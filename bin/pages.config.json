@@ -1,9 +1,23 @@
 [
     {
-        "template": "index.ejs",
+        "template": "pages/home.ejs",
         "output": "index.html",
         "data": {
             "title": "Home Page"
+        }
+    },
+    {
+        "template": "pages/plan-and-milestone.ejs",
+        "output": "plan-and-milestone.html",
+        "data": {
+            "title": "Plan and Milestone"
+        }
+    },
+    {
+        "template": "pages/contact-us.ejs",
+        "output": "contact-us.html",
+        "data": {
+            "title": "Contact Us"
         }
     }
 ]

@@ -10,11 +10,15 @@ router.get('/plan-and-milestones', (req, res) => {
     res.render('pages/plan-and-milestones', { title: 'Express' });
 });
 
+router.get('/pricing', (req, res) => {
+    res.render('pages/pricing', { title: 'Pricing' });
+});
+
 router.get('/contact-us', (req, res) => {
     res.render('pages/contact-us', { title: 'Contact Us' });
 });
 
-router.get('/invoice', (req, res) => {
+router.get('/invoices', (req, res) => {
     res.render('invoice/index', { title: 'Express' });
 });
 

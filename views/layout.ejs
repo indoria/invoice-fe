@@ -106,6 +106,9 @@
         stroke-linecap: round;
         stroke-linejoin: round;
     }
+    .sidebar-link .collapsed {
+        display: none;
+    }
 </style>
 </head>
 <body>
@@ -150,8 +153,42 @@
             </li>
         </ul>
     </div>
+    <div>
+        <ul class="sidebar-links">
+            <li>
+                <a href="/billing" class="sidebar-link">
+                    <svg class="icon"><use href="/img/icons.svg?v=2#lucide-credit-card"></use></svg>
+                    <span class="sidebar-text">Billing</span>
+                </a>
+            </li>
+            <li>
+                <a href="/support" class="sidebar-link">
+                    <svg class="icon"><use href="/img/icons.svg?v=2#lucide-headphones"></use></svg>
+                    <span class="sidebar-text">Support</span>
+                </a>
+            </li>
+            <li>
+                <a href="/faq" class="sidebar-link">
+                    <svg class="icon"><use href="/img/icons.svg?v=2#lucide-help-circle"></use></svg>
+                    <span class="sidebar-text">FAQ</span>
+                </a>
+            </li>
+            <li>
+                <a href="/contact" class="sidebar-link">
+                    <svg class="icon"><use href="/img/icons.svg?v=2#lucide-mail"></use></svg>
+                    <span class="sidebar-text">Contact</span>
+                </a>
+            </li>
+        </ul>
+    </div>
     <div class="sidebar-bottom">
         <ul class="sidebar-links">
+            <li>
+                <a href="/profile" class="sidebar-link">
+                    <svg class="icon"><use href="/img/icons.svg?v=2#lucide-user"></use></svg>
+                    <span class="sidebar-text">Profile</span>
+                </a>
+            </li>
             <li>
                 <a href="/settings" class="sidebar-link">
                     <svg class="icon"><use href="/img/icons.svg?v=2#lucide-cog"></use></svg>

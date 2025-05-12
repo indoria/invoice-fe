@@ -1,3 +1,6 @@
+html, body {
+    font-size: 14px;
+}
 body {
     font-family: var(--font-family-roboto);
     color: var(--text-color);
@@ -35,6 +38,10 @@ nav a {
 
 nav a:hover {
      color: var(--primary-color);
+}
+
+nav a.active {
+    color: var(--primary-color);
 }
 
 header .container {
