@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/user.js';
 
 const secret = process.env.JWT_SECRET || '';
@@ -21,5 +22,13 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
+    res.json({ token });
+};
+
+export const getAnonymousToken = (req, res) => {
+    const anonId = crypto.randomUUID();
+    const token = jwt.sign({ anonId, role: 'anonymous' }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    });
     res.json({ token });
 };
