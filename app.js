@@ -9,9 +9,11 @@ import { dirname } from 'path';
 import fs from 'fs/promises';
 import errorHandler from './middleware/errorHandler.js';
 import connectDB from './config/db.js';
+
 //import { getAllRoutes } from './utils/routeInspector.js';
 
 dotenv.config();
+connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

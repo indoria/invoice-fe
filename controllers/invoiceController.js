@@ -3,7 +3,6 @@ import Inventory from '../models/inventory.js';
 import Client from '../models/client.js';
 import { validationResult } from 'express-validator';
 
-// Get all invoices
 export const getInvoices = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
