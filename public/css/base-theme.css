@@ -41,8 +41,7 @@
     --spacing-15: 3.75rem;
     --spacing-16: 4rem;
 
-    font-size: 1rem;
-    font-size: clamp(1rem, 0.9rem + 0.3vw, 1.2rem);
+    --base-font-size: 14px;
     --text-color: #2c3e50;
     --font-family-segoe: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
     --font-family-roboto: "Roboto", "Helvetica Neue", sans-serif;
@@ -71,10 +70,10 @@
     padding: 0;
 }
 
-body {
-    font-family: sans-serif;
-    font-size: var(--font-size-paragraph);
-    line-height: var(--base-line-height);
+html, body {
+    font-size: 14px;
+    font-family: --var(--font-family-segoe);
+    background-color: #333;
 }
 
 a {
