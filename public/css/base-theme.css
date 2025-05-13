@@ -72,7 +72,7 @@
 
 html, body {
     font-size: 14px;
-    font-family: --var(--font-family-segoe);
+    font-family: var(--font-family-segoe);
     background-color: #333;
 }
 
