@@ -14,12 +14,16 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
 
     #invoicePreview {
         padding: 20px;
+        font-size: 16px;
+        --font-size-paragraph: 1rem;
     }
     #invoicePreviewToolbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 20px;
+        border-bottom: 1px dashed #ccc;
+        background-color: #f9f9f9;
     }
 
     #invoiceHeaderPreview {
@@ -41,12 +45,12 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
     #billerInfoPreview {
         border-bottom: 1px solid #aaa;
     }
-    #invoiceItemsPreview {
-        border-bottom: 1px dashed #aaa;
-    }
     #invoiceItemsPreview table {
         width: 100%;
         border-collapse: collapse;
+    }
+    #invoiceItemsPreview tbody tr+tr {
+        border-top: 1px dashed #ccc;
     }
     #invoiceItemsPreview thead {
         text-align: left;
@@ -55,6 +59,10 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
     }
     #invoiceItemsPreview th {
         padding: 10px 0;
+    }
+    #invoiceItemsPreview tfoot {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
     }
     #additionalImagesPreview {
         display: flex;
@@ -144,8 +152,8 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
                     <td id="arrearsAmountPreview" class="text-left"></td>
                 </tr>
                 <tr>
-                    <td colspan="3" class="text-right pr-4">Total</td>
-                    <td id="totalPreview" class="text-left"></td>
+                    <td colspan="3" class="text-right pr-4 pb-4 pt-2">Total</td>
+                    <td id="totalPreview" class="text-left pb-4 pt-2"></td>
                 </tr>
             </tfoot>
         </table>
