@@ -9,6 +9,11 @@ git remove -v # get fetch and push urls of origin of current repo
 git config --get remote.origin.url
 git config --get remote.origin.fetch
 
+Git url for using SSH:
+```
+git@github.com:<Username>/<Project>.git
+```
+
 If no origin url is set, you can set it using:
 ```
 git remote add origin <URL>
@@ -24,5 +29,22 @@ git remote set-url --push origin <push-url> # Set push URL
 
 git config --global core.editor "code --wait"
 git config --global color.ui true
+
+To set up SSH keys for GitHub:
+# Create a new SSH key, using the provided email as a label.
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+# Test if ssh-agent is running
+eval "$(ssh-agent -s)"
+# Start the ssh-agent in the background, if it is not already up.
+eval "$(ssh-agent -s)"
+# Add your SSH private key to the ssh-agent.
+ssh-add ~/.ssh/id_rsa
+# Copy the SSH key to your clipboard
+cat ~/.ssh/id_rsa.pub
+# Add the SSH key to your GitHub account
+# Go to GitHub settings -> SSH and GPG keys -> New SSH key
+# Paste the key and save it
+# Test the connection
+ssh -T
 git config --global credential.helper cache
 git config --global credential.helper 'cache --timeout=3600'
