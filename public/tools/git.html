@@ -1,0 +1,28 @@
+download git
+install git
+
+git config --global user.name "Your Name"
+git config --global user.email "Your Email"
+
+git remote show origin # get detailed info about remote repo
+git remove -v # get fetch and push urls of origin of current repo
+git config --get remote.origin.url
+git config --get remote.origin.fetch
+
+If no origin url is set, you can set it using:
+```
+git remote add origin <URL>
+```
+
+If you want to update the origin URL, you can use:
+```
+git remote set-url origin <new-url>
+git remote set-url origin <fetch-url> # Set fetch URL
+git remote set-url --push origin <push-url> # Set push URL
+```
+
+
+git config --global core.editor "code --wait"
+git config --global color.ui true
+git config --global credential.helper cache
+git config --global credential.helper 'cache --timeout=3600'
