@@ -9,6 +9,7 @@ import { dirname } from 'path';
 import fs from 'fs/promises';
 import errorHandler from './middleware/errorHandler.js';
 import connectDB from './config/db.js';
+import config from './config/constants.js';
 
 //import { getAllRoutes } from './utils/routeInspector.js';
 
@@ -19,6 +20,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
+app.locals = {...app.locals, ...config};
 
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
@@ -49,8 +51,6 @@ app.use(cookieParser());
 
 import indexRouter from './routes/index.js';
 app.use('/', indexRouter);
-
-
 
 app.use((req, res, next) => {
     next(createError(404));
