@@ -88,7 +88,7 @@ async function generateExactPdf(containerId) {
 // <div id="myHtmlContainer" style="width: 794px;">...</div>
 // Call: generateExactPdf('myHtmlContainer');
 
-async function generatePdfWithCorrectPageBreaks(containerId) {
+async function generatePdfWithCorrectPageBreaksa(containerId) {
     const input = document.getElementById(containerId);
 
     const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
@@ -128,6 +128,7 @@ async function generatePdfWithCorrectPageBreaks(containerId) {
     currentPageIndex++;
 
     while (heightRemaining > 0) {
+        console.log(heightRemaining)
         pdf.addPage();
 
         const contentAlreadyDisplayed = currentPageIndex * contentHeightPerPage;
@@ -142,6 +143,156 @@ async function generatePdfWithCorrectPageBreaks(containerId) {
     return pdf;
 }
 
+async function generatePdfWithCorrectPageBreaks(containerId) {
+    const input = document.getElementById(containerId);
+
+    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    const margin = 10; // Margin for all sides
+    const availablePdfWidth = pdfWidth - (2 * margin);
+    const availablePdfHeight = pdfHeight - (2 * margin);
+
+    const calculatedScale = 2;
+
+    const canvas = await html2canvas(input, {
+        scale: calculatedScale,
+        useCORS: true,
+        logging: false,
+        letterRendering: true,
+        allowTaint: true,
+        removeContainer: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: input.scrollWidth,
+        windowHeight: input.scrollHeight
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = availablePdfWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightRemaining = imgHeight;
+    let currentYPosition = margin; // Ensuring a proper top margin
+
+    pdf.addImage(imgData, 'PNG', margin, currentYPosition, imgWidth, imgHeight);
+
+    heightRemaining -= availablePdfHeight;
+    currentYPosition += availablePdfHeight;
+
+    while (heightRemaining > 0) {
+        pdf.addPage();
+
+        const contentAlreadyDisplayed = imgHeight - heightRemaining;
+        const yOffsetOnPdfPage = margin - contentAlreadyDisplayed; // Ensuring correct positioning
+
+        pdf.addImage(imgData, 'PNG', margin, yOffsetOnPdfPage, imgWidth, imgHeight);
+
+        heightRemaining -= availablePdfHeight;
+        currentYPosition += availablePdfHeight;
+    }
+
+    return pdf;
+}
+
+
+function pdfDW() {
+    var doc = new jspdf.jsPDF("p", "pt", "letter");
+    var source = document.querySelector("#invoicePreview");
+    var margins = {
+        top: 40,
+        bottom: 60,
+        left: 40,
+        width: 522
+    };
+
+    doc.html(source, {
+        x: margins.left,
+        y: margins.top,
+        html2canvas: { scale: 2 },
+        width: margins.width,
+        callback: function (doc) {
+            doc.save("Test.pdf");
+        }
+    });
+}
+async function pdfDW1() {
+    const doc = new jspdf.jsPDF("p", "pt", "letter");
+    const source = document.querySelector("#invoicePreview"); // The HTML element to convert
+
+    // Use html2canvas to capture the element
+    const canvas = await html2canvas(source, {
+        scale: 2,  // Higher resolution
+        useCORS: true, // Ensure external styles/images load properly
+        logging: false
+    });
+
+    // Convert the canvas to an image
+    const imgData = canvas.toDataURL("image/png");
+
+    // Calculate the image dimensions
+    const imgWidth = doc.internal.pageSize.getWidth() - 40; // Adjusting for margin
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+
+    // Add the image to the PDF
+    doc.addImage(imgData, "PNG", 20, 40, imgWidth, imgHeight);
+
+    // Save the PDF
+    doc.save("Test.pdf");
+}
+
+async function pdfDW2() {
+    const doc = new jspdf.jsPDF("p", "mm", "letter");
+    const source = document.querySelector("#invoicePreview");
+
+    // Capture HTML as canvas
+    const canvas = await html2canvas(source, {
+        scale: 4,
+        useCORS: true
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+
+    // Use actual canvas dimensions for scaling
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+    const scaleFactor = (pageWidth - 2 * margin) / imgWidth; // Maintain aspect ratio
+    const scaledHeight = imgHeight * scaleFactor;
+
+    let yOffset = margin;
+    let heightRemaining = scaledHeight;
+    let sliceStart = 0;
+
+    while (heightRemaining > 0) {
+        let sliceHeight = Math.min(heightRemaining, pageHeight - 2 * margin);
+        
+        // Extract only the portion needed for the current page
+        const croppedCanvas = document.createElement("canvas");
+        croppedCanvas.width = canvas.width;
+        croppedCanvas.height = sliceHeight / scaleFactor; // Convert scaled height back to original scale
+        const ctx = croppedCanvas.getContext("2d");
+
+        ctx.drawImage(canvas, 0, sliceStart, canvas.width, croppedCanvas.height, 0, 0, croppedCanvas.width, croppedCanvas.height);
+
+        const croppedImgData = croppedCanvas.toDataURL("image/png");
+
+        doc.addImage(croppedImgData, "PNG", margin, yOffset, pageWidth - 2 * margin, sliceHeight);
+
+        heightRemaining -= sliceHeight;
+        sliceStart += croppedCanvas.height;
+
+        if (heightRemaining > 0) {
+            doc.addPage();
+            yOffset = margin; // Reset position for next page
+        }
+    }
+
+    return doc;
+}
 
 async function generatePDF(elem = "invoicePreview", output = "preview") {
     if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
@@ -159,7 +310,8 @@ async function generatePDF(elem = "invoicePreview", output = "preview") {
     }
 
     //const pdf = await generatePdfWithCorrectPageBreaks(elem);
-    const pdf = await generateExactPdf(elem);
+    //const pdf = await generateExactPdf(elem);
+    const pdf = await pdfDW2();
 
     let invoiceName = document.getElementById("invoiceNumberPreview").textContent;
     if (!invoiceName || !invoiceName.trim()) {

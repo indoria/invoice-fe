@@ -9,11 +9,10 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
         margin: 0 auto;
         border-radius: 4px;
         background-color: #fff;
-        padding: 0;
+        padding: 20px;
     }
 
     #invoicePreview {
-        padding: 20px;
         font-size: 16px;
         --font-size-paragraph: 1rem;
     }
@@ -21,7 +20,8 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
         border-bottom: 1px dashed #ccc;
         background-color: #f9f9f9;
     }
@@ -126,7 +126,7 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
             <p id="payeeEmail"></p>
         </div>
     </div>
-    <div id="invoiceItemsPreview" class="py-4 mb-4">
+    <div id="invoiceItemsPreview" class="pt-4">
         <table>
             <thead>
                 <tr>
@@ -158,7 +158,7 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
             </tfoot>
         </table>
     </div>
-    <div id="notesPreviewContainer" class="pb-4 mb-4">
+    <div id="notesPreviewContainer" class="pt-4 mt-4">
         <h4>Notes</h4>
         <p id="notesPreview"></p>
     </div>
