@@ -1,297 +1,585 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark"> <!-- Toggle class between 'dark' and 'light' -->
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ubuntu VM + code-server Setup Guide</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f6f8fa;
-    margin: 0;
-    padding: 1rem 2rem 3rem;
-    color: #24292f;
-    line-height: 1.5;
-  }
-  h1, h2 {
-    color: #0366d6;
-    margin-top: 2rem;
-  }
-  p {
-    max-width: 720px;
-  }
-  pre {
-    background: #0d1117;
-    color: #c9d1d9;
-    padding: 1rem 1.5rem 1.2rem 1.5rem;
-    border-radius: 8px;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 0.9rem;
-    position: relative;
-    overflow-x: auto;
-    margin-bottom: 1.5rem;
-  }
-  .code-block {
-    position: relative;
-    margin-top: 1rem;
-  }
-  .code-toolbar {
-    position: absolute;
-    top: 0.4rem;
-    right: 0.6rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-  .code-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #8b949e;
-    font-size: 1.2rem;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-  }
-  .code-btn:hover {
-    background-color: #30363d;
-    color: #58a6ff;
-  }
-  .icon {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    fill: currentColor;
-  }
-  textarea.code-edit {
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 0.9rem;
-    background: #0d1117;
-    color: #c9d1d9;
-    border-radius: 8px;
-    border: none;
-    padding: 1rem 1.5rem;
-    width: 720px;
-    min-height: 120px;
-    resize: vertical;
-    margin-top: 0.8rem;
-    display: none;
-  }
-  .edited {
-    border: 1.5px solid #58a6ff;
-    display: block !important;
-  }
-  button.run-code {
-    background-color: #238636;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 0.4rem 0.8rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-top: 0.6rem;
-    display: none;
-  }
-  button.run-code.visible {
-    display: inline-block;
-  }
-  .note {
-    font-size: 0.85rem;
-    color: #57606a;
-    margin-bottom: 1rem;
-    max-width: 720px;
-  }
-  a {
-    color: #0969da;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>ChatGPT-style Code Block with Theme Support</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --fg: #1e1e1e;
+            --code-bg: #f5f5f5;
+            --toolbar-bg: #e0e0e0;
+            --toolbar-fg: #333;
+            --button-hover: #111;
+        }
+
+        html.dark {
+            --bg: #1e1e1e;
+            --fg: #dcdcdc;
+            --code-bg: #2d2d2d;
+            --toolbar-bg: #3a3a3a;
+            --toolbar-fg: #ccc;
+            --button-hover: #fff;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg);
+            color: var(--fg);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .code-wrapper {
+            background-color: var(--code-bg);
+            color: var(--fg);
+            border-radius: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            font-family: "Fira Code", monospace;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .code-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--toolbar-bg);
+            color: var(--toolbar-fg);
+            font-size: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .toolbar-left {
+            font-family: monospace;
+            font-size: 0.75rem;
+            text-transform: lowercase;
+        }
+
+        .toolbar-right button {
+            background: none;
+            border: none;
+            color: var(--toolbar-fg);
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .toolbar-right button:hover {
+            color: var(--button-hover);
+        }
+
+        .toolbar-right svg {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+        }
+
+        pre,
+        textarea {
+            margin: 0;
+            padding: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            display: none;
+            width: 100%;
+            height: 200px;
+            background-color: var(--code-bg);
+            color: var(--fg);
+            border: none;
+            resize: vertical;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        .code-wrapper .edit-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        nav {
+            position: fixed;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav a {
+            color: var(--fg);
+        }
+
+        img {
+            max-width: 350px;
+            max-height: 350px;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>Step-by-step Guide to Set Up Ubuntu VM for code-server & Deploy Your GitHub Repo</h1>
-<ul>
-  <li>Create a VM</li>
-  <li>Update VM</li>
-  <li>Install basic dependancies (curl, git, ufw)</li>
-  <li>Install app dependancies (node via npm, python via pyenv)</li>
-  <li>Setup app</li>
-  <li>Install code-server</li>
-  <li>Setup code-server as daemon</li>
-  <li>Install ngix</li>
-  <li>Setup nginx</li>
-</ul>
 
-<section>
-  <h2>1. Create and Set Up an Ubuntu VM on Azure</h2>
-  <p>Create an Ubuntu Server VM from the Azure portal or CLI. Make sure you open port 22 for SSH and port 8080 (or 80 if using Nginx) for HTTP access.</p>
+    <h1>Step-by-step Guide to Set Up Ubuntu VM for code-server & Deploy Your GitHub Repo</h1>
+    <h2>Setting up a cloud development environment</h2>
+    <section id="systemSpecs">
+        <ul>
+            <li>Deploy and edit code on same machine (VM or POD)</li>
+            <li>Collaboration : It should allow multiple people to collaborate on same project</li>
+        </ul>
+    </section>
+    <section id="nonFunctionSpecs">
+        <h3>Collaboration</h3>
+        <ul>
+            <li>On starting up the IDE, it should pull latest code from github, else there may be conflicts if dev
+                starts editing as soon as IDE spins up</li>
+        </ul>
+    </section>
+    <nav>
+        <a href="#creatingVM">Create a VM</a>
+        <a href="#connectVM">Connecting to the VM</a>
+        <a href="#prepareVM">Preparing the VM</a>
+        <a href="#setupCodeServer">Set up Code-Server</a>
+        <a href="#setupApplication">Set up application</a>
+        <a href="#setupReverseProxy">Set up reverse proxy</a>
+    </nav>
 
-  <div class="code-block">
-    <pre id="step1"># SSH into your VM (replace with your VM IP and user)
-ssh azureuser@<VM-IP>
+    <section id="creatingVM">
+        <h2>Create a VM</h2>
+        <p>It should have following ports open : </p>
+        <ul>
+            <li><span>22</span> To SSH into it, if required. <i>Create and download the key before VM creation.</i></li>
+            <li><span>80</span> This is where the web application would be visible. Some other port like 3000 can be
+                chosen as well.</li>
+            <li><span>443</span> If SSL is to be installed and the app is to be served via HTTPS.</li>
+            <li><span>8080</span> This is where code-server (VS Code IDE) would be available. We do not need to do it
+                manually.</li>
+        </ul>
+        <img src="./img/ports.png">
+    </section>
 
-# Update and upgrade packages
-sudo apt update && sudo apt upgrade -y
+    <section id="connectVM">
+        <h2>Connecting to the VM</h2>
+        <ul>
+            <li>We have already opened up the port 22 on the VM in previous step. And, downloaded the SSH key.</li>
+            <li>
+                <p>Update permissions of the key.pem file to 0400 (Another page for errors)</p>
+            </li>
+            <li>
+                Connect to the VM using
+                <code class="code" data-lang="bash">
+                    ssh -i /path/to/id_rsa.pem <username>@<public-IP>
+                </code>
+                <div>
+                    <p>Wrong SSH key permissions : Permissions 0644 for 'id_rsa.pem' are too open</p>
+                    <img src="./img/wrong-permissions.png" />
+                </div>
+                <div>
+                    <p>Fixing wrong permissions</p>
+                    <code class="code" data-lang="bash">
+                        chmod 0400 id_rsa.pem
+                    </code>
+                    Now try connecting again.
+                </div>
+                <p>If you want to delete all ssh keys. Warning : This will delete ALL keys, use it only if you fully
+                    understand it.</p>
 
-# Install essential packages
-sudo apt install -y curl git ufw
-    </pre>
-    <div class="code-toolbar">
-      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
-      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
-    </div>
-    <textarea class="code-edit" aria-label="Edit code for step 1"></textarea>
-  </div>
-</section>
+                <code class="code" data-lang="bash">
+                    ssh-add -D
+                </code>
+            </li>
+        </ul>
+    </section>
 
-<section>
-  <h2>2. Deploy a GitHub Repository</h2>
-  <h3>Option A: Manually using SSH</h3>
-  <p>Clone your repo and start your project from the SSH terminal.</p>
+    <section id="prepareVM">
+        <h3>Preparing the VM</h3>
+        <code class="code" data-lang="bash">
+            sudo apt update && sudo apt upgrade
+        </code>
+        <img src="./img/update-and-upgrade.png" />
+        <h3>Confirm base packages are installed and are latest (newest version)</h3>
+        <code class="code" data-lang="bash">
+            sudo apt install -y git curl ufw
+        </code>
+    </section>
 
-  <div class="code-block">
-    <pre id="step2a"># Clone your GitHub repo
-git clone https://github.com/yourusername/yourrepo.git
-cd yourrepo
+    <section id="setupCodeServer">
+        <code class="code" data-lang="bash">
+            curl -fsSL https://code-server.dev/install.sh | sh
+        </code>
+        <img src="./img/code-server-install.png" />
 
-# Install dependencies (example: Node.js)
-npm install
+        <div class="test-run">
+            <p>
+                For testing purpose you can start code-server on port 80 using following command and view the IDE on
+                http://&gt;public-IP&lt;
+            </p>
+            <code class="code" data-lang="bash">
+                sudo code-server --bind-addr 0.0.0.0:80 --auth password
+            </code>
+            <p>This is just for testing, we want our application running on the HTTP port (80) and not the editor. This
+                is to confirm that code-server was installed and is running properly.</p>
+        </div>
 
-# Start your app (example)
-npm start
-    </pre>
-    <div class="code-toolbar">
-      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
-      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
-    </div>
-    <textarea class="code-edit" aria-label="Edit code for step 2a"></textarea>
-  </div>
+        <p>Open the port 8080 on the VM. The code server would not work on port 80 [Non-privileged user (not root) can't
+            open a listening socket on ports below 1024] </p>
+        <img src="./img/vm-network-settings-port.png" />
+        <p>We'd create a TCP "inbound port rule" on port 8080, with a low priority of 1000</p>
+        <img src="./img/open-inbound-port-8080.png" />
+        <p>The password would be in file /root/.config/code-server/config.yaml, it's content would be as follows</p>
+        <code class="code" data-lang="text">
+            bind-addr: 127.0.0.1:8080
+            auth: password
+            password: 90de71f43a902f7cbb1eb670
+            cert: false
+        </code>
 
-  <h3>Option B: Using code-server frontend</h3>
-  <p>Open your code-server IDE in the browser, open terminal there, and run the above git clone and npm commands.</p>
-  <p>This way, you don’t need to open a separate SSH terminal.</p>
-</section>
+        <p>Test installation</p>
+        <code class="code" data-lang="bash">
+            code-server --version
+            code-server --bind-addr 0.0.0.0:8080 --auth password
+        </code>
+        <img src="./img/code-server-service.png" />
+        <p>Navigate to the public IP at port 8080 of VM in browser.</p>
+        <code class="code" data-lang="text">
+            http://<publicIP>:8080
+        </code>
 
-<section>
-  <h2>3. Set Up Nginx Reverse Proxy</h2>
-  <p>This will let you serve your app on port 80 and optionally secure it.</p>
+        <code class="code" data-lang="bash">
+            sudo netstat -tulnp | grep 8080
+            ss | grep 8080
+            sudo systemctl enable --now code-server@$USER
+            systemctl restart code-server@$USER
 
-  <div class="code-block">
-    <pre id="step3"># Install nginx if not installed
-sudo apt update
-sudo apt install -y nginx
+        </code>
 
-# Create a reverse proxy config file
-cat <<EOF | sudo tee /etc/nginx/sites-available/reverse-proxy
-server {
-    listen 80 default_server;
-    server_name _;
+        <div>
+            <h2>et Up code-server as a systemd Service</h2>
+            <p>This will make sure code-server runs automatically on VM startup.</p>
 
-    location / {
-        proxy_pass http://localhost:3000/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOF
+            <code class="code" data-lang="text">
+                sudo nano /etc/systemd/system/code-server.service
+            </code>
+            # Paste this content (replace <b>azureuser</b> and <b>password</b> accordingly)
+            <code class="code" data-lang="text">
+                [Unit]
+                Description=code-server
+                After=network.target
+                
+                [Service]
+                Type=simple
+                User=azureuser
+                ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
+                Restart=always
+                RestartSec=10
+                Environment=PASSWORD=your_password_here
+                
+                [Install]
+                WantedBy=multi-user.target
+            </code>
 
-# Enable the reverse proxy site
-sudo ln -s /etc/nginx/sites-available/reverse-proxy /etc/nginx/sites-enabled/
+            # Reload systemd and enable service
+            <code class="code" data-lang="bash">
+                sudo systemctl daemon-reload
+                sudo systemctl enable code-server
+                sudo systemctl start code-server
+            </code>
 
-# Disable default nginx site
-sudo rm -f /etc/nginx/sites-enabled/default
+            # Check status
+            <code class="code" data-lang="bash">
+                sudo systemctl status code-server
+            </code>
+        </div>
+    </section>
 
-# Test nginx config and reload
-sudo nginx -t && sudo systemctl reload nginx
-    </pre>
-    <div class="code-toolbar">
-      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
-      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
-    </div>
-    <textarea class="code-edit" aria-label="Edit code for step 3"></textarea>
-  </div>
-</section>
+    <section id="setupApplication">
+        <h3>Set up Application</h3>
+        <p>To set up application you can either SSH into machine and clone the git repo, or, you can use code server to clone the repo</p>
+        <p>Set up nodejs application</p>
+        <code class="code" data-lang="bash">
+            # nvm from https://github.com/nvm-sh/nvm
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+            source ~/.bashrc
+            nvm --version
+            nvm install --lts
+            nvm ls
+            nvm use <node-alias | version>
+            node --version
+            npm i
+        </code>
+    </section>
 
-<section>
-  <h2>4. Set Up code-server as a systemd Service</h2>
-  <p>This will make sure code-server runs automatically on VM startup.</p>
+    <section id="setupReverseProxy">
+        <h3>Setting up nginx as reverse proxy</h3>
+        <code class="code" data-lang="bash">
+            sudo apt install -y nginx
+            # create a file reverse-proxy as shown in codeblock below, then proceed with following instructions
+            sudo ln -s /etc/nginx/sites-available/reverse-proxy /etc/nginx/sites-enabled/
+            sudo rm -f /etc/nginx/sites-enabled/default
+            sudo nginx -t && sudo systemctl reload nginx
+            sudo systemctl status nginx
+            sudo systemctl enable nginx
+            sudo systemctl start nginx
+        </code>
+        <code class="code" data-lang="text">
+            # Content of /etc/nginx/sites-available/reverse-proxy
+            server {
+                listen 80 default_server;
+                server_name _;
+            
+                location / {
+                    proxy_pass http://localhost:3000/;
+                    proxy_http_version 1.1;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                }
+            }
+        </code>
+        <p>Navigating to ip should throw 502 (Bad Gateway) error. After Starting the application using npm should fix it.</p>
+    </section>
 
-  <div class="code-block">
-    <pre id="step4">sudo nano /etc/systemd/system/code-server.service
-# Paste this content (replace 'azureuser' and password accordingly)
+    <section>
+        <img src="./img/extension-host-agent.png" />
+    </section>
 
-[Unit]
-Description=code-server
-After=network.target
+    <script>
+        const CodeEditorBlock = (function () {
+            const instances = [];
+            let globalCloseTags = false;
 
-[Service]
-Type=simple
-User=azureuser
-ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
-Restart=always
-RestartSec=10
-Environment=PASSWORD=your_password_here
+            const copyIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>`;
+            const checkIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2l-4.2-4.2L3 13.8l6 6 12-12-1.8-1.8z"/></svg>`;
+            const saveIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2v-2h2v2h14v-2h2v2a2 2 0 0 1-2 2zM7 11h10v2H7zm-4-4v2h14v-2z"/></svg>`;
+            const editIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0L15.12 5.1l3.75 3.75 1.84-1.81z"/></svg>`;
 
-[Install]
-WantedBy=multi-user.target
+            // Language icons keyed by lower-case language name, styled to match toolbar icons
+            const languageIcons = {
+                bash: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+            <path d="M3 4v16h18V4H3zm16 14H5V6h14v12zM7 8h10v2H7V8zm0 4h7v2H7v-2z"/>
+          </svg>`,
+                javascript: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+                   <path d="M2 2h20v20H2V2zm15.5 15.5l-3.5-2 3.5-2v4zm-7-7v-4H7v4h3.5z"/>
+                 </svg>`,
+                js: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+           <path d="M2 2h20v20H2V2zm15.5 15.5l-3.5-2 3.5-2v4zm-7-7v-4H7v4h3.5z"/>
+         </svg>`,
+                css: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+            <path d="M3 3h18v18H3V3zm15 16v-2H6v2h12zm0-4V7H6v8h12z"/>
+          </svg>`,
+                html: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+            <path d="M4 4l7 8-7 8V4zm16 0v16l-7-8 7-8z"/>
+          </svg>`,
+                text: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+            <path d="M4 4h16v16H4V4zm14 14V6H6v12h12z"/>
+          </svg>`,
+                python: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+              <path d="M12 2c-3 0-5 2-5 5v2h10v-2c0-3-2-5-5-5zm-5 7H7v6h10v-2c0-3-2-5-5-5z"/>
+            </svg>`,
+                java: `<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;">
+            <path d="M12 2s4 1 4 5-4 5-4 5-4-1-4-5 4-5 4-5z"/>
+            <path d="M8 12c1 1 3 2 6 2s5-1 5-1-1 5-7 5-7-5-7-5z"/>
+          </svg>`
+            };
 
-# Reload systemd and enable service
-sudo systemctl daemon-reload
-sudo systemctl enable code-server
-sudo systemctl start code-server
+            function escapeHTML(str, closeTags = false) {
+                if (!closeTags) {
+                    const stripClosing = s => s.replace(/<\/[^>]+>/g, '').trim();
+                    str = stripClosing(str);
+                }
+                const trimAroundNewlines = s => s.replace(/[ \t]*\n[ \t]*/g, '\n');
+                str = trimAroundNewlines(str);
+                let escaped = str
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+                if (closeTags) {
+                    escaped = escaped.replace(/&lt;(\w+)([^&]*?)\/?&gt;/g, (_, tag, attrs) => {
+                        return `&lt;${tag}${attrs}&gt;&lt;/${tag}&gt;`;
+                    });
+                }
 
-# Check status
-sudo systemctl status code-server
-    </pre>
-    <div class="code-toolbar">
-      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
-      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
-    </div>
-    <textarea class="code-edit" aria-label="Edit code for step 4"></textarea>
-  </div>
-</section>
+                return escaped;
+            }
 
-<script>
-  // Copy button logic
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const pre = btn.closest('.code-block').querySelector('pre');
-      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
-        btn.textContent = '✓';
-        setTimeout(() => btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>` , 1500);
-      });
-    });
-  });
+            function createWrapper(originalCodeEl, closeTagsDefault) {
+                const lang = originalCodeEl.dataset.lang || 'text';
+                const langLower = lang.toLowerCase();
+                const editable = originalCodeEl.dataset.editable === 'true';
+                const closeTagAttr = originalCodeEl.dataset.close_tag === 'true';
 
-  // Edit button logic
-  document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const codeBlock = btn.closest('.code-block');
-      const pre = codeBlock.querySelector('pre');
-      const textarea = codeBlock.querySelector('textarea.code-edit');
-      if (textarea.style.display === 'block') {
-        // Save edit
-        pre.textContent = textarea.value;
-        textarea.style.display = 'none';
-        btn.title = 'Edit';
-        btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>`;
-      } else {
-        // Show textarea with code content
-        textarea.value = pre.textContent;
-        textarea.style.display = 'block';
-        textarea.focus();
-        btn.title = 'Save';
-        btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2v-2h2v2h14v-2h2v2a2 2 0 0 1-2 2zM7 11h10v2H7zm-4-4v2h14v-2z"/></svg>`;
-      }
-    });
-  });
-</script>
+                let closeTags = closeTagAttr || (langLower === 'html') || closeTagsDefault;
 
+                const rawHTML = originalCodeEl.innerHTML.trim();
+                const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
+                const escapedHTML = escapeHTML(rawHTML, closeTags);
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper';
+
+                // Get language icon or empty string
+                const langIcon = languageIcons[langLower] || '';
+
+                wrapper.innerHTML = `
+      <div class="code-toolbar">
+        <span class="toolbar-left">${langIcon}${lang}</span>
+        <div class="toolbar-right">
+          <button class="copy-btn" title="Copy">${copyIcon}</button>
+          <button class="edit-btn ${editable ? '' : 'disabled'}" title="Edit" ${editable ? '' : 'disabled'}>${editIcon}</button>
+        </div>
+      </div>
+      <pre><code class="code" id="${codeId}" data-editable="${editable}">${escapedHTML}</code></pre>
+      <textarea class="code-editor" style="display: none;"></textarea>
+    `;
+
+                const parent = originalCodeEl.parentElement;
+                parent.replaceChild(wrapper, originalCodeEl);
+
+                const codeEl = wrapper.querySelector('code');
+                const copyBtn = wrapper.querySelector('.copy-btn');
+                const editBtn = wrapper.querySelector('.edit-btn');
+                const textarea = wrapper.querySelector('.code-editor');
+
+                attachHandlers(copyBtn, editBtn, codeEl, textarea, closeTags);
+
+                const instance = {
+                    wrapper,
+                    codeEl,
+                    textarea,
+                    copyBtn,
+                    editBtn,
+                    setClosingTagHTML: function (value) {
+                        this.closeTags = value;
+                    },
+                    closeTags
+                };
+
+                instances.push(instance);
+                return instance;
+            }
+
+            function attachHandlers(copyBtn, editBtn, codeEl, textarea, closeTags) {
+                copyBtn.addEventListener('click', () => {
+                    const rawCode = codeEl.textContent.trim();
+                    navigator.clipboard.writeText(rawCode).then(() => {
+                        copyBtn.innerHTML = checkIcon;
+                        setTimeout(() => {
+                            copyBtn.innerHTML = copyIcon;
+                        }, 1500);
+                    }).catch(err => {
+                        console.error('Copy failed:', err);
+                    });
+                });
+
+                editBtn.addEventListener('click', () => {
+                    if (codeEl.dataset.editable !== 'true') return;
+
+                    const isEditing = textarea.style.display === 'block';
+                    if (isEditing) {
+                        const newText = textarea.value;
+                        codeEl.innerHTML = escapeHTML(newText, closeTags);
+                        textarea.style.display = 'none';
+                        editBtn.title = 'Edit';
+                        editBtn.innerHTML = editIcon;
+                    } else {
+                        textarea.value = codeEl.textContent;
+                        textarea.style.display = 'block';
+                        textarea.focus();
+                        editBtn.title = 'Save';
+                        editBtn.innerHTML = saveIcon;
+                    }
+                });
+            }
+
+            function updateEditability(inst, editable) {
+                inst.codeEl.dataset.editable = String(editable);
+                if (editable) {
+                    inst.editBtn.disabled = false;
+                    inst.editBtn.classList.remove('disabled');
+                } else {
+                    inst.editBtn.disabled = true;
+                    inst.editBtn.classList.add('disabled');
+                    inst.textarea.style.display = 'none';
+                    inst.editBtn.title = 'Edit';
+                    inst.editBtn.innerHTML = editIcon;
+                }
+            }
+
+            function add(selector) {
+                const nodes = document.querySelectorAll(selector);
+                return Array.from(nodes).map((codeEl) => {
+                    if (!codeEl.closest('.code-wrapper')) {
+                        return createWrapper(codeEl, globalCloseTags);
+                    }
+                }).filter(Boolean);
+            }
+
+            function all() {
+                return instances;
+            }
+
+            function remove(selector) {
+                const nodes = document.querySelectorAll(selector);
+                nodes.forEach((codeEl) => {
+                    const wrapper = codeEl.closest('.code-wrapper');
+                    if (wrapper) {
+                        wrapper.remove();
+                        const idx = instances.findIndex(i => i.codeEl === codeEl);
+                        if (idx !== -1) instances.splice(idx, 1);
+                    }
+                });
+            }
+
+            function update(selector, newCode) {
+                const nodes = document.querySelectorAll(selector);
+                nodes.forEach((codeEl) => {
+                    const inst = instances.find(i => i.codeEl === codeEl);
+                    if (inst) {
+                        inst.codeEl.innerHTML = escapeHTML(newCode, inst.closeTags);
+                        inst.textarea.value = newCode;
+                    }
+                });
+            }
+
+            function getCode(selector) {
+                const node = document.querySelector(selector);
+                const inst = instances.find(i => i.codeEl === node);
+                return inst ? inst.codeEl.textContent : null;
+            }
+
+            function setEditable(selector, editable) {
+                const nodes = document.querySelectorAll(selector);
+                nodes.forEach((codeEl) => {
+                    const inst = instances.find(i => i.codeEl === codeEl);
+                    if (inst) updateEditability(inst, editable);
+                });
+            }
+
+            function setClosingTagHTML(value) {
+                globalCloseTags = value;
+            }
+
+            return {
+                add,
+                all,
+                remove,
+                update,
+                getCode,
+                setEditable,
+                setClosingTagHTML // Global setting
+            };
+        })();
+
+        CodeEditorBlock.add("code.code");
+    </script>
 </body>
+
 </html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ubuntu VM + code-server Setup Guide</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f6f8fa;
+    margin: 0;
+    padding: 1rem 2rem 3rem;
+    color: #24292f;
+    line-height: 1.5;
+  }
+  h1, h2 {
+    color: #0366d6;
+    margin-top: 2rem;
+  }
+  p {
+    max-width: 720px;
+  }
+  pre {
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 1rem 1.5rem 1.2rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9rem;
+    position: relative;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  .code-block {
+    position: relative;
+    margin-top: 1rem;
+  }
+  .code-toolbar {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.6rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .code-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #8b949e;
+    font-size: 1.2rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  .code-btn:hover {
+    background-color: #30363d;
+    color: #58a6ff;
+  }
+  .icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    fill: currentColor;
+  }
+  textarea.code-edit {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9rem;
+    background: #0d1117;
+    color: #c9d1d9;
+    border-radius: 8px;
+    border: none;
+    padding: 1rem 1.5rem;
+    width: 720px;
+    min-height: 120px;
+    resize: vertical;
+    margin-top: 0.8rem;
+    display: none;
+  }
+  .edited {
+    border: 1.5px solid #58a6ff;
+    display: block !important;
+  }
+  button.run-code {
+    background-color: #238636;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0.4rem 0.8rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 0.6rem;
+    display: none;
+  }
+  button.run-code.visible {
+    display: inline-block;
+  }
+  .note {
+    font-size: 0.85rem;
+    color: #57606a;
+    margin-bottom: 1rem;
+    max-width: 720px;
+  }
+  a {
+    color: #0969da;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<h1>Step-by-step Guide to Set Up Ubuntu VM for code-server & Deploy Your GitHub Repo</h1>
+<ul>
+  <li>Create a VM</li>
+  <li>Update VM</li>
+  <li>Install basic dependancies (curl, git, ufw)</li>
+  <li>Install app dependancies (node via npm, python via pyenv)</li>
+  <li>Setup app</li>
+  <li>Install code-server</li>
+  <li>Setup code-server as daemon</li>
+  <li>Install ngix</li>
+  <li>Setup nginx</li>
+</ul>
+
+<section>
+  <h2>1. Create and Set Up an Ubuntu VM on Azure</h2>
+  <p>Create an Ubuntu Server VM from the Azure portal or CLI. Make sure you open port 22 for SSH and port 8080 (or 80 if using Nginx) for HTTP access.</p>
+
+  <div class="code-block">
+    <pre id="step1"># SSH into your VM (replace with your VM IP and user)
+ssh azureuser@<VM-IP>
+
+# Update and upgrade packages
+sudo apt update && sudo apt upgrade -y
+
+# Install essential packages
+sudo apt install -y curl git ufw
+    </pre>
+    <div class="code-toolbar">
+      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
+      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
+    </div>
+    <textarea class="code-edit" aria-label="Edit code for step 1"></textarea>
+  </div>
+</section>
+
+<section>
+  <h2>2. Deploy a GitHub Repository</h2>
+  <h3>Option A: Manually using SSH</h3>
+  <p>Clone your repo and start your project from the SSH terminal.</p>
+
+  <div class="code-block">
+    <pre id="step2a"># Clone your GitHub repo
+git clone https://github.com/yourusername/yourrepo.git
+cd yourrepo
+
+# Install dependencies (example: Node.js)
+npm install
+
+# Start your app (example)
+npm start
+    </pre>
+    <div class="code-toolbar">
+      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
+      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
+    </div>
+    <textarea class="code-edit" aria-label="Edit code for step 2a"></textarea>
+  </div>
+
+  <h3>Option B: Using code-server frontend</h3>
+  <p>Open your code-server IDE in the browser, open terminal there, and run the above git clone and npm commands.</p>
+  <p>This way, you don’t need to open a separate SSH terminal.</p>
+</section>
+
+<section>
+  <h2>3. Set Up Nginx Reverse Proxy</h2>
+  <p>This will let you serve your app on port 80 and optionally secure it.</p>
+
+  <div class="code-block">
+    <pre id="step3"># Install nginx if not installed
+sudo apt update
+sudo apt install -y nginx
+
+# Create a reverse proxy config file
+cat <<EOF | sudo tee /etc/nginx/sites-available/reverse-proxy
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location / {
+        proxy_pass http://localhost:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+EOF
+
+# Enable the reverse proxy site
+sudo ln -s /etc/nginx/sites-available/reverse-proxy /etc/nginx/sites-enabled/
+
+# Disable default nginx site
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Test nginx config and reload
+sudo nginx -t && sudo systemctl reload nginx
+    </pre>
+    <div class="code-toolbar">
+      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
+      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
+    </div>
+    <textarea class="code-edit" aria-label="Edit code for step 3"></textarea>
+  </div>
+</section>
+
+<section>
+  <h2>4. Set Up code-server as a systemd Service</h2>
+  <p>This will make sure code-server runs automatically on VM startup.</p>
+
+  <div class="code-block">
+    <pre id="step4">sudo nano /etc/systemd/system/code-server.service
+# Paste this content (replace 'azureuser' and password accordingly)
+
+[Unit]
+Description=code-server
+After=network.target
+
+[Service]
+Type=simple
+User=azureuser
+ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
+Restart=always
+RestartSec=10
+Environment=PASSWORD=your_password_here
+
+[Install]
+WantedBy=multi-user.target
+
+# Reload systemd and enable service
+sudo systemctl daemon-reload
+sudo systemctl enable code-server
+sudo systemctl start code-server
+
+# Check status
+sudo systemctl status code-server
+    </pre>
+    <div class="code-toolbar">
+      <button class="code-btn copy-btn" title="Copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg></button>
+      <button class="code-btn edit-btn" title="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg></button>
+    </div>
+    <textarea class="code-edit" aria-label="Edit code for step 4"></textarea>
+  </div>
+</section>
+
+<script>
+  // Copy button logic
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pre = btn.closest('.code-block').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+        btn.textContent = '✓';
+        setTimeout(() => btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zM19 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>` , 1500);
+      });
+    });
+  });
+
+  // Edit button logic
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const codeBlock = btn.closest('.code-block');
+      const pre = codeBlock.querySelector('pre');
+      const textarea = codeBlock.querySelector('textarea.code-edit');
+      if (textarea.style.display === 'block') {
+        // Save edit
+        pre.textContent = textarea.value;
+        textarea.style.display = 'none';
+        btn.title = 'Edit';
+        btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>`;
+      } else {
+        // Show textarea with code content
+        textarea.value = pre.textContent;
+        textarea.style.display = 'block';
+        textarea.focus();
+        btn.title = 'Save';
+        btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2v-2h2v2h14v-2h2v2a2 2 0 0 1-2 2zM7 11h10v2H7zm-4-4v2h14v-2z"/></svg>`;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
