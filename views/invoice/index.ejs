@@ -10,10 +10,6 @@
         font-family: var(--font-family-segoe);
     }
 
-    main {
-        min-height: calc(90vh);
-    }
-
     input[type="text"],
     input[type="email"],
     input[type="tel"],
@@ -31,6 +27,7 @@
         width: 1200px;
         margin: 0 auto;
         display: flex;
+        flex-direction: column;
     }
 
     .invoiceFormContainer {
@@ -112,6 +109,11 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         min-height: 250px;
+    }
+    @media (min-width: 768px) {
+        .container {
+            flex-direction: row;
+        }
     }
 </style>
 </head>

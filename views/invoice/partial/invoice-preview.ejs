@@ -13,8 +13,7 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
     }
 
     #invoicePreview {
-        font-size: 16px;
-        --font-size-paragraph: 1rem;
+        --font-size-paragraph: 15px;
     }
     #invoicePreviewToolbar {
         display: flex;
@@ -82,6 +81,26 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
     #invoicePreview p {
         padding-top: 10px;
     }
+</style>
+<style>
+  .page-break {
+    display: block;
+    height: 0;
+    border-top: 2px dashed #ccc;
+    margin: 30px 0;
+    position: relative;
+  }
+
+  .page-break::after {
+    content: "Page Break";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: white;
+    color: #999;
+    font-size: 12px;
+    padding: 0 4px;
+  }
 </style>
 
 <% } else if(blockType === 'html') { %>
@@ -158,6 +177,7 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
             </tfoot>
         </table>
     </div>
+    <div class="page-breaks no-print"></div>
     <div id="notesPreviewContainer" class="pt-4 mt-4">
         <h4>Notes</h4>
         <p id="notesPreview"></p>
@@ -306,14 +326,5 @@ blockType = (typeof blockType !== 'undefined' ? blockType : 'html');
             addSignature();
             addAdditionalImages();
         }
-
-        /*
-        document.getElementById("invoiceForm").addEventListener("input", generateInvoicePreview);
-        document.getElementById("invoiceForm").addEventListener("change", generateInvoicePreview);
-        document.querySelectorAll("input[type=file]").forEach(input => {
-            console.log(input);
-            input.addEventListener("change", generateInvoicePreview);
-        });
-        */
     </script>
 <% } %>

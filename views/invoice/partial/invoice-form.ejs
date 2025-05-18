@@ -115,6 +115,36 @@
             justify-content: flex-start;
             align-items: center;
         }
+        .removeItem {
+            font-size: 18px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .removeItem:hover {
+            background: #f0f0f0;
+            color: #000;
+        }
+
+        .removeItem:focus {
+            outline: 2px solid #ccc;
+        }
+        .removeItem::before {
+            content: "\00D7";
+            font-size: 20px;
+            font-weight: bold;
+            color: #666;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
     </style>
 <% } else if(blockType==='html' ) { %>
     <form id="invoiceForm" name="invoiceForm">
@@ -218,7 +248,6 @@
                         <th>Quantity</th>
                         <th>Discount (%)</th>
                         <th>Total</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -236,9 +265,9 @@
                         <td>
                             <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount">
                         </td>
-                        <td class="itemTotal">$20.00</td>
-                        <td>
-                            <button type="button" class="removeItem">Remove</button>
+                        <td class="itemTotals">
+                            <span class="itemTotal">$20.00</span>
+                            <button type="button" class="removeItem"></button>
                         </td>
                     </tr>
                     <tr class="item-row">
@@ -255,19 +284,19 @@
                         <td>
                             <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount">
                         </td>
-                        <td class="itemTotal">$15.00</td>
-                        <td>
-                            <button type="button" class="removeItem">Remove</button>
+                        <td class="itemTotals">
+                            <span class="itemTotal">$15.00</span>
+                            <button type="button" class="removeItem"></button>
                         </td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="text-right">Subtotal:</td>
+                        <td colspan="4" class="text-right">Subtotal:</td>
                         <td id="subtotal">$35.00</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="text-right">
+                        <td colspan="4" class="text-right">
                             <label for="overallDiscount">Overall Discount (%):</label>
                             <input type="number" id="overallDiscount" name="overallDiscount" value="0" step="0.1" min="0"
                                 max="100">
@@ -275,21 +304,21 @@
                         <td id="overallDiscountAmount">$0.00</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="text-right">
+                        <td colspan="4" class="text-right">
                             <label for="taxRate">Tax Rate (%):</label>
                             <input type="number" id="taxRate" name="taxRate" value="10" step="0.1">
                         </td>
                         <td id="taxAmount">$3.50</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="text-right">
+                        <td colspan="4" class="text-right">
                             <label for="arrears">Overdue / Arrears:</label>
                             <input type="number" id="arrears" name="arrears" value="0" step="0.01">
                         </td>
                         <td id="arrearsAmount">$0.00</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="text-right">Total:</td>
+                        <td colspan="4" class="text-right">Total:</td>
                         <td id="total">$38.50</td>
                     </tr>
                 </tfoot>
@@ -390,21 +419,21 @@
             newItemRow.classList.add('item-row');
             newItemRow.innerHTML = `
     <td>
-        <input type="text" name="itemName[]" class="item-name">
-        <textarea name="itemDescription[]" class="item-description"></textarea>
+        <input type="text" name="itemName[]" class="item-name" placeholder="Item name">
+        <textarea name="itemDescription[]" class="item-description" placeholder="Item Description (optional)"></textarea>
     </td>
     <td>
-        <input type="number" name="itemUnitPrice[]" value="0.00" step="0.01" class="item-unit-price">
+        <input type="number" name="itemUnitPrice[]" value="0.00" step="0.01" class="item-unit-price" placeholder="Price per unit">
     </td>
     <td>
-        <input type="number" name="itemQuantity[]" value="1" min="0" class="item-quantity">
+        <input type="number" name="itemQuantity[]" value="1" min="0" class="item-quantity" placeholder="Quantity">
     </td>
      <td>
-        <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount">
+        <input type="number" name="itemDiscount[]" value="0" step="0.1" min="0" max="100" class="item-discount" placeholder="Discount">
     </td>
-    <td class="itemTotal">$0.00</td>
-    <td>
-        <button type="button" class="removeItem">Remove</button>
+    <td class="itemTotals">
+        <span class="itemTotal">$0.00</span>
+        <button type="button" class="removeItem"></button>
     </td>
 `;
             tbody.appendChild(newItemRow);

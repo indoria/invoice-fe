@@ -243,7 +243,7 @@ async function pdfDW1() {
 }
 
 async function pdfDW2() {
-    const doc = new jspdf.jsPDF("p", "mm", "letter");
+    const doc = new jspdf.jsPDF("p", "px", "letter");
     const source = document.querySelector("#invoicePreview");
 
     // Capture HTML as canvas
@@ -294,6 +294,137 @@ async function pdfDW2() {
     return doc;
 }
 
+async function pdfDW3() {
+    const doc = new jspdf.jsPDF("p", "mm", "a4");
+    const source = document.querySelector("#invoicePreview");
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+
+    const canvas = await html2canvas(source, {
+        scale: 4,
+        useCORS: true,
+        ignoreElements: (element) => {
+            return element.classList.contains("no-print");
+        }
+    });
+
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const scaleFactor = (pageWidth - 2 * margin) / imgWidth;
+    const scaledHeight = imgHeight * scaleFactor;
+
+    // Find page break positions in pixels relative to the canvas
+    const pageBreaks = Array.from(source.querySelectorAll(".page-break")).map(el => {
+        const rect = el.getBoundingClientRect();
+        const containerRect = source.getBoundingClientRect();
+        const offsetY = (rect.top - containerRect.top) * 4; // scale = 4
+        return offsetY;
+    });
+
+    // Add the end of document as a final break point
+    pageBreaks.push(imgHeight);
+
+    let previousBreak = 0;
+
+    for (let i = 0; i < pageBreaks.length; i++) {
+        const breakY = pageBreaks[i];
+        const sliceHeight = breakY - previousBreak;
+
+        const croppedCanvas = document.createElement("canvas");
+        croppedCanvas.width = canvas.width;
+        croppedCanvas.height = sliceHeight;
+
+        const ctx = croppedCanvas.getContext("2d");
+        ctx.drawImage(
+            canvas,
+            0, previousBreak,
+            canvas.width, sliceHeight,
+            0, 0,
+            canvas.width, sliceHeight
+        );
+
+        const croppedImgData = croppedCanvas.toDataURL("image/png");
+        const scaledSliceHeight = sliceHeight * scaleFactor;
+
+        doc.addImage(croppedImgData, "PNG", margin, margin, pageWidth - 2 * margin, scaledSliceHeight);
+
+        if (i < pageBreaks.length - 1) {
+            doc.addPage();
+        }
+
+        previousBreak = breakY;
+    }
+
+    return doc;
+}
+
+async function pdfDW4() {
+    const doc = new jspdf.jsPDF("p", "px", "letter");
+    const source = document.querySelector("#invoicePreview");
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+
+    const scale = 4;
+    const canvas = await html2canvas(source, {
+        scale,
+        useCORS: true,
+        ignoreElements: (element) => element.classList.contains("no-print")
+    });
+
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const scaleFactor = (pageWidth - 2 * margin) / imgWidth;
+
+    // --- Manual page breaks from .page-break ---
+    const manualBreaks = Array.from(source.querySelectorAll(".page-break")).map(el => {
+        const rect = el.getBoundingClientRect();
+        const parentRect = source.getBoundingClientRect();
+        return (rect.top - parentRect.top) * scale;
+    });
+
+    // --- Automatic page breaks every N pixels (based on scaled height) ---
+    const scaledPageHeight = (pageHeight - 2 * margin) / scaleFactor;
+    const automaticBreaks = [];
+    for (let y = scaledPageHeight; y < imgHeight; y += scaledPageHeight) {
+        automaticBreaks.push(Math.floor(y));
+    }
+
+    // --- Combine and deduplicate breakpoints ---
+    const allBreaks = Array.from(new Set([...manualBreaks, ...automaticBreaks])).sort((a, b) => a - b);
+    allBreaks.push(imgHeight); // Final bottom boundary
+
+    let previousY = 0;
+
+    for (let i = 0; i < allBreaks.length; i++) {
+        const breakY = allBreaks[i];
+        const sliceHeight = breakY - previousY;
+
+        const croppedCanvas = document.createElement("canvas");
+        croppedCanvas.width = canvas.width;
+        croppedCanvas.height = sliceHeight;
+
+        const ctx = croppedCanvas.getContext("2d");
+        ctx.drawImage(canvas, 0, previousY, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
+
+        const imgData = croppedCanvas.toDataURL("image/png");
+        const scaledHeight = sliceHeight * scaleFactor;
+
+        doc.addImage(imgData, "PNG", margin, margin, pageWidth - 2 * margin, scaledHeight);
+
+        if (i < allBreaks.length - 1) doc.addPage();
+
+        previousY = breakY;
+    }
+
+    return doc;
+}
+
+
+
 async function generatePDF(elem = "invoicePreview", output = "preview") {
     if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
         console.error('html2canvas or jsPDF is not loaded');
@@ -311,7 +442,7 @@ async function generatePDF(elem = "invoicePreview", output = "preview") {
 
     //const pdf = await generatePdfWithCorrectPageBreaks(elem);
     //const pdf = await generateExactPdf(elem);
-    const pdf = await pdfDW2();
+    const pdf = await pdfDW4();
 
     let invoiceName = document.getElementById("invoiceNumberPreview").textContent;
     if (!invoiceName || !invoiceName.trim()) {

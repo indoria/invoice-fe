@@ -50,7 +50,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 import indexRouter from './routes/index.js';
-app.use('/', indexRouter);
+app.use(indexRouter);
 
 app.use((req, res, next) => {
     next(createError(404));
