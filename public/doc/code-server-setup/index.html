@@ -344,6 +344,36 @@
                 }
             }
         </code>
+        <code class="code" data-lang="bash">
+            # Set up node service
+            [Unit]
+            Description=Invoice FE Node App
+            After=network.target
+
+            [Service]
+            Type=simple
+            User=azureuser
+            WorkingDirectory=/home/azureuser/invoice-fe
+            ExecStart=/home/azureuser/.nvm/versions/node/v22.15.1/bin/npm start
+            Restart=on-failure
+            Environment=PATH=/home/azureuser/.nvm/versions/node/v22.15.1/bin:/usr/bin:/bin
+            Environment=NODE_ENV=production
+
+            [Install]
+            WantedBy=multi-user.target
+        </code>
+        <code class="code" data-lang="bash">
+            # Restart/Stop/Start daemon-reload
+            sudo systemctl daemon-reexec        # Only if systemd was updated
+            sudo systemctl daemon-reload
+            sudo systemctl enable invoice-fe
+            sudo systemctl start invoice-fe
+            sudo systemctl status invoice-fe
+        </code>
+        <code class="code" data-lang="bash">
+            # Monitoring the service
+            journalctl -u invoice-fe -f
+        </code>
         <p>Navigating to ip should throw 502 (Bad Gateway) error. After Starting the application using npm should fix it.</p>
     </section>
 
