@@ -1,0 +1,15 @@
+[Unit]
+Description="Invoice FE"
+
+[Service]
+ExecStart=/usr/bin/node server.js
+WorkingDirectory=/home/azureuser/invoice-fe
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=MyApp
+Environment=NODE_ENV=production PORT=8080
+
+[Install]
+WantedBy=multi-user.target

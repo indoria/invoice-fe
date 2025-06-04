@@ -1,0 +1,98 @@
+.dark-md {
+  --md-theme-dark-primary: #BB86FC;
+  --md-theme-dark-primary-variant: #3700B3;
+
+  --md-theme-dark-secondary: #03DAC6;
+  --md-theme-dark-secondary-variant: #03DAC6;
+
+  --md-theme-dark-background: #121212;
+  --md-theme-dark-surface: #1E1E1E;
+  --md-theme-dark-error: #CF6679;
+
+  --md-theme-dark-on-primary: #000000;
+  --md-theme-dark-on-secondary: #000000;
+  --md-theme-dark-on-background: #FFFFFF;
+  --md-theme-dark-on-surface: #FFFFFF;
+  --md-theme-dark-on-error: #000000;
+
+  --md-theme-dark-text-high-emphasis: rgba(255, 255, 255, 0.87);
+  --md-theme-dark-text-medium-emphasis: rgba(255, 255, 255, 0.60);
+  --md-theme-dark-text-disabled: rgba(255, 255, 255, 0.38);
+
+  --md-theme-dark-icon-active: rgba(255, 255, 255, 1);
+  --md-theme-dark-icon-inactive: rgba(255, 255, 255, 0.50);
+  --md-theme-dark-icon-disabled: rgba(255, 255, 255, 0.38);
+
+  --md-theme-dark-state-hover-opacity: 0.04;
+  --md-theme-dark-state-focus-opacity: 0.12;
+  --md-theme-dark-state-pressed-opacity: 0.12;
+  --md-theme-dark-state-dragged-opacity: 0.08;
+
+  --md-theme-dark-elevation-overlay-1: 0.05;
+  --md-theme-dark-elevation-overlay-2: 0.07;
+  --md-theme-dark-elevation-overlay-3: 0.08;
+  --md-theme-dark-elevation-overlay-4: 0.09;
+  --md-theme-dark-elevation-overlay-6: 0.11;
+  --md-theme-dark-elevation-overlay-8: 0.12;
+  --md-theme-dark-elevation-overlay-12: 0.14;
+  --md-theme-dark-elevation-overlay-16: 0.15;
+  --md-theme-dark-elevation-overlay-24: 0.16;
+
+  --md-theme-dark-primary-rgb: 187, 134, 252;
+
+  /* --- Box Shadows for Elevation --- */
+  /* These are standard shadow values for different elevation levels in Material Design */
+  --md-theme-dark-elevation-shadow-1: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-2: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-3: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-4: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-6: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-8: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-12: 0px 7px 8px -4px rgba(0, 0, 0, 0.2), 0px 12px 17px 2px rgba(0, 0, 0, 0.14), 0px 5px 22px 4px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 14px 23px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+  --md-theme-dark-elevation-shadow-24: 0px 9px 12px -6px rgba(0, 0, 0, 0.2), 0px 16px 29px 2px rgba(0, 0, 0, 0.14), 0px 10px 37px 7px rgba(0, 0, 0, 0.12);
+}
+
+
+.light {
+  --md-theme-light-primary: #6200EE;
+  --md-theme-light-primary-variant: #3700B3;
+
+  --md-theme-light-secondary: #03DAC4;
+  --md-theme-light-secondary-variant: #018786;
+
+  --md-theme-light-background: #FFFFFF;
+  --md-theme-light-surface: #FFFFFF;
+  --md-theme-light-error: #B00020;
+
+  --md-theme-light-on-primary: #FFFFFF;
+  --md-theme-light-on-secondary: #000000;
+  --md-theme-light-on-background: #000000;
+  --md-theme-light-on-surface: #000000;
+  --md-theme-light-on-error: #FFFFFF;
+
+  --md-theme-light-text-high-emphasis: rgba(0, 0, 0, 0.87);
+  --md-theme-light-text-medium-emphasis: rgba(0, 0, 0, 0.60);
+  --md-theme-light-text-disabled: rgba(0, 0, 0, 0.38);
+
+  --md-theme-light-icon-active: rgba(0, 0, 0, 1);
+  --md-theme-light-icon-inactive: rgba(0, 0, 0, 0.50);
+  --md-theme-light-icon-disabled: rgba(0, 0, 0, 0.38);
+
+  --md-theme-light-state-hover-opacity: 0.04;
+  --md-theme-light-state-focus-opacity: 0.12;
+  --md-theme-light-state-pressed-opacity: 0.12;
+  --md-theme-light-state-dragged-opacity: 0.08;
+
+  --md-theme-light-elevation-shadow-1: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-2: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-3: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-4: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-6: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-8: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-12: 0px 7px 8px -4px rgba(0, 0, 0, 0.2), 0px 12px 17px 2px rgba(0, 0, 0, 0.14), 0px 5px 22px 4px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-16: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 14px 23px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
+  --md-theme-light-elevation-shadow-24: 0px 9px 12px -6px rgba(0, 0, 0, 0.2), 0px 16px 29px 2px rgba(0, 0, 0, 0.14), 0px 10px 37px 7px rgba(0, 0, 0, 0.12);
+
+  --md-theme-light-primary-rgb: 98, 0, 238;
+}

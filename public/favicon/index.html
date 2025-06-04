@@ -1,0 +1,38 @@
+change-the-favicon-dynamically-based-on-user-color-scheme-preference/
+
+https://phuoc.ng/collection/html-dom/change-the-favicon-dynamically-based-on-user-color-scheme-preference/
+
+
+copy to clipboard svg
+<svg width="24" height="24" viewBox="-0.5 -0.5 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.104 20.604h-7.667a0.958 0.958 0 0 1 -0.958 -0.958v-15.333a0.958 0.958 0 0 1 0.958 -0.958h1.917"></path><path d="M12.938 3.354h1.917a0.958 0.958 0 0 1 0.958 0.958V7.667"></path><path d="M6.708 1.916a1.438 1.438 0 1 0 2.875 0 1.438 1.438 0 1 0 -2.875 0"></path><path d="M9.502 2.396H11.979a0.958 0.958 0 0 1 0.958 0.958v0.958a0.958 0.958 0 0 1 -0.958 0.958h-7.667a0.958 0.958 0 0 1 -0.958 -0.958v-0.958a0.958 0.958 0 0 1 0.958 -0.958h2.477"></path><path d="M21.563 21.563a0.958 0.958 0 0 1 -0.958 0.958h-8.625a0.958 0.958 0 0 1 -0.958 -0.958V10.542a0.958 0.958 0 0 1 0.958 -0.958h6.791a0.958 0.958 0 0 1 0.678 0.281l1.834 1.834a0.958 0.958 0 0 1 0.281 0.678Z"></path><path d="m13.896 13.895 4.792 0"></path><path d="m13.896 16.77 4.792 0"></path></svg>
+
+
+if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // User prefers dark color scheme
+} else {
+    // User prefers light color scheme
+}
+
+
+const setFavicon = () => {
+    const favicon = document.querySelector('link[rel="icon"]');
+    favicon.href = (window.matchMedia('(prefers-color-scheme: dark)').matches)
+                    ? 'dark-mode-favicon.png'
+                    : 'light-mode-favicon.png';
+};
+
+setFavicon();
+
+
+window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', setFavicon);
+
+
+
+    <link href="light-mode-favicon.png" rel="icon" media="(prefers-color-scheme: light)">
+<link href="dark-mode-favicon.png" rel="icon" media="(prefers-color-scheme: dark)">
+
+
+
+https://phuoc.ng/collection/html-dom/change-the-favicon-dynamically-based-on-user-color-scheme-preference/

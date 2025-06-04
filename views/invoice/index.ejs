@@ -15,6 +15,7 @@
     input[type="tel"],
     input[type="date"],
     select,
+    textarea,
     input[type="number"] {
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -24,15 +25,12 @@
     }
 
     .container {
-        width: 1200px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
     }
 
-    .invoiceFormContainer {
-        width: 800px;
-    }
+    .invoiceFormContainer {}
 
     .invoiceForm {
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -40,7 +38,6 @@
     }
 
     aside {
-        width: 400px;
         padding-left: 20px;
     }
 
@@ -110,6 +107,7 @@
         border-radius: 4px;
         min-height: 250px;
     }
+
     @media (min-width: 768px) {
         .container {
             flex-direction: row;
@@ -126,81 +124,81 @@
         <div class="container">
             <div id="invoiceContainer">
                 <% include partial/navbar %>
-                <div id="invoiceFormContainer" class="tab-content active invoiceForm">
-                    <%- include("partial/invoice-form", { 'blockType' : 'html' }) %>
-                </div>
-                <div id="invoicePreviewContainer" class="tab-content invoicePreview">
-                    <%- include("partial/invoice-preview", { 'blockType' : "html" }) %>
-                </div>
-                <div id="invoiceHistoryContainer" class="tab-content invoiceHistory">
-                    <%- include("partial/invoice-history") %>
-                </div>
-                <div id="invoiceSchedulingContainer" class="tab-content invoiceScheduling">
-                    <%- include("partial/invoice-scheduling") %>
-                </div>
-                <div id="invoicePDFContainer" class="tab-content invoicePDF">
-                    <%- include("partial/invoice-pdf") %>
-                </div>
-                <div id="invoiceEmailContainer" class="tab-content invoiceEmail">
-                    <%- include("partial/invoice-email") %>
-                </div>
-        </div>
-        <aside>
-            <div class="asideSection">
-                <p class="title">Preview via email</p>
-                <p><input type="text" placeholder="email"></p>
-                <button class="navbar-button navbar-button-primary">Send</button>
+                    <div id="invoiceFormContainer" class="tab-content active invoiceForm">
+                        <%- include("partial/invoice-form", { 'blockType' : 'html' }) %>
+                    </div>
+                    <div id="invoicePreviewContainer" class="tab-content invoicePreview">
+                        <%- include("partial/invoice-preview", { 'blockType' : "html" }) %>
+                    </div>
+                    <div id="invoiceHistoryContainer" class="tab-content invoiceHistory">
+                        <%- include("partial/invoice-history") %>
+                    </div>
+                    <div id="invoiceSchedulingContainer" class="tab-content invoiceScheduling">
+                        <%- include("partial/invoice-scheduling") %>
+                    </div>
+                    <div id="invoicePDFContainer" class="tab-content invoicePDF">
+                        <%- include("partial/invoice-pdf") %>
+                    </div>
+                    <div id="invoiceEmailContainer" class="tab-content invoiceEmail">
+                        <%- include("partial/invoice-email") %>
+                    </div>
             </div>
-        </aside>
-    </div>
-</main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
-    integrity="sha512-ad3j5/L4h648YM/KObaUfjCsZRBP9sAOmpjaT2BDx6u9aBrKFp7SbeHykruy83rxfmG42+5QqeL/ngcojglbJw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-    integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="js/image-uploader-single.js"></script>
-<script src="js/image-uploader-multiple.js"></script>
-<script src="js/due-date-picker.js"></script>
-<script>
-    const navbarButtons = document.querySelectorAll('nav .navbar-button');
-    navbarButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (button.classList.contains('active')) {
-                return;
-            }
-            button.classList.toggle('active');
-            navbarButtons.forEach(btn => {
-                if (btn !== button) {
-                    btn.classList.remove('active');
+            <aside>
+                <div class="asideSection">
+                    <p class="title">Preview via email</p>
+                    <p><input type="text" placeholder="email"></p>
+                    <button class="navbar-button navbar-button-primary">Send</button>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"
+        integrity="sha512-ad3j5/L4h648YM/KObaUfjCsZRBP9sAOmpjaT2BDx6u9aBrKFp7SbeHykruy83rxfmG42+5QqeL/ngcojglbJw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/image-uploader-single.js"></script>
+    <script src="js/image-uploader-multiple.js"></script>
+    <script src="js/due-date-picker.js"></script>
+    <script>
+        const navbarButtons = document.querySelectorAll('nav .navbar-button');
+        navbarButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.classList.contains('active')) {
+                    return;
+                }
+                button.classList.toggle('active');
+                navbarButtons.forEach(btn => {
+                    if (btn !== button) {
+                        btn.classList.remove('active');
+                    }
+                });
+
+
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                const targetTabId = button.getAttribute('data-tab');
+                const targetTabContent = document.getElementById(targetTabId);
+
+                if (targetTabContent) {
+                    targetTabContent.classList.add('active');
                 }
             });
-
-
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-
-            const targetTabId = button.getAttribute('data-tab');
-            const targetTabContent = document.getElementById(targetTabId);
-
-            if (targetTabContent) {
-                targetTabContent.classList.add('active');
-            }
         });
-    });
-</script>
-<%- include("partial/invoice-form", { 'blockType' : "js" }) %>
-<%- include("partial/invoice-preview", { 'blockType' : "js" }) %>
-<script type="text/javascript" src="js/scripts.js"></script>
-<script>
-    document.querySelector("button[data-tab='invoicePreviewContainer']").addEventListener("click", () => {
-        generateInvoicePreview();
-    });
-    document.querySelector("button#generatePDFButton").addEventListener("click", () => {
-        console.log("PDF button clicked");
-        generateInvoicePreview();
-        generatePDF("invoicePreview");
-    });
-</script>
-<% include partial/footer %>
+    </script>
+    <%- include("partial/invoice-form", { 'blockType' : "js" }) %>
+    <%- include("partial/invoice-preview", { 'blockType' : "js" }) %>
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <script>
+        document.querySelector("button[data-tab='invoicePreviewContainer']").addEventListener("click", () => {
+            generateInvoicePreview();
+        });
+        document.querySelector("button#generatePDFButton").addEventListener("click", () => {
+            console.log("PDF button clicked");
+            generateInvoicePreview();
+            generatePDF("invoicePreview");
+        });
+    </script>
+    <% include partial/footer %>
